@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Oameni">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Modele/Oameni/barbat1.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Modele/Oameni/femeie1.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Modele/Oameni/barbat3.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Modele/Oameni/femeie2.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Modele/Oameni/femeie3.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="super-building">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/map.zip!/" />
+      <root url="jar://$PROJECT_DIR$/bloc.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

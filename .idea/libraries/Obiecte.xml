@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Obiecte">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Modele/Obiecte/fum.zip!/" />
+      <root url="jar://$PROJECT_DIR$/Modele/Obiecte/bec.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

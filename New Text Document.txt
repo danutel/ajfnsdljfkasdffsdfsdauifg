@@ -1,0 +1,3 @@
+-platform-id Camera1 -agents agent2:unAgent;god:environment;senzorT:senzorTemperatura;senzorU:senzorUmiditate;senzorF:senzorFum;controller:controller;ventilatie:ventilatie;stropitori:stropitori;umidificator:umidificator;electricitate:electricitate;lumini_urgenta:lumini_urgenta;
+
+-platform-id server -agents environment_hol:environment_hol;agent2:unAgent;controller_hol:controller_hol;senzorFum_hol:senzorFum_hol;lumini_urgenta:lumini_urgenta;nucleu:nucleu;ventilatie:ventilatie;electricitate:electricitate;stropitori:stropitori;
