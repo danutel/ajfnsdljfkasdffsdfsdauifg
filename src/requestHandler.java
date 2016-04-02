@@ -22,7 +22,6 @@ public class requestHandler {
     public boolean alarma;
     public float intensitate_foc;
     public ColorRGBA culoare;
-    public boolean[] lala;
 
     public requestHandler(String type, String nume_arhiva, String nume_fisier, String nume_obiect, float translatie_x,
                           float translatie_y, float translatie_z, float scalare_x, float scalare_y, float scalare_z,

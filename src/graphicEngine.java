@@ -7,7 +7,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.effect.ParticleEmitter;
 import com.jme3.effect.ParticleMesh;
 import com.jme3.effect.shapes.EmitterBoxShape;
-import com.jme3.effect.shapes.EmitterSphereShape;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -15,32 +14,38 @@ import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.light.SpotLight;
 import com.jme3.material.Material;
-import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.SceneProcessor;
-import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.DepthOfFieldFilter;
-import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.*;
-import com.jme3.ui.Picture;
+import com.jme3.shadow.PointLightShadowFilter;
+import com.jme3.shadow.PointLightShadowRenderer;
+import com.jme3.shadow.SpotLightShadowFilter;
+import com.jme3.shadow.SpotLightShadowRenderer;
 import com.jme3.util.SkyFactory;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.builder.EffectBuilder;
+import de.lessvoid.nifty.builder.LayerBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.ScreenBuilder;
+import de.lessvoid.nifty.controls.Button;
+import de.lessvoid.nifty.controls.Slider;
+import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
+import de.lessvoid.nifty.controls.checkbox.builder.CheckboxBuilder;
+import de.lessvoid.nifty.controls.slider.builder.SliderBuilder;
+import de.lessvoid.nifty.screen.DefaultScreenController;
+import org.bushe.swing.event.EventTopicSubscriber;
 
-import java.io.IOException;
-import java.io.InvalidClassException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public class graphicEngine extends SimpleApplication implements ActionListener{
@@ -70,9 +75,26 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    private String locatie = "";
+    public static String locatie = "";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
     private SpotLight[] lumina_leduri = new SpotLight[61];
+    public static double temperatura_interior;
+    public static double umiditate;
+    public static float fum;
+    public static float foc;
+    public static float temperatura_exterior;
+    public static float lumina;
+    public static  boolean curent_electric;
+    public static  boolean lumini_urgenta;
+    public static  boolean sprinkler;
+    public static boolean alarma_incendiu;
+    public static double ventilatie;
+    public static double CO2;
+    private Nifty nifty;
+    private Slider slider1,slider2,slider3;
+    private Button buton1,buton2,buton3;
+    public static float referinta_temperatura,referinta_umiditate,referinta_CO2;
+
 
     @Override
     public void simpleInitApp() {
@@ -85,7 +107,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         rootNode.attachChild(sky);
         rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
 
-
+        load_interfata();
         loadmap();
         load_hud();
         lightSetup();
@@ -95,12 +117,570 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hud();
     }
 
+    private void load_interfata() {
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(assetManager, inputManager, audioRenderer, guiViewPort);
+        nifty = niftyDisplay.getNifty();
+        guiViewPort.addProcessor(niftyDisplay);
+        int h=settings.getHeight();
+        int w=settings.getWidth();
+        int panel1_w =(w/2)-300;
+
+        nifty.loadStyleFile("nifty-default-styles.xml");
+        nifty.loadControlFile("nifty-default-controls.xml");
+
+        nifty.addScreen("test", new ScreenBuilder("Hello Nifty Screen") {{
+            controller(new DefaultScreenController()); // Screen properties
+
+            // <layer>
+            layer(new LayerBuilder("Layer_ID") {{
+                childLayoutHorizontal(); // layer properties, add more...
+
+                width(w+"px");
+                height("300px");
+
+                panel(new PanelBuilder("gol"){{
+                    childLayoutVertical(); // panel properties, add more...
+                    width("205px");
+                    height("400px");
+                    alignLeft();
+                    valignBottom();
+                    style("nifty-panel-no-shadow");
+
+                    control(new ButtonBuilder("info","Informatii"){{
+                        height("40px");
+                        width("100%");
+                        focusable(false);
+                    }});
+                }});
+
+                panel(new PanelBuilder("lala") {
+                    {
+                        childLayoutHorizontal(); // panel properties, add more...
+                        width(((w/2)-300)+"px");
+                        style("nifty-panel-no-shadow");
+                        height("200px");
+                        alignCenter();
+                        valignBottom();
+
+                        panel(new PanelBuilder("manual") {
+                            {
+                                childLayoutVertical(); // panel properties, add more...
+                                if(w>1366)
+                                    width("200px");
+                                else
+                                    width("50%");
+                                height("100%");
+                                alignCenter();
+                                valignBottom();
+
+                                panel(new PanelBuilder("manual_check") {
+                                    {
+                                        childLayoutHorizontal();
+                                        width("100%");
+                                        height("14%");
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+
+                                        control(new ButtonBuilder("manual", "Control Manual") {{
+
+                                            alignLeft();
+                                            valignCenter();
+                                            height("80%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("10%");
+                                        }});
+
+                                        control(new CheckboxBuilder("manual_activated") {{
+                                            alignRight();
+                                            valignCenter();
+                                            this.focusable(false);
+                                            width("20px");
+                                            height("20px");
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("Electricitate") {
+                                    {
+                                        childLayoutHorizontal();
+                                        width("100%");
+                                        height("14%");
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+
+                                        control(new ButtonBuilder("manual1", "Electricitate") {{
+
+                                            alignLeft();
+                                            valignCenter();
+                                            height("80%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("10%");
+                                        }});
+
+                                        control(new CheckboxBuilder("electricitate_activated") {{
+                                            alignRight();
+                                            valignCenter();
+                                            this.focusable(false);
+                                            width("20px");
+                                            height("20px");
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("lumini_urgenta") {
+                                    {
+                                        childLayoutHorizontal();
+                                        width("100%");
+                                        height("14%");
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+
+                                        control(new ButtonBuilder("manual2", "Lumini urgenta") {{
+
+                                            alignLeft();
+                                            valignCenter();
+                                            height("80%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("10%");
+                                        }});
+
+                                        control(new CheckboxBuilder("lumini_urgenta_activated") {{
+                                            alignRight();
+                                            valignCenter();
+                                            this.focusable(false);
+                                            width("20px");
+                                            height("20px");
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("sprinklers") {
+                                    {
+                                        childLayoutHorizontal();
+                                        width("100%");
+                                        height("14%");
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+
+                                        control(new ButtonBuilder("manual3", "Sprinklere") {{
+
+                                            alignLeft();
+                                            valignCenter();
+                                            height("80%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("10%");
+                                        }});
+
+                                        control(new CheckboxBuilder("sprinklers_activated") {{
+                                            alignRight();
+                                            valignCenter();
+                                            this.focusable(false);
+                                            width("20px");
+                                            height("20px");
+                                        }});
+
+                                        panel(new PanelBuilder("goll"){{
+                                            width("5%");
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("umiditate") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual4", "Comanda umidificator") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("comanda_umidificator", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(5f);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("ventilatie") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual5", "Comanda ventilatie") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("comanda_ventilatie", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(5f);
+                                        }});
+                                    }});
+
+                            }});
+
+                        if(w>1366)
+                        {
+                            panel(new PanelBuilder("lumina")
+                            {{
+                                height("100%");
+                                width(panel1_w-420+"px");
+                                childLayoutVertical();
+
+                                panel(new PanelBuilder("degeaba"){{
+                                    height("5%");
+                                }});
+
+                                control(new ButtonBuilder("lumina","Lumina")
+                                {{
+                                    alignCenter();
+                                    width("80%");
+                                    focusable(false);
+                                    height("15%");
+                                }});
+
+                                panel(new PanelBuilder("degeaba"){{
+                                    height("5%");
+                                }});
+
+                                control(new SliderBuilder("luminozitate",true){{
+                                    height("75%");
+                                    stepSize(5f);
+                                    focusable(false);
+                                }});
+                            }});
+                        }
+
+                        panel(new PanelBuilder("manual_2") {
+                            {
+                                childLayoutVertical(); // panel properties, add more...
+                                if(w>1366)
+                                    width("200px");
+                                else
+                                    width("50%");
+                                height("100%");
+                                alignCenter();
+                                valignBottom();
+
+                                panel(new PanelBuilder("goll"){{
+                                    height("4%");
+                                }});
+
+                                panel(new PanelBuilder("incalzire") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual6", "Comanda incalzire") {{
+                                            alignRight();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("comanda_incalzire", false) {{
+                                            alignRight();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(5f);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("racire") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual7", "Comanda racire") {{
+                                            alignRight();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("comanda_racire", false) {{
+                                            alignRight();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(5f);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("temperatura_ext") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual8", "Temp. exterior") {{
+                                            alignRight();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("temp_ext", false) {{
+                                            alignRight();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(0.5f);
+                                            min(-20);max(40);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("oameni") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual9", "Numar oameni") {{
+                                            alignRight();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("numar_oameni", false) {{
+                                            alignRight();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(1f);
+                                            max(50);
+                                        }});
+                                    }});
+                            }});
+                    }});
+
+                // <panel>
+                panel(new PanelBuilder("Referinte") {{
+                    childLayoutVertical(); // panel properties, add more...
+                    width("200px");
+                    style("nifty-panel-no-shadow");
+                    height("250px");
+                    alignCenter();
+                    valignBottom();
+                    x("400px");
+
+                    // GUI elements
+                    control(new ButtonBuilder("nimic","Referinte (Control Automat)") {{
+                        alignCenter();
+                        valignCenter();
+                        height("15%");
+                        width("100%");
+                        this.onActiveEffect(new EffectBuilder("nimic"));
+                    }});
+                    panel(new PanelBuilder("degeaba"){{
+                        height("20px");
+                    }});
+
+                    control(new ButtonBuilder("buton1","Temperatura: ") {{
+                        alignCenter();
+                        valignCenter();
+                        height("12%");
+                        width("100%");
+                        this.focusable(false);
+                    }});
+
+                    control(new SliderBuilder("slider1", false) {{
+                        alignCenter();
+                        valignCenter();
+                        height("15%");
+                        width("100%");
+                        this.buttonStepSize(0.5f);
+                        this.min(10f);
+                        this.max(30f);
+                        this.focusable(false);
+                    }});
+
+                    control(new ButtonBuilder("buton2","Umiditate: ") {{
+                        alignCenter();
+                        valignBottom();
+                        height("12%");
+                        width("100%");
+                        this.focusable(false);
+                    }});
+
+                    control(new SliderBuilder("slider2", false) {{
+                        alignCenter();
+                        valignBottom();
+                        height("15%");
+                        width("100%");
+                        this.buttonStepSize(1f);
+                        this.min(30f);
+                        this.max(60f);
+                        this.focusable(false);
+                    }});
+
+                    control(new ButtonBuilder("buton3","CO2: ") {{
+                        alignCenter();
+                        valignTop();
+                        height("12%");
+                        width("100%");
+                        this.focusable(false);
+                    }});
+
+                    control(new SliderBuilder("slider3", false) {{
+                        alignCenter();
+                        valignTop();
+                        height("15%");
+                        width("100%");
+                        this.buttonStepSize(25f);
+                        this.min(300f);
+                        this.max(1000f);
+                        this.focusable(false);
+                    }});
+                    //.. add more GUI elements here
+
+
+                }});
+                // </panel>
+
+                panel(new PanelBuilder("dadas") {
+                    {
+                        childLayoutVertical(); // panel properties, add more...
+                        width(((w/2)-225)+"px");
+                        style("nifty-panel-no-shadow");
+                        height("200px");
+                        alignCenter();
+                        valignBottom();
+                    }});
+
+                panel(new PanelBuilder("onlines") {
+                    {
+                        childLayoutVertical(); // panel properties, add more...
+                        width("120px");
+                        style("nifty-panel-no-shadow");
+                        height("400px");
+                        alignCenter();
+                        valignBottom();
+                        control(new ButtonBuilder("Online","Online"){{
+                            width("100%");
+                            height("40px");
+                            focusable(false);
+                        }});
+                    }});
+            }});
+            // </layer>
+
+        }}.build(nifty));
+
+
+        slider1 = nifty.getCurrentScreen().findNiftyControl("slider1", Slider.class);
+        slider2 = nifty.getCurrentScreen().findNiftyControl("slider2", Slider.class);
+        slider3 = nifty.getCurrentScreen().findNiftyControl("slider3", Slider.class);
+
+        buton1 = nifty.getCurrentScreen().findNiftyControl("buton1", Button.class);
+        buton2 = nifty.getCurrentScreen().findNiftyControl("buton2", Button.class);
+        buton3 = nifty.getCurrentScreen().findNiftyControl("buton3", Button.class);
+
+        nifty.subscribe(nifty.getCurrentScreen(), "slider1", SliderChangedEvent.class, eventHandler1);
+        nifty.subscribe(nifty.getCurrentScreen(), "slider2", SliderChangedEvent.class, eventHandler2);
+        nifty.subscribe(nifty.getCurrentScreen(), "slider3", SliderChangedEvent.class, eventHandler3);
+
+        nifty.gotoScreen("test");
+
+    }
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler1 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            referinta_temperatura = nifty.getCurrentScreen().findNiftyControl("slider1", Slider.class).getValue();
+            String value = String.valueOf(referinta_temperatura);
+            nifty.getCurrentScreen().findNiftyControl("buton1", Button.class).setText("Temperatura: "+value+" °C");
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler2 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            referinta_umiditate = nifty.getCurrentScreen().findNiftyControl("slider2", Slider.class).getValue();
+            String value = String.valueOf(referinta_umiditate);
+            nifty.getCurrentScreen().findNiftyControl("buton2", Button.class).setText("Umiditate: "+value+"% UR");
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler3 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            referinta_CO2 = nifty.getCurrentScreen().findNiftyControl("slider3", Slider.class).getValue();
+            String value = String.valueOf(referinta_CO2);
+            nifty.getCurrentScreen().findNiftyControl("buton3", Button.class).setText("CO2: "+value+" PPM");
+        }
+    };
+
     public void loadmap()
     {
         //load_object(new requestHandler("load","Modele\\Harta\\fac.zip","6.mesh.j3o", "map",-420,0,-109,7f,7f,7f,0,0,0,0));//harta
         load_object(new requestHandler("load","Modele\\Harta\\fac.zip","1.mesh.j3o", "map",-144,14,-1637,7f,7f,7f,0,0,0,0));//facultate
-        //load_object(new requestHandler("load","Modele\\Harta\\9.zip","9.mesh.j3o", "bloc",81,-12,-2603,7f,7f,7f,0,0,0,0));//parcare+terenuri
-       /* load_object(new requestHandler("load","Modele\\Harta\\7.zip","7.mesh.j3o", "bloc",2029,10,-415,7f,7f,7f,0,0,0,0));//cladiri cercetare
+        /*load_object(new requestHandler("load","Modele\\Harta\\9.zip","9.mesh.j3o", "bloc",81,-12,-2603,7f,7f,7f,0,0,0,0));//parcare+terenuri
+        load_object(new requestHandler("load","Modele\\Harta\\7.zip","7.mesh.j3o", "bloc",2029,10,-415,7f,7f,7f,0,0,0,0));//cladiri cercetare
         load_object(new requestHandler("load","Modele\\Harta\\8.zip","8.mesh.j3o", "bloc",1750,10,-2600,7f,7f,7f,0,0,0,0));//cladiri cercetare
         load_object(new requestHandler("load","Modele\\Harta\\fac.zip","5.mesh.j3o", "bloc",-150,12,-280,7f,7f,7f,0,0,0,0));//parc+stadion
         load_object(new requestHandler("load","Modele\\Harta\\12.zip","12.mesh.j3o", "bloc",270,8,-489,7f,7f,7f,0,0,0,0));//harta
@@ -135,144 +715,117 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
     public void load_hud(){
         setDisplayStatView(false);
+        int offset=330;
 
-        Picture pic = new Picture("HUD Picture");
-        assetManager.registerLocator("Modele\\Materiale\\hud1.zip", ZipLocator.class);
-        pic.setImage(assetManager, "hud1.jpg", true);
-        Material mat = pic.getMaterial().clone();
-        mat.setColor("Color", new ColorRGBA(1,1,1,0.8f)); // Red with 50% transparency
-        mat.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        pic.setMaterial(mat);
-       // pic.setWidth(settings.getWidth()/8);
-      //  pic.setHeight(settings.getHeight()/2);
-        pic.setWidth(210);
-        pic.setHeight(360);
-        pic.setPosition(0, 20);
-        guiNode.attachChild(pic);
-
-        Picture pic2 = new Picture("HUD Picture");
-        assetManager.registerLocator("Modele\\Materiale\\hud1.zip", ZipLocator.class);
-        pic2.setImage(assetManager, "hud1.jpg", true);
-        Material mat2 = pic2.getMaterial().clone();
-        mat2.setColor("Color", new ColorRGBA(1,1,1,0.8f)); // Red with 50% transparency
-        mat2.getAdditionalRenderState().setBlendMode(RenderState.BlendMode.Alpha);
-        pic2.setMaterial(mat2);
-        // pic2.setWidth(settings.getWidth()/8);
-        //  pic2.setHeight(settings.getHeight()/2);
-        pic2.setWidth(210);
-        pic2.setHeight(360);
-        pic2.setPosition(settings.getWidth()-120, 20);
-        guiNode.attachChild(pic2);
-
-        BitmapFont myFont = assetManager.loadFont("Interface/Fonts/Console.fnt");
+        BitmapFont myFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
         hudText = new BitmapText(myFont, false);
         hudText.setSize(15);
         hudText.setColor(ColorRGBA.Green);           // the text
-        hudText.setLocalTranslation(10, (settings.getHeight()/2), 300); // position
+        hudText.setLocalTranslation(20, offset, 300); // position
         guiNode.attachChild(hudText);
 
         hudText2 = new BitmapText(myFont, false);
         hudText2.setSize(15);
         hudText2.setColor(ColorRGBA.Green);           // the text
-        hudText2.setLocalTranslation(10, (settings.getHeight()/2)-40, 300); // position
+        hudText2.setLocalTranslation(20, offset-20, 300); // position
         guiNode.attachChild(hudText2);
 
         hudText3 = new BitmapText(myFont, false);
         hudText3.setSize(15);
         hudText3.setColor(ColorRGBA.Green);           // the text
-        hudText3.setLocalTranslation(10, (settings.getHeight()/2)-80, 300); // position
+        hudText3.setLocalTranslation(20, offset-100, 300); // position
         guiNode.attachChild(hudText3);
 
         hudText4 = new BitmapText(myFont, false);
         hudText4.setSize(15);
         hudText4.setColor(ColorRGBA.Green);           // the text
-        hudText4.setLocalTranslation(10, (settings.getHeight()/2)-120, 300); // position
+        hudText4.setLocalTranslation(20, offset-120, 300); // position
         guiNode.attachChild(hudText4);
 
         hudText5 = new BitmapText(myFont, false);
         hudText5.setSize(15);
         hudText5.setColor(ColorRGBA.Green);           // the text
-        hudText5.setLocalTranslation(10, (settings.getHeight()/2)-140, 300); // position
+        hudText5.setLocalTranslation(20, offset-140, 300); // position
         guiNode.attachChild(hudText5);
 
         hudText6 = new BitmapText(myFont, false);
         hudText6.setSize(15);
         hudText6.setColor(ColorRGBA.Green);           // the text
-        hudText6.setLocalTranslation(10, (settings.getHeight()/2)-160, 300); // position
+        hudText6.setLocalTranslation(20, offset-160, 300); // position
         guiNode.attachChild(hudText6);
 
         hudText7 = new BitmapText(myFont, false);
         hudText7.setSize(15);
         hudText7.setColor(ColorRGBA.Green);           // the text
-        hudText7.setLocalTranslation(10, (settings.getHeight()/2)-180, 300); // position
+        hudText7.setLocalTranslation(20, offset-180, 300); // position
         guiNode.attachChild(hudText7);
 
         hudText8 = new BitmapText(myFont, false);
         hudText8.setSize(15);
         hudText8.setColor(ColorRGBA.Green);           // the text
-        hudText8.setLocalTranslation(10, (settings.getHeight()/2)-200, 300); // position
+        hudText8.setLocalTranslation(20, offset-200, 300); // position
         guiNode.attachChild(hudText8);
 
         hudText9 = new BitmapText(myFont, false);
         hudText9.setSize(15);
         hudText9.setColor(ColorRGBA.Green);           // the text
-        hudText9.setLocalTranslation(10, (settings.getHeight()/2)-220, 300); // position
+        hudText9.setLocalTranslation(20, offset-220, 300); // position
         guiNode.attachChild(hudText9);
 
         hudText12 = new BitmapText(myFont, false);
         hudText12.setSize(15);
         hudText12.setColor(ColorRGBA.Green);           // the text
-        hudText12.setLocalTranslation(settings.getWidth()-100, 350, 300); // position
+        hudText12.setLocalTranslation(settings.getWidth()-90, offset, 300); // position
         hudText12.setText("Camera 1");
         guiNode.attachChild(hudText12);
 
         hudText13 = new BitmapText(myFont, false);
         hudText13.setSize(15);
         hudText13.setColor(ColorRGBA.Green);           // the text
-        hudText13.setLocalTranslation(settings.getWidth()-100, 330, 300); // position
+        hudText13.setLocalTranslation(settings.getWidth()-90, offset-20, 300); // position
         hudText13.setText("Camera 2");
         guiNode.attachChild(hudText13);
 
         hudText14 = new BitmapText(myFont, false);
         hudText14.setSize(15);
         hudText14.setColor(ColorRGBA.Green);           // the text
-        hudText14.setLocalTranslation(settings.getWidth()-100, 310, 300); // position
+        hudText14.setLocalTranslation(settings.getWidth()-90, offset-40, 300); // position
         hudText14.setText("Camera 3");
         guiNode.attachChild(hudText14);
 
         hudText15 = new BitmapText(myFont, false);
         hudText15.setSize(15);
         hudText15.setColor(ColorRGBA.Green);           // the text
-        hudText15.setLocalTranslation(settings.getWidth()-100, 290, 300); // position
+        hudText15.setLocalTranslation(settings.getWidth()-90, offset-60, 300); // position
         hudText15.setText("Camera 4");
         guiNode.attachChild(hudText15);
 
         hudText16 = new BitmapText(myFont, false);
         hudText16.setSize(15);
         hudText16.setColor(ColorRGBA.Green);           // the text
-        hudText16.setLocalTranslation(settings.getWidth()-100, 270, 300); // position
+        hudText16.setLocalTranslation(settings.getWidth()-90, offset-80, 300); // position
         hudText16.setText("Camera 5");
         guiNode.attachChild(hudText16);
 
         hudText17 = new BitmapText(myFont, false);
         hudText17.setSize(15);
         hudText17.setColor(ColorRGBA.Green);           // the text
-        hudText17.setLocalTranslation(settings.getWidth()-100, 250, 300); // position
+        hudText17.setLocalTranslation(settings.getWidth()-90, offset-100, 300); // position
         hudText17.setText("Camera 6");
         guiNode.attachChild(hudText17);
 
         hudText18 = new BitmapText(myFont, false);
         hudText18.setSize(15);
         hudText18.setColor(ColorRGBA.Green);           // the text
-        hudText18.setLocalTranslation(settings.getWidth()-100, 230, 300); // position
+        hudText18.setLocalTranslation(settings.getWidth()-90, offset-120, 300); // position
         hudText18.setText("Camera 7");
         guiNode.attachChild(hudText18);
 
         hudText19 = new BitmapText(myFont, false);
         hudText19.setSize(15);
         hudText19.setColor(ColorRGBA.Green);           // the text
-        hudText19.setLocalTranslation(settings.getWidth()-100, 210, 300); // position
-        hudText19.setText("server");
+        hudText19.setLocalTranslation(settings.getWidth()-90, offset-140, 300); // position
+        hudText19.setText("Server");
         guiNode.attachChild(hudText19);
     }
 
@@ -292,6 +845,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         cam.setFrustumFar(4000);
         cam.onFrameChange();
         flyCam.setMoveSpeed(300);
+        flyCam.setDragToRotate(true);
     }
     public void lightSetup()
     {
@@ -729,25 +1283,49 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             locatie = "Camera 6";
         else if((x<1296 && x>1189) && (y<148&&y>120) && (z>-1860&&z<-1780))
             locatie = "Camera 7";
+        else if((x<871 && x>811) && (y<180&&y>150) && (z>-1989&&z<-1905))
+            locatie = "et.4 Hol 1";
+        else if((x<981 && x>870) && (y<180&&y>150) && (z>-1941&&z<-1878))
+            locatie = "et.4 Hol 2";
+        else if((x<1098 && x>981) && (y<180&&y>150) && (z>-1941&&z<-1878))
+            locatie = "et.4 Hol 3";
+        else if((x<1179 && x>1098) && (y<180&&y>150) && (z>-1941&&z<-1873))
+            locatie = "et.4 Hol 4";
+        else if((x<1292 && x>1190) && (y<180&&y>150) && (z>-1921&&z<-1859))
+            locatie = "et.4 Hol 5";
+        else if((x<1020 && x>987) && (y<180&&y>150) && (z>-1874&&z<-1788))
+            locatie = "et.4 Hol 6";
+        else if((x<871 && x>811) && (y<148&&y>120) && (z>-1989&&z<-1905))
+            locatie = "et.3 Hol 1";
+        else if((x<981 && x>870) && (y<148&&y>120) && (z>-1941&&z<-1878))
+            locatie = "et.3 Hol 2";
+        else if((x<1098 && x>981) && (y<148&&y>120) && (z>-1941&&z<-1878))
+            locatie = "et.3 Hol 3";
+        else if((x<1179 && x>1098) && (y<148&&y>120) && (z>-1941&&z<-1873))
+            locatie = "et.3 Hol 4";
+        else if((x<1292 && x>1190) && (y<148&&y>120) && (z>-1921&&z<-1859))
+            locatie = "et.3 Hol 5";
+        else if((x<1020 && x>987) && (y<148&&y>120) && (z>-1874&&z<-1788))
+            locatie = "et.3 Hol 6";
         else locatie = "Neacoperita";
 
 
-        hudText.setText("Coordonate:\n" + (int)cam.getLocation().getX() +"x"+ " "+(int)cam.getLocation().getY()+"y"+" "+(int)cam.getLocation().getZ()+"z");
+        hudText.setText("GPS: " + (int)cam.getLocation().getX() +"x"+ " "+(int)cam.getLocation().getY()+"y"+" "+(int)cam.getLocation().getZ()+"z");
         hudText2.setText("Locatie: "+locatie);
-        hudText3.setText("Temperatura:\n" + environment.temperatura_interior+" °C");
-        hudText4.setText("Foc: "+ environment_hol.foc[4]);
-        hudText5.setText("Fum: "+environment_hol.fum[4]);
+        hudText3.setText("Temperatura: " + temperatura_interior+" °C");
+        hudText4.setText("Foc: "+ foc);
+        hudText5.setText("Fum: "+ fum);
         String blabla = null;
-        if(environment.ventilatie==2)
+        if(ventilatie==2)
             blabla = "Trage aer";
-        if(environment.ventilatie>=-1&&environment.ventilatie<=1)
+        if(environment.ventilatie>=-1&&ventilatie<=1)
             blabla = "Auto";
-        if(environment.ventilatie==3)
+        if(ventilatie==3)
             blabla = "Manual";
         hudText6.setText("Ventilatie: "+ blabla);
-        hudText7.setText("Sprinkler: "+ (boolean)environment.sprinkler);
-        hudText8.setText("Electricitate: "+ (boolean)environment.curent_electric);
-        hudText9.setText("L. urgenta: "+ (boolean)environment.lumini_urgenta);
+        hudText7.setText("Sprinkler: "+ sprinkler);
+        hudText8.setText("Electricitate: "+ curent_electric);
+        hudText9.setText("L. urgenta: "+ lumini_urgenta);
 
         /*
         if(controller.lista_celule.get(0).contains("Camera1"))
@@ -782,7 +1360,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             hudText19.setColor(ColorRGBA.Green);
         else
             hudText19.setColor(ColorRGBA.Gray);*/
-
 
     }
 }

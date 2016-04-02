@@ -1,18 +1,11 @@
-import com.jme3.math.ColorRGBA;
-import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
-import jade.lang.acl.ACLMessage;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class environment extends Agent{
     public static double temperatura_interior;
     public static double umiditate;
-    public static int fum;
-    public static int foc;
+    public static float fum;
+    public static float foc;
     public static float temperatura_exterior=5;
     public static float lumina;
     public static  boolean curent_electric;
@@ -22,10 +15,11 @@ public class environment extends Agent{
     public static double ventilatie; //0-oprit 1-reglare temperatura 2-trage aer din interior(pentru situatii de urgenta)
     public static double comanda_ventilatie;
     public static String adresa_server,nume_server;
+    public static double CO2;
 
     private boolean sprinkler_activated=false;
     private boolean curent_electric_activated=true;
-    private int foc_modificat,fum_modificat;
+    private float foc_modificat,fum_modificat;
     private boolean lumini_urgenta_activated=false;
     private boolean alarma_incendiu_activated;
     public static float u;
