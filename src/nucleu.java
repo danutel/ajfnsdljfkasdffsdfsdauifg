@@ -17,7 +17,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "et.4 Hol";
+    private String locatie= "Camera 1";
 
     @Override
     public void setup() {
@@ -42,7 +42,7 @@ public class nucleu extends Agent{
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {
-                            System.out.println(host + " is reachable");
+                           // System.out.println(host + " is reachable");
                             //if (i != Integer.parseInt(localaddress.split("\\.")[3]))
                             {
                                 ACLMessage discovery = new ACLMessage(ACLMessage.REQUEST);
@@ -118,7 +118,7 @@ public class nucleu extends Agent{
                         { // sa moara aia mici corect eu ma mai duc si pe la bucatarie ca am mancarea pe foc deci
                             ACLMessage reply = mesaj_receptionat.createReply();
                             reply.setPerformative( ACLMessage.INFORM );
-                            reply.setContent(environment.temperatura_interior+"~"+environment.umiditate+"~"+environment.fum+"~"+environment.foc+"~"+environment.temperatura_exterior
+                            reply.setContent(environment.temperatura+"~"+environment.umiditate+"~"+environment.fum+"~"+environment.foc+"~"+environment.temperatura_exterior
                                     +"~"+environment.curent_electric+"~"+environment.lumini_urgenta+"~"+environment.sprinkler+"~"+environment.alarma_incendiu+"~"+environment.ventilatie
                                     +"~"+environment.CO2);
                             myAgent.send(reply);
@@ -139,7 +139,7 @@ public class nucleu extends Agent{
                                 graphicEngine.umiditate = Double.parseDouble(continut[1]);
                                 graphicEngine.fum = Float.parseFloat(continut[2]);
                                 graphicEngine.foc = Float.parseFloat(continut[3]);
-                                graphicEngine.temperatura_exterior = Integer.parseInt(continut[4]);
+                                graphicEngine.temperatura_exterior = Float.parseFloat(continut[4]);
                                 graphicEngine.curent_electric = Boolean.parseBoolean(continut[5]);
                                 graphicEngine.lumini_urgenta = Boolean.parseBoolean(continut[6]);
                                 graphicEngine.sprinkler = Boolean.parseBoolean(continut[7]);
@@ -220,7 +220,7 @@ public class nucleu extends Agent{
                     request_motor_grafic.remove(0);
 
                     for (int i = 0; i < online_cells.size(); i++) {
-                        if(!localaddress.equals(online_cells.get(i).split("~")[1])) {
+                        if(!online_cells.get(i).contains(localaddress)) {
                             ACLMessage mesaj_comanda_motor_grafic = new ACLMessage(ACLMessage.REQUEST);
                             AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
                             rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");

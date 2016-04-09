@@ -36,9 +36,7 @@ import de.lessvoid.nifty.builder.EffectBuilder;
 import de.lessvoid.nifty.builder.LayerBuilder;
 import de.lessvoid.nifty.builder.PanelBuilder;
 import de.lessvoid.nifty.builder.ScreenBuilder;
-import de.lessvoid.nifty.controls.Button;
-import de.lessvoid.nifty.controls.Slider;
-import de.lessvoid.nifty.controls.SliderChangedEvent;
+import de.lessvoid.nifty.controls.*;
 import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.controls.checkbox.builder.CheckboxBuilder;
 import de.lessvoid.nifty.controls.slider.builder.SliderBuilder;
@@ -70,7 +68,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private ParticleEmitter [] fire = new ParticleEmitter[21];
     private ParticleEmitter [] water = new ParticleEmitter[61];
     private ParticleEmitter [] smoke = new ParticleEmitter[21];
-    private BitmapText hudText,hudText2,hudText3,hudText4,hudText5,hudText6,hudText7,hudText8,hudText9,hudText12,hudText13,hudText14,hudText15,hudText16,hudText17,hudText18,hudText19;
+    private BitmapText hudText,hudText2,hudText3,hudText23,hudText33,hudText4,hudText5,hudText6,hudText7,hudText8,hudText9,hudText12,hudText13,hudText14
+            ,hudText15,hudText16,hudText17,hudText18,hudText19;
     private boolean left = false, right = false, up = false, down = false,camera=false,tp=false;
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
@@ -91,9 +90,10 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public static double ventilatie;
     public static double CO2;
     private Nifty nifty;
-    private Slider slider1,slider2,slider3;
-    private Button buton1,buton2,buton3;
     public static float referinta_temperatura,referinta_umiditate,referinta_CO2;
+    public static float numar_oameni, temp_exterior, umiditate_exterior, comanda_racire, comanda_incalzire, comanda_ventilatie, comanda_umidificator;
+    private boolean gui=false;
+    private boolean electricitate_activated=true,sprinklers_activated=false,lumini_urgenta_activated=false;
 
 
     @Override
@@ -238,6 +238,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             alignRight();
                                             valignCenter();
                                             this.focusable(false);
+                                            this.checked(true);
                                             width("20px");
                                             height("20px");
                                         }});
@@ -465,56 +466,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             buttonStepSize(5f);
                                         }});
                                     }});
-
-                                panel(new PanelBuilder("temperatura_ext") {
-                                    {
-                                        childLayoutVertical();
-                                        width("100%");
-                                        height("25%");
-
-                                        control(new ButtonBuilder("manual8", "Temp. exterior") {{
-                                            alignRight();
-                                            height("40%");
-                                            width("90%");
-                                            this.onActiveEffect(new EffectBuilder("nimic"));
-                                            this.focusable(false);
-                                        }});
-
-
-                                        control(new SliderBuilder("temp_ext", false) {{
-                                            alignRight();
-                                            this.focusable(false);
-                                            width("90%");
-                                            height("30%");
-                                            buttonStepSize(0.5f);
-                                            min(-20);max(40);
-                                        }});
-                                    }});
-
-                                panel(new PanelBuilder("oameni") {
-                                    {
-                                        childLayoutVertical();
-                                        width("100%");
-                                        height("25%");
-
-                                        control(new ButtonBuilder("manual9", "Numar oameni") {{
-                                            alignRight();
-                                            height("40%");
-                                            width("90%");
-                                            this.onActiveEffect(new EffectBuilder("nimic"));
-                                            this.focusable(false);
-                                        }});
-
-
-                                        control(new SliderBuilder("numar_oameni", false) {{
-                                            alignRight();
-                                            this.focusable(false);
-                                            width("90%");
-                                            height("30%");
-                                            buttonStepSize(1f);
-                                            max(50);
-                                        }});
-                                    }});
                             }});
                     }});
 
@@ -604,12 +555,98 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
                 panel(new PanelBuilder("dadas") {
                     {
-                        childLayoutVertical(); // panel properties, add more...
+                        childLayoutHorizontal(); // panel properties, add more...
                         width(((w/2)-225)+"px");
                         style("nifty-panel-no-shadow");
                         height("200px");
-                        alignCenter();
+                        alignLeft();
                         valignBottom();
+                        panel(new PanelBuilder("setari") {
+                            {
+                                childLayoutVertical(); // panel properties, add more...
+                                width("200px");
+                                alignLeft();
+                                valignBottom();
+
+                                panel(new PanelBuilder("goll"){{
+                                    height("4%");
+                                }});
+
+                                panel(new PanelBuilder("temperatura_ext") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual8", "Temp. exterior") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("temp_ext", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(0.5f);
+                                            min(-20);max(40);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("umiditate_ext") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual18", "U.R. exterior") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("umiditate_exterior", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(0.5f);
+                                            min(10);max(90);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("oameni") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual9", "Numar oameni") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("numar_oameni", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(1f);
+                                            max(50);
+                                        }});
+                                    }});
+                            }});
                     }});
 
                 panel(new PanelBuilder("onlines") {
@@ -631,22 +668,100 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
         }}.build(nifty));
 
-
-        slider1 = nifty.getCurrentScreen().findNiftyControl("slider1", Slider.class);
-        slider2 = nifty.getCurrentScreen().findNiftyControl("slider2", Slider.class);
-        slider3 = nifty.getCurrentScreen().findNiftyControl("slider3", Slider.class);
-
-        buton1 = nifty.getCurrentScreen().findNiftyControl("buton1", Button.class);
-        buton2 = nifty.getCurrentScreen().findNiftyControl("buton2", Button.class);
-        buton3 = nifty.getCurrentScreen().findNiftyControl("buton3", Button.class);
-
         nifty.subscribe(nifty.getCurrentScreen(), "slider1", SliderChangedEvent.class, eventHandler1);
         nifty.subscribe(nifty.getCurrentScreen(), "slider2", SliderChangedEvent.class, eventHandler2);
         nifty.subscribe(nifty.getCurrentScreen(), "slider3", SliderChangedEvent.class, eventHandler3);
+        nifty.subscribe(nifty.getCurrentScreen(), "numar_oameni", SliderChangedEvent.class, eventHandler4);
+        nifty.subscribe(nifty.getCurrentScreen(), "umiditate_exterior", SliderChangedEvent.class, eventHandler5);
+        nifty.subscribe(nifty.getCurrentScreen(), "temp_ext", SliderChangedEvent.class, eventHandler6);
+        nifty.subscribe(nifty.getCurrentScreen(), "comanda_racire", SliderChangedEvent.class, eventHandler7);
+        nifty.subscribe(nifty.getCurrentScreen(), "comanda_incalzire", SliderChangedEvent.class, eventHandler8);
+        nifty.subscribe(nifty.getCurrentScreen(), "comanda_ventilatie", SliderChangedEvent.class, eventHandler9);
+        nifty.subscribe(nifty.getCurrentScreen(), "comanda_umidificator", SliderChangedEvent.class, eventHandler10);
+        nifty.subscribe(nifty.getCurrentScreen(), "manual_activated",   CheckBoxStateChangedEvent.class, eventHandler11);
+        nifty.subscribe(nifty.getCurrentScreen(), "electricitate_activated",   CheckBoxStateChangedEvent.class, eventHandler12);
+        nifty.subscribe(nifty.getCurrentScreen(), "lumini_urgenta_activated",   CheckBoxStateChangedEvent.class, eventHandler13);
+        nifty.subscribe(nifty.getCurrentScreen(), "sprinklers_activated",   CheckBoxStateChangedEvent.class, eventHandler14);
 
         nifty.gotoScreen("test");
 
     }
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
+        @Override
+        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
+            if(sprinklers_activated)
+            {
+                environment.sprinkler=false;
+                sprinklers_activated=false;
+            }
+            else
+            {
+                environment.sprinkler=true;
+                sprinklers_activated=true;
+            }
+        }
+    };
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler13 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
+        @Override
+        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
+            if(lumini_urgenta_activated)
+            {
+                environment.lumini_urgenta=false;
+                lumini_urgenta_activated=false;
+            }
+            else
+            {
+                environment.lumini_urgenta=true;
+                lumini_urgenta_activated=true;
+            }
+        }
+    };
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler12 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
+        @Override
+        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
+            if(electricitate_activated)
+            {
+                environment.curent_electric=true;
+                electricitate_activated=false;
+            }
+            else
+            {
+                environment.curent_electric=false;
+                electricitate_activated=true;
+            }
+        }
+    };
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler11 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
+        @Override
+        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
+            if(!controller.disabled){
+                controller.disabled = true;
+                System.out.println("Controller disabled");
+                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).enable();
+                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).enable();
+            }else
+            {
+                controller.disabled = false;
+                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).disable();
+                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).disable();
+                System.out.println("Controller enabled");
+            }
+        }
+    };
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler1 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
@@ -672,6 +787,69 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             referinta_CO2 = nifty.getCurrentScreen().findNiftyControl("slider3", Slider.class).getValue();
             String value = String.valueOf(referinta_CO2);
             nifty.getCurrentScreen().findNiftyControl("buton3", Button.class).setText("CO2: "+value+" PPM");
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler4 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            numar_oameni = nifty.getCurrentScreen().findNiftyControl("numar_oameni", Slider.class).getValue();
+            String value = String.valueOf(numar_oameni);
+            nifty.getCurrentScreen().findNiftyControl("manual9", Button.class).setText("Numar oameni: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler5 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            umiditate_exterior = nifty.getCurrentScreen().findNiftyControl("umiditate_exterior", Slider.class).getValue();
+            String value = String.valueOf(umiditate_exterior);
+            nifty.getCurrentScreen().findNiftyControl("manual18", Button.class).setText("U.R. exterior: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler6 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            temp_exterior = nifty.getCurrentScreen().findNiftyControl("temp_ext", Slider.class).getValue();
+            String value = String.valueOf(temp_exterior);
+            nifty.getCurrentScreen().findNiftyControl("manual8", Button.class).setText("Temp. exterior: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler7 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            comanda_racire = nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).getValue();
+            String value = String.valueOf(comanda_racire/100);
+            nifty.getCurrentScreen().findNiftyControl("manual7", Button.class).setText("Comanda racire: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler8 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            comanda_incalzire = nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).getValue();
+            String value = String.valueOf(comanda_incalzire/100);
+            nifty.getCurrentScreen().findNiftyControl("manual6", Button.class).setText("Comanda incalzire: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler9 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            comanda_ventilatie = nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).getValue();
+            String value = String.valueOf(comanda_ventilatie/100);
+            nifty.getCurrentScreen().findNiftyControl("manual5", Button.class).setText("Comanda ventilatie: "+value);
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler10 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            comanda_umidificator = nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).getValue();
+            String value = String.valueOf(comanda_umidificator/100);
+            nifty.getCurrentScreen().findNiftyControl("manual4", Button.class).setText("Comanda umidificator: "+value);
         }
     };
 
@@ -721,55 +899,67 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hudText = new BitmapText(myFont, false);
         hudText.setSize(15);
         hudText.setColor(ColorRGBA.Green);           // the text
-        hudText.setLocalTranslation(20, offset, 300); // position
+        hudText.setLocalTranslation(25, offset, 300); // position
         guiNode.attachChild(hudText);
 
         hudText2 = new BitmapText(myFont, false);
         hudText2.setSize(15);
         hudText2.setColor(ColorRGBA.Green);           // the text
-        hudText2.setLocalTranslation(20, offset-20, 300); // position
+        hudText2.setLocalTranslation(25, offset-20, 300); // position
         guiNode.attachChild(hudText2);
 
         hudText3 = new BitmapText(myFont, false);
         hudText3.setSize(15);
         hudText3.setColor(ColorRGBA.Green);           // the text
-        hudText3.setLocalTranslation(20, offset-100, 300); // position
+        hudText3.setLocalTranslation(25, offset-60, 300); // position
         guiNode.attachChild(hudText3);
+
+        hudText23 = new BitmapText(myFont, false);
+        hudText23.setSize(15);
+        hudText23.setColor(ColorRGBA.Green);           // the text
+        hudText23.setLocalTranslation(25, offset-80, 300); // position
+        guiNode.attachChild(hudText23);
+
+        hudText33 = new BitmapText(myFont, false);
+        hudText33.setSize(15);
+        hudText33.setColor(ColorRGBA.Green);           // the text
+        hudText33.setLocalTranslation(25, offset-100, 300); // position
+        guiNode.attachChild(hudText33);
 
         hudText4 = new BitmapText(myFont, false);
         hudText4.setSize(15);
         hudText4.setColor(ColorRGBA.Green);           // the text
-        hudText4.setLocalTranslation(20, offset-120, 300); // position
+        hudText4.setLocalTranslation(25, offset-140, 300); // position
         guiNode.attachChild(hudText4);
 
         hudText5 = new BitmapText(myFont, false);
         hudText5.setSize(15);
         hudText5.setColor(ColorRGBA.Green);           // the text
-        hudText5.setLocalTranslation(20, offset-140, 300); // position
+        hudText5.setLocalTranslation(25, offset-160, 300); // position
         guiNode.attachChild(hudText5);
 
         hudText6 = new BitmapText(myFont, false);
         hudText6.setSize(15);
         hudText6.setColor(ColorRGBA.Green);           // the text
-        hudText6.setLocalTranslation(20, offset-160, 300); // position
+        hudText6.setLocalTranslation(25, offset-180, 300); // position
         guiNode.attachChild(hudText6);
 
         hudText7 = new BitmapText(myFont, false);
         hudText7.setSize(15);
         hudText7.setColor(ColorRGBA.Green);           // the text
-        hudText7.setLocalTranslation(20, offset-180, 300); // position
+        hudText7.setLocalTranslation(25, offset-200, 300); // position
         guiNode.attachChild(hudText7);
 
         hudText8 = new BitmapText(myFont, false);
         hudText8.setSize(15);
         hudText8.setColor(ColorRGBA.Green);           // the text
-        hudText8.setLocalTranslation(20, offset-200, 300); // position
+        hudText8.setLocalTranslation(25, offset-220, 300); // position
         guiNode.attachChild(hudText8);
 
         hudText9 = new BitmapText(myFont, false);
         hudText9.setSize(15);
         hudText9.setColor(ColorRGBA.Green);           // the text
-        hudText9.setLocalTranslation(20, offset-220, 300); // position
+        hudText9.setLocalTranslation(25, offset-240, 300); // position
         guiNode.attachChild(hudText9);
 
         hudText12 = new BitmapText(myFont, false);
@@ -845,7 +1035,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         cam.setFrustumFar(4000);
         cam.onFrameChange();
         flyCam.setMoveSpeed(300);
-        flyCam.setDragToRotate(true);
     }
     public void lightSetup()
     {
@@ -903,6 +1092,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         inputManager.addMapping("fire5", new KeyTrigger(KeyInput.KEY_5));
         inputManager.addMapping("fire6", new KeyTrigger(KeyInput.KEY_6));
         inputManager.addMapping("fire", new KeyTrigger(KeyInput.KEY_H));
+        inputManager.addMapping("gui", new KeyTrigger(KeyInput.KEY_F1));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
@@ -917,6 +1107,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         inputManager.addListener(this, "fire5");
         inputManager.addListener(this, "fire6");
         inputManager.addListener(this, "fire");
+        inputManager.addListener(this, "gui");
     }
 
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -977,6 +1168,11 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         else if (binding.equals("fire")) {
             if (isPressed) {
                 environment.foc=1;
+            }
+        }
+        else if (binding.equals("gui")) {
+            if (isPressed) {
+                gui=!gui;
             }
         }
     }
@@ -1312,7 +1508,9 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
         hudText.setText("GPS: " + (int)cam.getLocation().getX() +"x"+ " "+(int)cam.getLocation().getY()+"y"+" "+(int)cam.getLocation().getZ()+"z");
         hudText2.setText("Locatie: "+locatie);
-        hudText3.setText("Temperatura: " + temperatura_interior+" °C");
+        hudText3.setText("Temperatura: " + String.format("%.3f", temperatura_interior)+" °C");
+        hudText23.setText("Umiditate: " + String.format("%.3f", umiditate)+" U.R.");
+        hudText33.setText("CO2: " + String.format("%.0f", CO2)+" PPM");
         hudText4.setText("Foc: "+ foc);
         hudText5.setText("Fum: "+ fum);
         String blabla = null;
@@ -1360,6 +1558,15 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             hudText19.setColor(ColorRGBA.Green);
         else
             hudText19.setColor(ColorRGBA.Gray);*/
+
+        if(gui)
+        {
+            flyCam.setDragToRotate(true);
+        }
+        else
+        {
+            flyCam.setDragToRotate(false);
+        }
 
     }
 }

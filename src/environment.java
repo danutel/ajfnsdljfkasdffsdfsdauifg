@@ -1,43 +1,55 @@
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.ThreadedBehaviourFactory;
 
 public class environment extends Agent{
     public static double temperatura_interior;
-    public static double umiditate;
     public static float fum;
     public static float foc;
-    public static float temperatura_exterior=5;
-    public static float lumina;
+    public static float temperatura_exterior,numar_oameni, umiditate_exterior, referinta_temperatura,referinta_umiditate,referinta_CO2;
     public static  boolean curent_electric;
     public static  boolean lumini_urgenta;
     public static  boolean sprinkler;
     public static boolean alarma_incendiu;
     public static double ventilatie; //0-oprit 1-reglare temperatura 2-trage aer din interior(pentru situatii de urgenta)
-    public static double comanda_ventilatie;
     public static String adresa_server,nume_server;
-    public static double CO2;
-
     private boolean sprinkler_activated=false;
     private boolean curent_electric_activated=true;
     private float foc_modificat,fum_modificat;
     private boolean lumini_urgenta_activated=false;
     private boolean alarma_incendiu_activated;
     public static float u;
-    private double Kp,Tp,yk,ykanterior,uanterior;
     private int X,Y,Z;
     public static String locatie;
     public static boolean change_led=true;
     public static int mod_leduri=0;
     private leduri[] banda_leduri;
     private int index;
+    public static double comanda_racire,comanda_incalzire,comanda_ventilatie,comanda_umidificator;
+    private double comanda_racire_anterior,comanda_incalzire_anterior,comanda_umidificator_anterior;
+    public static double temperatura, umiditate, CO2; //############################################################################### SUPER IMPORTANT ######################
+    private double racire,incalzire,racire_anterior,incalzire_anterior,umidificator,umidificator_anterior,ventilator,umiditate_respiratie,umiditate_respiratie_anterior
+            ,CO2_respiratie,CO2_respiratie_anterior;
+    private double CO2_ext = 300d;
+    private double kp_racire=0.008264d;
+    private double tp_racire=0.9835d;
+    private double kp_incalzire=0.006211d;
+    private double tp_incalzire=0.9876d;
+    private double kp_umidificator=0.009901d;
+    private double tp_umidificator=0.9802d;
+    private double kp_umiditate_respiratie=0.0012448d;
+    private double tp_umiditate_respiratie=0.9917d;
+    private double kp_CO2_respiratie=0.1247d;
+    private double tp_CO2_respiratie=0.995d;
+    private double gain_ventilator = 6 , gain_incalzire=20, gain_racire=15, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 20;
 
     @Override
     public void setup(){
 
-        locatie = getAID().getName().split("@")[1];
+        locatie = "Camera 1";
 
         switch (locatie){
-            case "server":{X=1017;Y=181;Z=-2056;index=1;break;}
+            case "Camera 1":{X=1017;Y=181;Z=-2056;index=1;break;}
             case "Camera 2":{X=1214;Y=181;Z=-1975;index=2;break;}
             case "Camera 3":{X=1129;Y=181;Z=-1835;index=3;break;}
             case "Camera 4":{X=1242;Y=181;Z=-1820;index=4;break;}
@@ -64,21 +76,59 @@ public class environment extends Agent{
         requestHandler vent = new requestHandler("load","Modele/Obiecte/vent.zip","vent.j3o","vent",X,Y+2,Z-30,0.04f,0.04f,0.04f,0,0,0,0);
         graphicEngine.request.add(vent);
 
+        ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
+
+         Behaviour compute = new Behaviour() {
+             @Override
+             public void action() {
+
+                 racire = kp_racire * comanda_racire + kp_racire * comanda_racire_anterior + tp_racire * racire_anterior;
+                 comanda_racire_anterior = comanda_racire; racire_anterior = racire;
+                 incalzire = kp_incalzire*comanda_incalzire+kp_incalzire*comanda_incalzire_anterior+tp_incalzire*incalzire_anterior;
+                 comanda_incalzire_anterior=comanda_incalzire; incalzire_anterior = incalzire;
+                 ventilator = comanda_ventilatie*gain_ventilator;
+                 temperatura = temperatura_exterior + incalzire*gain_incalzire - racire*gain_racire - ventilator;
+
+                 umidificator = kp_umidificator*comanda_umidificator+kp_umidificator*comanda_umidificator_anterior+tp_umidificator*umidificator_anterior;
+                 comanda_umidificator_anterior = umidificator; umidificator_anterior = umidificator;
+                 umiditate_respiratie=kp_umiditate_respiratie*numar_oameni+tp_umiditate_respiratie*umiditate_respiratie_anterior;
+                 umiditate_respiratie_anterior=umiditate_respiratie;
+                 umiditate=umiditate_exterior+umidificator*gain_umidificator+umiditate_respiratie-racire*gain_racire_umiditate*ventilator;
+
+                 CO2_respiratie=kp_CO2_respiratie*numar_oameni+CO2_respiratie_anterior*tp_CO2_respiratie;
+                 CO2_respiratie_anterior=CO2_respiratie;
+                 CO2=CO2_ext+CO2_respiratie-ventilator*gain_ventilator_CO2;
+
+                 try {
+                     Thread.sleep(1000);
+                 } catch (InterruptedException e) {
+                     e.printStackTrace();
+                 }
+             }
+
+             @Override
+             public boolean done() {
+                 return false;
+             }
+         };
 
 
-        Kp=0.3704;
-        Tp=0.9753;
-        u=1f;
-
-        addBehaviour(new Behaviour() {
+        Behaviour update_values = new Behaviour() {
             @Override
             public void action() {
-                yk=(Kp*u)+(Kp*uanterior)+(Tp*ykanterior);
-                ykanterior=yk;
-                uanterior=u;
-                temperatura_interior=yk+temperatura_exterior;
+                comanda_racire = graphicEngine.comanda_racire/100;
+                comanda_incalzire = graphicEngine.comanda_incalzire/100;
+                comanda_ventilatie = graphicEngine.comanda_ventilatie/100;
+                comanda_umidificator = graphicEngine.comanda_umidificator/100;
+                numar_oameni = graphicEngine.numar_oameni;
+                temperatura_exterior = graphicEngine.temp_exterior;
+                umiditate_exterior = graphicEngine.umiditate_exterior;
+                referinta_temperatura = graphicEngine.referinta_temperatura;
+                referinta_umiditate = graphicEngine.referinta_umiditate;
+                referinta_CO2 = graphicEngine.referinta_umiditate;
+
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -88,7 +138,12 @@ public class environment extends Agent{
             public boolean done() {
                 return false;
             }
-        });
+        };
+
+
+
+        addBehaviour(tbf.wrap(compute));
+        addBehaviour(tbf.wrap(update_values));
 
         addBehaviour(new Behaviour() {
             @Override
