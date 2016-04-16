@@ -1,8 +1,10 @@
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
+import net.sourceforge.jFuzzyLogic.FIS;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,14 +17,26 @@ public class controller extends Agent {
     public boolean stropitori;
     public boolean lumini_urgenta;
     public boolean electricitate;
-    public double umidificator;
+    public double umidificator,ventilator,incalzire,racire;
     public static List<String> lista_celule = new ArrayList<>();
     public static boolean disabled = false;
+    private double referinta_temperatura,referinta_umiditate;
+    private FIS fis;
 
     @Override
     public void setup(){
+        String fileName = "fuzzy.fcl";
+        fis = FIS.load(fileName,true);
 
-        addBehaviour(new Behaviour() {
+        // Error while loading?
+        if( fis == null ) {
+            System.err.println("Can't load file: '" + fileName + "'");
+            return;
+        }
+
+        ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
+
+        Behaviour citire_senzori = new Behaviour() {
             @Override
             public void action() {
                 ACLMessage mesaj_receptionat = myAgent.receive();
@@ -51,7 +65,7 @@ public class controller extends Agent {
                     }
                 }
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(100);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -61,7 +75,9 @@ public class controller extends Agent {
             public boolean done() {
                 return false;
             }
-        });
+        };
+
+        addBehaviour(tbf.wrap(citire_senzori));
 
         addBehaviour(new Behaviour() {
             @Override
@@ -104,12 +120,36 @@ public class controller extends Agent {
                     myAgent.send(mesaj_electricitate);
 
                     ACLMessage mesaj_umidificator = new ACLMessage(ACLMessage.REQUEST);
-                    AID r5 = new AID("umidificator@" + platforma, AID.ISGUID);
+                    AID r5 = new AID("Umidificator@" + platforma, AID.ISGUID);
                     r5.addAddresses(adresa);
                     mesaj_umidificator.setConversationId("umidificator");
                     mesaj_umidificator.addReceiver(r5);
                     mesaj_umidificator.setContent(String.valueOf(umidificator));
                     myAgent.send(mesaj_umidificator);
+
+                    ACLMessage mesaj_racire = new ACLMessage(ACLMessage.REQUEST);
+                    AID r6 = new AID("Racire@" + platforma, AID.ISGUID);
+                    r6.addAddresses(adresa);
+                    mesaj_racire.setConversationId("racire");
+                    mesaj_racire.addReceiver(r6);
+                    mesaj_racire.setContent(String.valueOf(racire));
+                    myAgent.send(mesaj_racire);
+
+                    ACLMessage mesaj_incalzire = new ACLMessage(ACLMessage.REQUEST);
+                    AID r7 = new AID("Incalzire@" + platforma, AID.ISGUID);
+                    r7.addAddresses(adresa);
+                    mesaj_incalzire.setConversationId("incalzire");
+                    mesaj_incalzire.addReceiver(r7);
+                    mesaj_incalzire.setContent(String.valueOf(incalzire));
+                    myAgent.send(mesaj_incalzire);
+
+                    ACLMessage mesaj_ventilator = new ACLMessage(ACLMessage.REQUEST);
+                    AID r8 = new AID("Ventilator@" + platforma, AID.ISGUID);
+                    r8.addAddresses(adresa);
+                    mesaj_ventilator.setConversationId("ventilator");
+                    mesaj_ventilator.addReceiver(r8);
+                    mesaj_ventilator.setContent(String.valueOf(ventilator));
+                    myAgent.send(mesaj_ventilator);
                 }
 
                 try {
@@ -158,6 +198,47 @@ public class controller extends Agent {
                 return false;
             }
         });
+
+        Behaviour fuzzy = new Behaviour() {
+            @Override
+            public void action() {
+                if(!disabled) {
+                    referinta_temperatura = environment.referinta_temperatura;
+                    referinta_umiditate = environment.referinta_umiditate;
+
+                    // Set inputs
+                    fis.setVariable("eroare_temperatura", referinta_temperatura - temperatura);
+                    fis.setVariable("eroare_umiditate", referinta_umiditate - umiditate);
+
+                    // Evaluate
+                    fis.evaluate();
+
+                    racire = fis.getVariable("racire").getValue();
+                    incalzire = fis.getVariable("incalzire").getValue();
+                    umidificator = fis.getVariable("umidificator").getValue();
+                    ventilator = fis.getVariable("ventilator").getValue();
+                    System.out.println("Intrare temp. "+fis.getVariable("eroare_temperatura").getValue()+" Iesire temp. "+fis.getVariable("incalzire").getValue());
+                }
+                else
+                {
+                    racire = graphicEngine.comanda_racire/100;
+                    incalzire = graphicEngine.comanda_incalzire/100;
+                    ventilatie = graphicEngine.comanda_ventilatie/100;
+                    umidificator = graphicEngine.comanda_umidificator/100;
+                }
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public boolean done() {
+                return false;
+            }
+        };
+        addBehaviour(tbf.wrap(fuzzy));
     }
 }
 

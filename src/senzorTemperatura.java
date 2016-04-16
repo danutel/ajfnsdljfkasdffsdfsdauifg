@@ -13,9 +13,9 @@ public class senzorTemperatura extends Agent{
         addBehaviour(new Behaviour() {
             @Override
             public void action() {
-                temperatura= (float) environment.temperatura_interior;
+                temperatura= (float) environment.temperatura;
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -39,7 +39,7 @@ public class senzorTemperatura extends Agent{
                 mesaj_temperatura.setContent(String.valueOf(temperatura));
                 myAgent.send(mesaj_temperatura);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

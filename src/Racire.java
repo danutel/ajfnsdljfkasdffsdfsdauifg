@@ -2,8 +2,11 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 
-public class Umidificator extends Agent {
-    public double umidificator;
+/**
+ * Created by Danutel on 4/17/2016.
+ */
+public class Racire extends Agent {
+    public double racire;
     @Override
     public void setup(){
         addBehaviour(new Behaviour() {
@@ -11,9 +14,8 @@ public class Umidificator extends Agent {
             public void action() {
                 ACLMessage mesaj_receptionat = myAgent.receive();
                 if(mesaj_receptionat!=null) {
-                    if (mesaj_receptionat.getConversationId() == "umidificator") {
-                        umidificator = Double.parseDouble(mesaj_receptionat.getContent());
-                        environment.comanda_umidificator=umidificator;
+                    if (mesaj_receptionat.getConversationId() == "racire") {
+                        environment.comanda_racire = Double.parseDouble(mesaj_receptionat.getContent());
                     }
                 }
                 try {

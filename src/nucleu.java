@@ -42,7 +42,7 @@ public class nucleu extends Agent{
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {
-                           // System.out.println(host + " is reachable");
+                            // System.out.println(host + " is reachable");
                             //if (i != Integer.parseInt(localaddress.split("\\.")[3]))
                             {
                                 ACLMessage discovery = new ACLMessage(ACLMessage.REQUEST);
@@ -115,7 +115,7 @@ public class nucleu extends Agent{
 
                     if (mesaj_receptionat.getConversationId().equals("request_informatii_environment")) {
                         if(mesaj_receptionat.getContent().equals("sup"))
-                        { // sa moara aia mici corect eu ma mai duc si pe la bucatarie ca am mancarea pe foc deci
+                        {
                             ACLMessage reply = mesaj_receptionat.createReply();
                             reply.setPerformative( ACLMessage.INFORM );
                             reply.setContent(environment.temperatura+"~"+environment.umiditate+"~"+environment.fum+"~"+environment.foc+"~"+environment.temperatura_exterior
@@ -133,31 +133,31 @@ public class nucleu extends Agent{
                         }
                         else
                         {
-                            String [] continut = mesaj_receptionat.getContent().split("~");
-                            if(continut.length>=10) {
-                                graphicEngine.temperatura_interior = Double.parseDouble(continut[0]);
-                                graphicEngine.umiditate = Double.parseDouble(continut[1]);
-                                graphicEngine.fum = Float.parseFloat(continut[2]);
-                                graphicEngine.foc = Float.parseFloat(continut[3]);
-                                graphicEngine.temperatura_exterior = Float.parseFloat(continut[4]);
-                                graphicEngine.curent_electric = Boolean.parseBoolean(continut[5]);
-                                graphicEngine.lumini_urgenta = Boolean.parseBoolean(continut[6]);
-                                graphicEngine.sprinkler = Boolean.parseBoolean(continut[7]);
-                                graphicEngine.alarma_incendiu = Boolean.parseBoolean(continut[8]);
-                                graphicEngine.ventilatie = Double.parseDouble(continut[9]);
-                                graphicEngine.CO2 = Double.parseDouble(continut[10]);
-                            }
-                            else
-                            {
-                                graphicEngine.fum = Float.parseFloat(continut[0]);
-                                graphicEngine.foc = Float.parseFloat(continut[1]);
-                                graphicEngine.curent_electric = Boolean.parseBoolean(continut[2]);
-                                graphicEngine.lumini_urgenta = Boolean.parseBoolean(continut[3]);
-                                graphicEngine.sprinkler = Boolean.parseBoolean(continut[4]);
-                                graphicEngine.alarma_incendiu = Boolean.parseBoolean(continut[5]);
-                                graphicEngine.ventilatie = Double.parseDouble(continut[6]);
-                            }
                             System.out.println(mesaj_receptionat.getContent());
+                            if(!mesaj_receptionat.getContent().contains("FAILURE")&&!mesaj_receptionat.getContent().contains("internal-error")) {
+                                String[] continut = mesaj_receptionat.getContent().split("~");
+                                if (continut.length >= 10) {
+                                    graphicEngine.temperatura_interior = Double.parseDouble(continut[0]);
+                                    graphicEngine.umiditate = Double.parseDouble(continut[1]);
+                                    graphicEngine.fum = Float.parseFloat(continut[2]);
+                                    graphicEngine.foc = Float.parseFloat(continut[3]);
+                                    graphicEngine.temperatura_exterior = Float.parseFloat(continut[4]);
+                                    graphicEngine.curent_electric = Boolean.parseBoolean(continut[5]);
+                                    graphicEngine.lumini_urgenta = Boolean.parseBoolean(continut[6]);
+                                    graphicEngine.sprinkler = Boolean.parseBoolean(continut[7]);
+                                    graphicEngine.alarma_incendiu = Boolean.parseBoolean(continut[8]);
+                                    graphicEngine.ventilatie = Double.parseDouble(continut[9]);
+                                    graphicEngine.CO2 = Double.parseDouble(continut[10]);
+                                } else {
+                                    graphicEngine.fum = Float.parseFloat(continut[0]);
+                                    graphicEngine.foc = Float.parseFloat(continut[1]);
+                                    graphicEngine.curent_electric = Boolean.parseBoolean(continut[2]);
+                                    graphicEngine.lumini_urgenta = Boolean.parseBoolean(continut[3]);
+                                    graphicEngine.sprinkler = Boolean.parseBoolean(continut[4]);
+                                    graphicEngine.alarma_incendiu = Boolean.parseBoolean(continut[5]);
+                                    graphicEngine.ventilatie = Double.parseDouble(continut[6]);
+                                }
+                            }
                         }
                     }
                 }

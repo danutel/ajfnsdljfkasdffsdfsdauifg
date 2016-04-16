@@ -1,6 +1,7 @@
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.ThreadedBehaviourFactory;
+import net.sourceforge.jFuzzyLogic.FIS;
 
 public class environment extends Agent{
     public static double temperatura_interior;
@@ -29,7 +30,7 @@ public class environment extends Agent{
     private double comanda_racire_anterior,comanda_incalzire_anterior,comanda_umidificator_anterior;
     public static double temperatura, umiditate, CO2; //############################################################################### SUPER IMPORTANT ######################
     private double racire,incalzire,racire_anterior,incalzire_anterior,umidificator,umidificator_anterior,ventilator,umiditate_respiratie,umiditate_respiratie_anterior
-            ,CO2_respiratie,CO2_respiratie_anterior;
+            ,CO2_respiratie,CO2_respiratie_anterior,ventilator_anterior, ventilator_CO2,ventilator_CO2_anterior;
     private double CO2_ext = 300d;
     private double kp_racire=0.008264d;
     private double tp_racire=0.9835d;
@@ -41,7 +42,8 @@ public class environment extends Agent{
     private double tp_umiditate_respiratie=0.9917d;
     private double kp_CO2_respiratie=0.1247d;
     private double tp_CO2_respiratie=0.995d;
-    private double gain_ventilator = 6 , gain_incalzire=20, gain_racire=15, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 20;
+    private double gain_ventilator = 6 , gain_incalzire=20, gain_racire=15, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 800;
+    private FIS functionBlock;
 
     @Override
     public void setup(){
@@ -76,6 +78,43 @@ public class environment extends Agent{
         requestHandler vent = new requestHandler("load","Modele/Obiecte/vent.zip","vent.j3o","vent",X,Y+2,Z-30,0.04f,0.04f,0.04f,0,0,0,0);
         graphicEngine.request.add(vent);
 
+        //############################## FUZZY TEST ##############################################################################
+        /*
+
+        String fileName = "fuzzy.fcl";
+        FIS fis = FIS.load(fileName,true);
+
+        // Error while loading?
+        if( fis == null ) {
+            System.err.println("Can't load file: '" + fileName + "'");
+            return;
+        }
+
+        // Show
+        //JFuzzyChart.get().chart(fis);
+
+        // Set inputs
+        fis.setVariable("eroare_temperatura", referinta_temperatura-temperatura);
+        fis.setVariable("eroare_umiditate", referinta_umiditate-umiditate);
+
+        // Evaluate
+        fis.evaluate();
+
+        // Show output variable's chart
+        Variable c_racire = fis.getVariable("racire");
+        Variable c_incalzire = fis.getVariable("incalzire");
+        Variable c_umidificator = fis.getVariable("umidificator");
+        Variable c_ventilator = fis.getVariable("ventilator");
+        JFuzzyChart.get().chart(c_racire, c_racire.getDefuzzifier(), true);
+        JFuzzyChart.get().chart(c_incalzire, c_incalzire.getDefuzzifier(), true);
+        JFuzzyChart.get().chart(c_umidificator, c_umidificator.getDefuzzifier(), true);
+        JFuzzyChart.get().chart(c_ventilator, c_ventilator.getDefuzzifier(), true);
+
+        // Print ruleSet
+        //System.out.println(fis);
+        //############################## FUZZY TEST ##############################################################################
+        */
+
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
 
          Behaviour compute = new Behaviour() {
@@ -86,8 +125,9 @@ public class environment extends Agent{
                  comanda_racire_anterior = comanda_racire; racire_anterior = racire;
                  incalzire = kp_incalzire*comanda_incalzire+kp_incalzire*comanda_incalzire_anterior+tp_incalzire*incalzire_anterior;
                  comanda_incalzire_anterior=comanda_incalzire; incalzire_anterior = incalzire;
-                 ventilator = comanda_ventilatie*gain_ventilator;
-                 temperatura = temperatura_exterior + incalzire*gain_incalzire - racire*gain_racire - ventilator;
+                 ventilator = comanda_ventilatie*0.01d+0.95d*ventilator_anterior;
+                 ventilator_anterior=ventilator;
+                 temperatura = temperatura_exterior + incalzire*gain_incalzire - racire*gain_racire - ventilator*gain_ventilator;
 
                  umidificator = kp_umidificator*comanda_umidificator+kp_umidificator*comanda_umidificator_anterior+tp_umidificator*umidificator_anterior;
                  comanda_umidificator_anterior = umidificator; umidificator_anterior = umidificator;
@@ -95,12 +135,16 @@ public class environment extends Agent{
                  umiditate_respiratie_anterior=umiditate_respiratie;
                  umiditate=umiditate_exterior+umidificator*gain_umidificator+umiditate_respiratie-racire*gain_racire_umiditate*ventilator;
 
-                 CO2_respiratie=kp_CO2_respiratie*numar_oameni+CO2_respiratie_anterior*tp_CO2_respiratie;
+                 if(CO2>CO2_ext+20)
+                    CO2_respiratie=kp_CO2_respiratie*numar_oameni+CO2_respiratie_anterior*tp_CO2_respiratie-comanda_ventilatie*20;
+                 else
+                     CO2_respiratie=kp_CO2_respiratie*numar_oameni+CO2_respiratie_anterior*tp_CO2_respiratie;
+
                  CO2_respiratie_anterior=CO2_respiratie;
-                 CO2=CO2_ext+CO2_respiratie-ventilator*gain_ventilator_CO2;
+                 CO2=CO2_ext+CO2_respiratie;
 
                  try {
-                     Thread.sleep(1000);
+                     Thread.sleep(2500);
                  } catch (InterruptedException e) {
                      e.printStackTrace();
                  }
@@ -116,10 +160,6 @@ public class environment extends Agent{
         Behaviour update_values = new Behaviour() {
             @Override
             public void action() {
-                comanda_racire = graphicEngine.comanda_racire/100;
-                comanda_incalzire = graphicEngine.comanda_incalzire/100;
-                comanda_ventilatie = graphicEngine.comanda_ventilatie/100;
-                comanda_umidificator = graphicEngine.comanda_umidificator/100;
                 numar_oameni = graphicEngine.numar_oameni;
                 temperatura_exterior = graphicEngine.temp_exterior;
                 umiditate_exterior = graphicEngine.umiditate_exterior;
@@ -276,11 +316,16 @@ public class environment extends Agent{
                     }
                     requestHandler z = new requestHandler("light",index,true,true,1.5f,200f,X,Y-10,Z);
                     graphicEngine.request.add(z);
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
                 else if (lumini_urgenta==false && lumini_urgenta_activated==true)
                 {
                     lumini_urgenta_activated=false;
-                    requestHandler z = new requestHandler("light",index,true,false,1.5f,200f,X,Y-10,Z);
+                    requestHandler z = new requestHandler("light",index,false,false,1.5f,200f,X,Y-10,Z);
                     graphicEngine.request.add(z);
                 }
 

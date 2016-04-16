@@ -33,8 +33,11 @@
       <root url="jar://$PROJECT_DIR$/lib/jME3-networking.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jME3-jbullet.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/jogl-all.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/jFuzzyLogic.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jFuzzyLogic.jar!/" />
+    </SOURCES>
   </library>
 </component>
