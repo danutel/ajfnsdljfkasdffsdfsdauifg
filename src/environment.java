@@ -42,7 +42,7 @@ public class environment extends Agent{
     private double tp_umiditate_respiratie=0.9917d;
     private double kp_CO2_respiratie=0.1247d;
     private double tp_CO2_respiratie=0.995d;
-    private double gain_ventilator = 6 , gain_incalzire=20, gain_racire=15, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 800;
+    private double gain_ventilator = 6 , gain_incalzire=30, gain_racire=25, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 800;
     private FIS functionBlock;
 
     @Override
@@ -79,8 +79,8 @@ public class environment extends Agent{
         graphicEngine.request.add(vent);
 
         //############################## FUZZY TEST ##############################################################################
-        /*
 
+/*
         String fileName = "fuzzy.fcl";
         FIS fis = FIS.load(fileName,true);
 
@@ -91,7 +91,7 @@ public class environment extends Agent{
         }
 
         // Show
-        //JFuzzyChart.get().chart(fis);
+        JFuzzyChart.get().chart(fis);
 
         // Set inputs
         fis.setVariable("eroare_temperatura", referinta_temperatura-temperatura);
@@ -111,9 +111,9 @@ public class environment extends Agent{
         JFuzzyChart.get().chart(c_ventilator, c_ventilator.getDefuzzifier(), true);
 
         // Print ruleSet
-        //System.out.println(fis);
+  */      //System.out.println(fis);
         //############################## FUZZY TEST ##############################################################################
-        */
+
 
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
 

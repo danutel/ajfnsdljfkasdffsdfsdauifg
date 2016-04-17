@@ -110,7 +110,7 @@ public class nucleu extends Agent{
                         if (online_cells.contains(mesaj_receptionat.getContent()) == false) {
                             online_cells.add(mesaj_receptionat.getContent());
                         }
-                        System.out.println(mesaj_receptionat.getContent());
+                        //System.out.println(mesaj_receptionat.getContent());
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("request_informatii_environment")) {
@@ -133,7 +133,7 @@ public class nucleu extends Agent{
                         }
                         else
                         {
-                            System.out.println(mesaj_receptionat.getContent());
+                           // System.out.println(mesaj_receptionat.getContent());
                             if(!mesaj_receptionat.getContent().contains("FAILURE")&&!mesaj_receptionat.getContent().contains("internal-error")) {
                                 String[] continut = mesaj_receptionat.getContent().split("~");
                                 if (continut.length >= 10) {

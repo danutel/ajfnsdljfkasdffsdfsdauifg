@@ -16,49 +16,53 @@ END_VAR
 
 // Fuzzify input variable 'eroare_temperatura': {'n_mare', 'n_mica' , 'zero','p_mica','p_mare'} negativa - racire, pozitiva - incalzire
 FUZZIFY eroare_temperatura			
-	TERM n_mare := (-50,1) (-6,1) (-3,0); 
-	TERM n_mica := (-6,0) (-3,1) (0,0);
+	TERM n_mare := (-10,1) (-0.6,1) (-0.2,0);
+	TERM n_mediu := (-2,0) (-0.4,1) (-0.1,0);
+	TERM n_mica := (-0.3,0) (-0.1,1) (0,0);
 	TERM zero := (-1, 0) (0, 1) (1,0);
-	TERM p_mica := (0,0) (3,1) (6,0);
-	TERM p_mare := (3,0) (6,1) (50,1);
+	TERM p_mica := (0,0) (0.1,1) (0.3,0);
+	TERM p_mediu := (0.1,0) (0.4,1) (2,0);
+	TERM p_mare := (0.2,0) (0.6,1) (10,1);
 END_FUZZIFY
 
 // Fuzzify input variable 'eroare_umiditate': { 'negativa', 'zero', 'pozitiva' }
 FUZZIFY eroare_umiditate			
-	TERM negativa := (-30, 1) (0,0);
+	TERM negativa := (-30, 1)(-3,1) (0,0);
 	TERM zero := (-2,0) (0,1) (2,0);
-	TERM pozitiva := (0,0) (30,1);
+	TERM pozitiva := (0,0) (3,1) (30,1);
 END_FUZZIFY
 
 // Defuzzify output variables 'racire', 'incalzire', 'umidificator', 'ventilator' : {'zero', 'slab', 'puternic' }
 DEFUZZIFY racire
-	TERM slab := (0,0) (0.33,1) (0.66,0);
-	TERM puternic := (0.33,0) (0.66,1) (1,1);
-	TERM zero := (1,0);
+    TERM slab := (0,0) (0.2,1) (0.5,0);
+    TERM mediu := (0.2,0) (0.5,1) (0.8,0);
+    TERM puternic := (0.5,0) (1,1);
+    TERM zero := (0,1) (0,0);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY incalzire
-	TERM slab := (0,0) (0.33,1) (0.66,0);
-	TERM puternic := (0.33,0) (0.66,1) (1,1);
-	TERM zero := (1,0);
+    TERM slab := (0,0) (0.2,1) (0.5,0);
+    TERM mediu := (0.2,0) (0.5,1) (0.8,0);
+    TERM puternic := (0.5,0) (1,1);
+    TERM zero := (0,1) (0,0);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY umidificator
 	TERM slab := (0,0) (0.33,1) (0.66,0);
-	TERM puternic := (0.33,0) (0.66,1) (1,1);
-	TERM zero := (1,0);
+    TERM puternic := (0.33,0) (0.66,1) (1,1);
+    TERM zero := (0,1) (0,0);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
 
 DEFUZZIFY ventilator
 	TERM slab := (0,0) (0.33,1) (0.66,0);
-	TERM puternic := (0.33,0) (0.66,1) (1,1);
-	TERM zero := (1,0);
+        TERM puternic := (0.33,0) (0.66,1) (1,1);
+        TERM zero := (0,1) (0,0);
 	METHOD : COG;		// Use 'Center Of Gravity' defuzzification method
 	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
 END_DEFUZZIFY
@@ -69,11 +73,27 @@ RULEBLOCK No1
 	ACT : MIN;	// Use 'min' activation method
 	ACCU : MAX;	// Use 'max' accumulation method
 
-	RULE 1 : IF eroare_temperatura IS n_mare THEN racire IS puternic;
-	RULE 2 : IF eroare_temperatura IS n_mica THEN racire IS slab;
-	RULE 3 : IF eroare_temperatura IS zero THEN racire IS zero;
-	RULE 4 : IF eroare_temperatura IS p_mica THEN incalzire IS slab;
-	RULE 5 : IF eroare_temperatura IS p_mare THEN incalzire IS puternic;
+	RULE 1 : IF eroare_temperatura IS n_mare AND eroare_umiditate IS zero THEN racire IS puternic , incalzire IS zero , umidificator IS zero , ventilator IS slab;
+	RULE 2 : IF eroare_temperatura IS n_mica AND eroare_umiditate IS zero THEN racire IS slab , incalzire IS zero , umidificator IS zero  , ventilator IS slab;
+	RULE 3 : IF eroare_temperatura IS zero AND eroare_umiditate IS zero THEN racire IS zero , incalzire IS zero , umidificator IS  zero , ventilator IS slab;
+	RULE 4 : IF eroare_temperatura IS p_mica AND eroare_umiditate IS zero THEN incalzire IS slab , racire IS zero , umidificator IS  zero , ventilator IS slab;
+	RULE 5 : IF eroare_temperatura IS p_mare AND eroare_umiditate IS zero THEN incalzire IS puternic , racire IS zero , umidificator IS  zero , ventilator IS slab;
+    RULE 6 : IF eroare_temperatura IS n_mare AND eroare_umiditate IS negativa THEN racire IS puternic , incalzire IS zero , umidificator IS zero  , ventilator IS puternic;
+	RULE 7 : IF eroare_temperatura IS n_mica AND eroare_umiditate IS negativa THEN racire IS slab , incalzire IS zero , umidificator IS zero  , ventilator IS puternic;
+	RULE 8 : IF eroare_temperatura IS zero AND eroare_umiditate IS negativa THEN racire IS zero , incalzire IS zero , umidificator IS  zero , ventilator IS puternic;
+	RULE 9 : IF eroare_temperatura IS p_mica AND eroare_umiditate IS negativa THEN incalzire IS slab , racire IS zero , umidificator IS  zero , ventilator IS puternic;
+	RULE 10 : IF eroare_temperatura IS p_mare AND eroare_umiditate IS negativa THEN incalzire IS puternic , racire IS zero , umidificator IS zero, ventilator IS puternic;
+    RULE 11 : IF eroare_temperatura IS n_mare AND eroare_umiditate IS pozitiva THEN racire IS puternic , incalzire IS zero , umidificator IS slab, ventilator IS slab;
+	RULE 12 : IF eroare_temperatura IS n_mica AND eroare_umiditate IS pozitiva THEN racire IS slab , incalzire IS zero , umidificator IS   slab, ventilator IS slab;
+	RULE 13 : IF eroare_temperatura IS zero AND eroare_umiditate IS pozitiva THEN racire IS zero , incalzire IS zero , umidificator IS  slab, ventilator IS slab;
+	RULE 14 : IF eroare_temperatura IS p_mica AND eroare_umiditate IS pozitiva THEN incalzire IS slab , racire IS zero , umidificator IS  puternic , ventilator IS slab;
+	RULE 15 : IF eroare_temperatura IS p_mare AND eroare_umiditate IS pozitiva THEN incalzire IS puternic , racire IS zero , umidificator IS  puternic , ventilator IS slab;
+	RULE 16 : IF eroare_temperatura IS n_mediu AND eroare_umiditate IS zero THEN racire IS mediu , incalzire IS zero , umidificator IS zero , ventilator IS slab;
+	RULE 17 : IF eroare_temperatura IS p_mediu AND eroare_umiditate IS zero THEN incalzire IS mediu , racire IS zero , umidificator IS zero , ventilator IS slab;
+	RULE 18 : IF eroare_temperatura IS n_mediu AND eroare_umiditate IS negativa THEN racire IS mediu , incalzire IS zero , umidificator IS zero  , ventilator IS puternic;
+	RULE 19 : IF eroare_temperatura IS p_mediu AND eroare_umiditate IS zero THEN incalzire IS mediu , racire IS zero , umidificator IS  zero , ventilator IS slab;
+	RULE 20 : IF eroare_temperatura IS n_mediu AND eroare_umiditate IS pozitiva THEN racire IS mediu , incalzire IS zero , umidificator IS slab, ventilator IS slab;
+	RULE 21 : IF eroare_temperatura IS p_mediu AND eroare_umiditate IS pozitiva THEN incalzire IS mediu , racire IS zero , umidificator IS  puternic , ventilator IS slab;
 END_RULEBLOCK
 
 END_FUNCTION_BLOCK

@@ -217,7 +217,26 @@ public class controller extends Agent {
                     incalzire = fis.getVariable("incalzire").getValue();
                     umidificator = fis.getVariable("umidificator").getValue();
                     ventilator = fis.getVariable("ventilator").getValue();
-                    System.out.println("Intrare temp. "+fis.getVariable("eroare_temperatura").getValue()+" Iesire temp. "+fis.getVariable("incalzire").getValue());
+
+                    if(racire<0.24 && racire>0)
+                    {
+                        racire=0.15;
+                    }
+                    if(incalzire<0.24 && incalzire>0)
+                    {
+                        incalzire=0.15;
+                    }
+                    if(racire>0.83)
+                    {
+                        racire=1;
+                    }
+                    if(incalzire>0.83)
+                    {
+                        incalzire=1;
+                    }
+                    System.out.println("Intrare eroare temp. "+fis.getVariable("eroare_temperatura").getValue()+ " eroare H. "+
+                            fis.getVariable("eroare_umiditate").getValue()+" Iesire comanda incalzire "
+                            +incalzire+" racire "+racire+" umidificator "+umidificator+" ventilator "+ventilator);
                 }
                 else
                 {
@@ -227,7 +246,7 @@ public class controller extends Agent {
                     umidificator = graphicEngine.comanda_umidificator/100;
                 }
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
