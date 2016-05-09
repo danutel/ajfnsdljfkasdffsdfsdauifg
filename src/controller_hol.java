@@ -1,9 +1,9 @@
+import com.jme3.math.ColorRGBA;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
-import org.lwjgl.Sys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,14 +14,23 @@ public class controller_hol extends Agent{
     public boolean[] stropitori=new boolean[6];
     public boolean[] lumini_urgenta=new boolean[6];
     public boolean[] electricitate=new boolean[6];
+    private node [] sectoare = new node[6];
+    public static boolean A_X_activated = false;
+    public static boolean X_Y2_activated = false;
+    public static boolean X_Y1_activated = false;
+    public static boolean B_X_activated = false;
+    public static boolean Y2_X_activated = false;
 
     public static List<String> lista_celule = new ArrayList<>();
     @Override
     public void setup(){
-        for(int i=0;i<6;i++)
-        {
-            electricitate[i]=true;
-        }
+
+        sectoare[1] = new node(17,30);
+        sectoare[2] = new node(27,40);
+        sectoare[3] = new node(22,5);
+        sectoare[4] = new node(0,27);
+        sectoare[5] = new node(27,0);
+
         addBehaviour(new Behaviour() {
             @Override
             public void action() {
@@ -38,11 +47,6 @@ public class controller_hol extends Agent{
                         fum[4] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[4]);
                         fum[5] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[5]);
                     }
-                   /* if(mesaj_receptionat.getConversationId().equals("lista_celule"))
-                    {
-                        lista_celule.clear();
-                        lista_celule.add(mesaj_receptionat.getContent());
-                    }*/
                 }
                 try {
                     Thread.sleep(100);
@@ -56,8 +60,6 @@ public class controller_hol extends Agent{
                 return false;
             }
         });
-
-
 
 
         addBehaviour(new Behaviour() {
@@ -109,13 +111,6 @@ public class controller_hol extends Agent{
                 mesaj_electricitate.addReceiver(r4);
                 mesaj_electricitate.setContent(ve);
                 myAgent.send(mesaj_electricitate);
-              /*  ACLMessage mesaj_server = new ACLMessage(ACLMessage.REQUEST);
-                AID rec = new AID("server@server", AID.ISGUID);
-                rec.addAddresses(environment.adresa_server);
-                mesaj_server.setConversationId("ospf");
-                mesaj_server.addReceiver(rec);
-                mesaj_server.setContent("test");
-                myAgent.send(mesaj_server);*/
 
                 try {
                     Thread.sleep(100);
@@ -151,6 +146,35 @@ public class controller_hol extends Agent{
                     }
                     if(environment_hol.fum[i] <= 0)
                         ventilatie[i] = 1;
+                }
+
+                //if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<0.1)
+                if (true && !X_Y1_activated)
+                {
+                    //toti ies pe iesirea 2
+                    directionare.culoareA_X = ColorRGBA.Red;
+                    directionare.culoareB_X = ColorRGBA.Red;
+                    directionare.culoareC_X = ColorRGBA.Red;
+                    directionare.culoareX_Y = ColorRGBA.Red;
+                    X_Y1_activated = true;
+                    A_X_activated = true;
+                    B_X_activated = true;
+                    Y2_X_activated = true;
+                }
+
+                else if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)>90)
+                {
+                    //toti ies pe iesirea 1
+                }
+
+                else if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)>=1 && (environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=90)
+                {
+                    //A-1 B-1 C-2
+                }
+
+                else
+                {
+                    //A-1 B-2 C-2
                 }
 
                 try {

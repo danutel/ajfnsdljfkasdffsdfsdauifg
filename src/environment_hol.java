@@ -23,6 +23,10 @@ public class environment_hol extends Agent{
     private int index;
     private int [] X = {840,950,1050,1150,1250,1005};
     private int [] Z = {-1936,-1885,-1885,-1885,-1885,-1810};
+    public static boolean iesire1_blocata = false;
+    public static boolean iesire2_blocata = false;
+    public static int ocupare_scari1 = 20;
+    public static int ocupare_scari2 = 10;
     @Override
     public void setup()
     {

@@ -63,8 +63,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private PointLight [] light = new PointLight[21];
     private PointLightShadowRenderer [] dlsr = new PointLightShadowRenderer[21];
     private PointLightShadowFilter [] dlsf = new PointLightShadowFilter[21];
-    private SpotLightShadowRenderer[] dlsr_led=new SpotLightShadowRenderer[61];
-    private SpotLightShadowFilter[] dlsf_led=new  SpotLightShadowFilter[61];
+    private SpotLightShadowRenderer[] dlsr_led=new SpotLightShadowRenderer[86];
+    private SpotLightShadowFilter[] dlsf_led=new  SpotLightShadowFilter[86];
     private ParticleEmitter [] fire = new ParticleEmitter[21];
     private ParticleEmitter [] water = new ParticleEmitter[61];
     private ParticleEmitter [] smoke = new ParticleEmitter[21];
@@ -76,7 +76,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f walkDirection = new Vector3f();
     public static String locatie = "";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
-    private SpotLight[] lumina_leduri = new SpotLight[61];
+    private SpotLight[] lumina_leduri = new SpotLight[86];
     public static double temperatura_interior;
     public static double umiditate;
     public static float fum;
@@ -94,6 +94,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public static float numar_oameni, temp_exterior, umiditate_exterior, comanda_racire, comanda_incalzire, comanda_ventilatie, comanda_umidificator;
     private boolean gui=false;
     private boolean electricitate_activated=true,sprinklers_activated=false,lumini_urgenta_activated=false;
+    public static boolean loaded = false;
+
 
 
     @Override
@@ -183,7 +185,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             width("5%");
                                         }});
 
-                                        control(new ButtonBuilder("manual", "Control Manual") {{
+                                        control(new ButtonBuilder("manual", "Comanda Manuala") {{
 
                                             alignLeft();
                                             valignCenter();
@@ -883,7 +885,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             load_object(new requestHandler("load","Modele\\Harta\\spot.zip","bec2.j3o", "map",867,117.2f,-i,1f,1f,1f,0,1.57f,0,0));
         }
 
-        for(int i = 1806;i<=1920;i=i+22)
+        for(int i = 1806;i<=2160;i=i+22)
         {
             load_object(new requestHandler("load","Modele\\Harta\\spot.zip","bec2.j3o", "map",1010,149.8f,-i,1f,1f,1f,0,1.57f,0,0));
             load_object(new requestHandler("load","Modele\\Harta\\spot.zip","bec2.j3o", "map",1010,117.2f,-i,1f,1f,1f,0,1.57f,0,0));
@@ -1422,23 +1424,38 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
          if (request.isEmpty()==false)
         {
-            requestHandler x = request.get(0);
-            nucleu.request_motor_grafic.add(x);
-            switch (x.type)
-            {
-                case "load": load_object(x);
-                    break;
-                case "light": load_light(x);
-                    break;
-                case "foc_start": foc_start(x);
-                    break;
-                case "stropire": stropire(x);
-                    break;
-                case "smoke": smoke(x);
-                    break;
-                case "leduri": load_light(x);
+            try {
+                requestHandler x = request.get(0);
+                    nucleu.request_motor_grafic.add(x);
+
+                    switch (x.type) {
+                        case "load":
+                            load_object(x);
+                            break;
+                        case "light":
+                            load_light(x);
+                            break;
+                        case "foc_start":
+                            foc_start(x);
+                            break;
+                        case "stropire":
+                            stropire(x);
+                            break;
+                        case "smoke":
+                            smoke(x);
+                            break;
+                        case "leduri":
+                            load_light(x);
+                    }
+
+
+                    request.remove(0);
+
+            }catch (NullPointerException e){
+                System.out.println("eroare ");
+                request.remove(0);
+               request.toString();
             }
-            request.remove(0);
         }
         if(!camera) {
             camDir.set(cam.getDirection()).multLocal(0.6f);
@@ -1567,6 +1584,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         {
             flyCam.setDragToRotate(false);
         }
-
+        loaded = true;
     }
 }
