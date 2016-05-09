@@ -5,10 +5,10 @@ import jade.core.behaviours.ThreadedBehaviourFactory;
 
 public class directionare extends Agent {
     public static leduri[] banda_leduri = new leduri[86];
-    public static ColorRGBA culoareA_X;
-    public static ColorRGBA culoareB_X;
-    public static ColorRGBA culoareC_X;
-    public static ColorRGBA culoareX_Y;
+    public static ColorRGBA culoareA_X = ColorRGBA.Blue;
+    public static ColorRGBA culoareB_X = ColorRGBA.Blue;
+    public static ColorRGBA culoareC_X = ColorRGBA.Blue;
+    public static ColorRGBA culoareX_Y = ColorRGBA.Blue;
     public static boolean locked = false;
 
     @Override
@@ -23,36 +23,42 @@ public class directionare extends Agent {
         Behaviour A_X = new Behaviour() {
             @Override
             public void action() {
-                int offset = 25000;
-                for (int i = 13; i <= 20; i++) {
-                    banda_leduri[i].culoare = culoareA_X;
-                }
-
-                for (int i = 41; i < 45; i++) {
-                    banda_leduri[i].culoare = culoareA_X;
-                    banda_leduri[i].on();
-                }
-
-                while (controller_hol.A_X_activated) {
-                    banda_leduri[(2 + offset) % 8 + 13].on();
-                    banda_leduri[(3 + offset) % 8 + 13].on();
-                    banda_leduri[(6 + offset) % 8 + 13].on();
-                    banda_leduri[(7 + offset) % 8 + 13].on();
-
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if(environment_hol.alarma_incendiu) {
+                    int offset = 25000;
+                    for (int i = 13; i <= 20; i++) {
+                        banda_leduri[i].culoare = culoareA_X;
                     }
 
-                    banda_leduri[(2 + offset) % 8 + 13].off();
-                    banda_leduri[(3 + offset) % 8 + 13].off();
-                    banda_leduri[(6 + offset) % 8 + 13].off();
-                    banda_leduri[(7 + offset) % 8 + 13].off();
+                    for (int i = 41; i < 45; i++) {
+                        banda_leduri[i].culoare = culoareA_X;
+                        banda_leduri[i].onA_X();
+                    }
 
-                    offset--;
-                    if (offset < 2)
-                        offset = 25000;
+                    while (controller_hol.A_X_activated) {
+                        banda_leduri[(2 + offset) % 8 + 13].onA_X();
+                        banda_leduri[(3 + offset) % 8 + 13].onA_X();
+                        banda_leduri[(6 + offset) % 8 + 13].onA_X();
+                        banda_leduri[(7 + offset) % 8 + 13].onA_X();
+
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+
+                        banda_leduri[(2 + offset) % 8 + 13].offA_X();
+                        banda_leduri[(3 + offset) % 8 + 13].offA_X();
+                        banda_leduri[(6 + offset) % 8 + 13].offA_X();
+                        banda_leduri[(7 + offset) % 8 + 13].offA_X();
+
+                        offset--;
+                        if (offset < 2)
+                            offset = 25000;
+                    }
+
+                    for (int i = 41; i < 45; i++) {
+                        banda_leduri[i].offA_X();
+                    }
                 }
 
 
@@ -61,6 +67,7 @@ public class directionare extends Agent {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+
             }
 
             @Override
@@ -72,36 +79,37 @@ public class directionare extends Agent {
         Behaviour B_X = new Behaviour() {
             @Override
             public void action() {
-                int offset = 25000;
-                for (int i = 54; i <= 65; i++) {
-                    banda_leduri[i].culoare = culoareB_X;
-                }
-                while (controller_hol.B_X_activated) {
-                    banda_leduri[(1 + offset) % 12 + 54].on();
-                    banda_leduri[(2 + offset) % 12 + 54].on();
-                    banda_leduri[(3 + offset) % 12 + 54].on();
-                    banda_leduri[(6 + offset) % 12 + 54].on();
-                    banda_leduri[(7 + offset) % 12 + 54].on();
-                    banda_leduri[(8 + offset) % 12 + 54].on();
-
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if(environment_hol.alarma_incendiu) {
+                    int offset = 25000;
+                    for (int i = 54; i <= 65; i++) {
+                        banda_leduri[i].culoare = culoareB_X;
                     }
+                    while (controller_hol.B_X_activated) {
+                        banda_leduri[(1 + offset) % 12 + 54].onB_X();
+                        banda_leduri[(2 + offset) % 12 + 54].onB_X();
+                        banda_leduri[(3 + offset) % 12 + 54].onB_X();
+                        banda_leduri[(6 + offset) % 12 + 54].onB_X();
+                        banda_leduri[(7 + offset) % 12 + 54].onB_X();
+                        banda_leduri[(8 + offset) % 12 + 54].onB_X();
 
-                    banda_leduri[(1 + offset) % 12 + 54].off();
-                    banda_leduri[(2 + offset) % 12 + 54].off();
-                    banda_leduri[(3 + offset) % 12 + 54].off();
-                    banda_leduri[(6 + offset) % 12 + 54].off();
-                    banda_leduri[(7 + offset) % 12 + 54].off();
-                    banda_leduri[(8 + offset) % 12 + 54].off();
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                    offset--;
-                    if (offset <= 1)
-                        offset = 24999;
+                        banda_leduri[(1 + offset) % 12 + 54].offB_X();
+                        banda_leduri[(2 + offset) % 12 + 54].offB_X();
+                        banda_leduri[(3 + offset) % 12 + 54].offB_X();
+                        banda_leduri[(6 + offset) % 12 + 54].offB_X();
+                        banda_leduri[(7 + offset) % 12 + 54].offB_X();
+                        banda_leduri[(8 + offset) % 12 + 54].offB_X();
+
+                        offset--;
+                        if (offset <= 1)
+                            offset = 24999;
+                    }
                 }
-
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -118,36 +126,36 @@ public class directionare extends Agent {
         Behaviour Y2_X = new Behaviour() {
             @Override
             public void action() {
-                int offset = 25000;
-                for(int i =  1;i<=12;i++)
-                {
-                    banda_leduri[i].culoare = culoareC_X;
-                }
-                while (controller_hol.Y2_X_activated)
-                {
-                    banda_leduri[(1+offset)%12].on();
-                    banda_leduri[(2+offset)%12].on();
-                    banda_leduri[(6+offset)%12].on();
-                    banda_leduri[(7+offset)%12].on();
-                    banda_leduri[(11+offset)%12].on();
-                    banda_leduri[(12+offset)%12].on();
-
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if(environment_hol.alarma_incendiu) {
+                    int offset = 25000;
+                    for (int i = 1; i <= 12; i++) {
+                        banda_leduri[i].culoare = culoareC_X;
                     }
+                    while (controller_hol.Y2_X_activated) {
+                        banda_leduri[(1 + offset) % 12 + 1].onY2_X();
+                        banda_leduri[(2 + offset) % 12 + 1].onY2_X();
+                        banda_leduri[(6 + offset) % 12 + 1].onY2_X();
+                        banda_leduri[(7 + offset) % 12 + 1].onY2_X();
+                        banda_leduri[(11 + offset) % 12 + 1].onY2_X();
+                        banda_leduri[(12 + offset) % 12 + 1].onY2_X();
+
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
 
-                    banda_leduri[(1 + offset) % 12].off();
-                    banda_leduri[(2 + offset) % 12].off();
-                    banda_leduri[(6 + offset) % 12].off();
-                    banda_leduri[(7 + offset) % 12].off();
-                    banda_leduri[(11 + offset) % 12].off();
-                    banda_leduri[(12 + offset) % 12].off();
-                    offset--;
-                    if(offset<=1)
-                        offset=25000;
+                        banda_leduri[(1 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(2 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(6 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(7 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(11 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(12 + offset) % 12 + 1].offY2_X();
+                        offset--;
+                        if (offset <= 2)
+                            offset = 25000;
+                    }
                 }
 
 
@@ -167,36 +175,36 @@ public class directionare extends Agent {
         Behaviour X_Y2 = new Behaviour() {
             @Override
             public void action() {
-                int offset = 0;
-                for(int i =  1;i<=12;i++)
-                {
-                    banda_leduri[i].culoare = culoareC_X;
-                }
-                while (controller_hol.X_Y2_activated)
-                {
-                    banda_leduri[(1+offset)%12].on();
-                    banda_leduri[(2+offset)%12].on();
-                    banda_leduri[(6+offset)%12].on();
-                    banda_leduri[(7+offset)%12].on();
-                    banda_leduri[(11+offset)%12].on();
-                    banda_leduri[(12+offset)%12].on();
-
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if(environment_hol.alarma_incendiu) {
+                    int offset = 0;
+                    for (int i = 1; i <= 12; i++) {
+                        banda_leduri[i].culoare = culoareC_X;
                     }
+                    while (controller_hol.X_Y2_activated) {
+                        banda_leduri[(1 + offset) % 12 + 1].onX_Y2();
+                        banda_leduri[(2 + offset) % 12 + 1].onX_Y2();
+                        banda_leduri[(6 + offset) % 12 + 1].onX_Y2();
+                        banda_leduri[(7 + offset) % 12 + 1].onX_Y2();
+                        banda_leduri[(11 + offset) % 12 + 1].onX_Y2();
+                        banda_leduri[(12 + offset) % 12 + 1].onX_Y2();
 
-                    banda_leduri[(1 + offset) % 12].off();
-                    banda_leduri[(2 + offset) % 12].off();
-                    banda_leduri[(6 + offset) % 12].off();
-                    banda_leduri[(7 + offset) % 12].off();
-                    banda_leduri[(11 + offset) % 12].off();
-                    banda_leduri[(12 + offset) % 12].off();
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                    offset++;
-                    if(offset>25000)
-                        offset=0;
+                        banda_leduri[(1 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(2 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(6 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(7 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(11 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(12 + offset) % 12 + 1].offY2_X();
+
+                        offset++;
+                        if (offset > 25000)
+                            offset = 0;
+                    }
                 }
 
                 try {
@@ -215,26 +223,28 @@ public class directionare extends Agent {
         Behaviour X_Y1 = new Behaviour() {
             @Override
             public void action() {
-                int offset = 25000;
-                for (int i = 49; i <= 53; i++) {
-                    banda_leduri[i].culoare = culoareX_Y;
-                }
-                while (controller_hol.X_Y1_activated) {
-                    banda_leduri[(1 + offset) % 5 + 49].on();
-                    banda_leduri[(2 + offset) % 5 + 49].on();
-
-                    try {
-                        Thread.sleep(400);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                if (environment_hol.alarma_incendiu) {
+                    int offset = 25000;
+                    for (int i = 49; i <= 53; i++) {
+                        banda_leduri[i].culoare = culoareX_Y;
                     }
+                    while (controller_hol.X_Y1_activated) {
+                        banda_leduri[(1 + offset) % 5 + 49].onX_Y1();
+                        banda_leduri[(2 + offset) % 5 + 49].onX_Y1();
 
-                    banda_leduri[(1 + offset ) % 5 + 49].off();
-                    banda_leduri[(2 + offset ) % 5 + 49].off();
+                        try {
+                            Thread.sleep(400);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
 
-                    offset--;
-                    if (offset <= 1)
-                        offset = 24999;
+                        banda_leduri[(1 + offset) % 5 + 49].onX_Y1();
+                        banda_leduri[(2 + offset) % 5 + 49].onX_Y1();
+
+                        offset--;
+                        if (offset <= 1)
+                            offset = 24999;
+                    }
                 }
 
                 try {
@@ -251,10 +261,10 @@ public class directionare extends Agent {
         };
 
         addBehaviour(tbf.wrap(A_X));
-       // addBehaviour(tbf.wrap(B_X));
-       // addBehaviour(tbf.wrap(Y2_X));
-       // addBehaviour(tbf.wrap(X_Y2));
-      //  addBehaviour(tbf.wrap(X_Y1));
+        addBehaviour(tbf.wrap(B_X));
+        addBehaviour(tbf.wrap(Y2_X));
+        addBehaviour(tbf.wrap(X_Y2));
+        addBehaviour(tbf.wrap(X_Y1));
     }
 
 }

@@ -76,6 +76,11 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f walkDirection = new Vector3f();
     public static String locatie = "";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
+    public static List<requestHandler> requestA_X = new ArrayList<requestHandler>();
+    public static List<requestHandler> requestB_X = new ArrayList<requestHandler>();
+    public static List<requestHandler> requestY2_X = new ArrayList<requestHandler>();
+    public static List<requestHandler> requestX_Y2 = new ArrayList<requestHandler>();
+    public static List<requestHandler> requestX_Y1 = new ArrayList<requestHandler>();
     private SpotLight[] lumina_leduri = new SpotLight[86];
     public static double temperatura_interior;
     public static double umiditate;
@@ -566,7 +571,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                         panel(new PanelBuilder("setari") {
                             {
                                 childLayoutVertical(); // panel properties, add more...
-                                width("200px");
+                                width("220px");
                                 alignLeft();
                                 valignBottom();
 
@@ -649,6 +654,72 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                         }});
                                     }});
                             }});
+
+
+
+                        panel(new PanelBuilder("setari2") {
+                            {
+                                childLayoutVertical(); // panel properties, add more...
+                                width("220px");
+                                alignLeft();
+                                valignBottom();
+
+                                panel(new PanelBuilder("golll"){{
+                                    height("4%");
+                                }});
+
+
+
+                                panel(new PanelBuilder("Iesire1") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual180", "Nivel blocare iesire 1") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("ocupare_iesire1", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(0.5f);
+                                            min(1);max(99);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("Iesire2") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual9", "Nivel blocare iesire 2") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("ocupare_iesire2", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(1f);
+                                            min(1);max(99);
+                                        }});
+                                    }});
+                            }});
                     }});
 
                 panel(new PanelBuilder("onlines") {
@@ -684,10 +755,27 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         nifty.subscribe(nifty.getCurrentScreen(), "electricitate_activated",   CheckBoxStateChangedEvent.class, eventHandler12);
         nifty.subscribe(nifty.getCurrentScreen(), "lumini_urgenta_activated",   CheckBoxStateChangedEvent.class, eventHandler13);
         nifty.subscribe(nifty.getCurrentScreen(), "sprinklers_activated",   CheckBoxStateChangedEvent.class, eventHandler14);
+        nifty.subscribe(nifty.getCurrentScreen(), "ocupare_iesire1", SliderChangedEvent.class, eventHandler15);
+        nifty.subscribe(nifty.getCurrentScreen(), "ocupare_iesire2", SliderChangedEvent.class, eventHandler16);
 
         nifty.gotoScreen("test");
 
     }
+
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler15 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            environment_hol.ocupare_scari1 = (int)nifty.getCurrentScreen().findNiftyControl("ocupare_iesire1", Slider.class).getValue();
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler16 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            environment_hol.ocupare_scari2 = (int) nifty.getCurrentScreen().findNiftyControl("ocupare_iesire2", Slider.class).getValue();
+        }
+    };
 
     EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
         @Override
@@ -1310,7 +1398,9 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                 dlsr_led[x.index]=new SpotLightShadowRenderer(assetManager, SHADOWMAP_SIZE);
                 dlsf_led[x.index]=new SpotLightShadowFilter(assetManager, SHADOWMAP_SIZE);
 
+
                 lumina_leduri[x.index].setColor(x.culoare.mult(x.intensitate_lumina));
+
                 lumina_leduri[x.index].setSpotRange(x.suprafata);
                 lumina_leduri[x.index].setPosition(new Vector3f(x.translatie_x, x.translatie_y, x.translatie_z));
                 lumina_leduri[x.index].setDirection(new Vector3f(0, -1, 0));
@@ -1457,6 +1547,132 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                request.toString();
             }
         }
+
+        if (requestA_X.isEmpty()==false) {
+            requestHandler x = requestA_X.get(0);
+            //nucleu.request_motor_grafic.add(x);
+            switch (x.type) {
+                case "load":
+                    load_object(x);
+                    break;
+                case "light":
+                    load_light(x);
+                    break;
+                case "foc_start":
+                    foc_start(x);
+                    break;
+                case "stropire":
+                    stropire(x);
+                    break;
+                case "smoke":
+                    smoke(x);
+                    break;
+                case "leduri":
+                    load_light(x);
+            }
+            requestA_X.remove(0);
+        }
+
+        if (requestB_X.isEmpty()==false) {
+            requestHandler x = requestB_X.get(0);
+            //nucleu.request_motor_grafic.add(x);
+            switch (x.type) {
+                case "load":
+                    load_object(x);
+                    break;
+                case "light":
+                    load_light(x);
+                    break;
+                case "foc_start":
+                    foc_start(x);
+                    break;
+                case "stropire":
+                    stropire(x);
+                    break;
+                case "smoke":
+                    smoke(x);
+                    break;
+                case "leduri":
+                    load_light(x);
+            }
+            requestB_X.remove(0);
+        }
+
+        if (requestY2_X.isEmpty()==false) {
+            requestHandler x = requestY2_X.get(0);
+            //nucleu.request_motor_grafic.add(x);
+            switch (x.type) {
+                case "load":
+                    load_object(x);
+                    break;
+                case "light":
+                    load_light(x);
+                    break;
+                case "foc_start":
+                    foc_start(x);
+                    break;
+                case "stropire":
+                    stropire(x);
+                    break;
+                case "smoke":
+                    smoke(x);
+                    break;
+                case "leduri":
+                    load_light(x);
+            }
+            requestY2_X.remove(0);
+        }
+
+        if (requestX_Y2.isEmpty()==false) {
+            requestHandler x = requestX_Y2.get(0);
+            //nucleu.request_motor_grafic.add(x);
+            switch (x.type) {
+                case "load":
+                    load_object(x);
+                    break;
+                case "light":
+                    load_light(x);
+                    break;
+                case "foc_start":
+                    foc_start(x);
+                    break;
+                case "stropire":
+                    stropire(x);
+                    break;
+                case "smoke":
+                    smoke(x);
+                    break;
+                case "leduri":
+                    load_light(x);
+            }
+            requestX_Y2.remove(0);
+        }
+
+        if (requestX_Y1.isEmpty()==false) {
+            requestHandler x = requestX_Y1.get(0);
+            //nucleu.request_motor_grafic.add(x);
+            switch (x.type) {
+                case "load":
+                    load_object(x);
+                    break;
+                case "light":
+                    load_light(x);
+                    break;
+                case "foc_start":
+                    foc_start(x);
+                    break;
+                case "stropire":
+                    stropire(x);
+                    break;
+                case "smoke":
+                    smoke(x);
+                    break;
+                case "leduri":
+                    load_light(x);
+            }
+            requestX_Y1.remove(0);
+        }
+
         if(!camera) {
             camDir.set(cam.getDirection()).multLocal(0.6f);
             camLeft.set(cam.getLeft()).multLocal(0.4f);

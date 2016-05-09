@@ -20,6 +20,7 @@ public class controller_hol extends Agent{
     public static boolean X_Y1_activated = false;
     public static boolean B_X_activated = false;
     public static boolean Y2_X_activated = false;
+    private boolean mod1,mod2,mod3,mod4;
 
     public static List<String> lista_celule = new ArrayList<>();
     @Override
@@ -131,7 +132,7 @@ public class controller_hol extends Agent{
                 for(int i=0; i<6;i++)
                 {
                     if(fum[i]) {
-                        environment.alarma_incendiu = true;
+                        environment_hol.alarma_incendiu = true;
                         ventilatie[i] = 2;
                         electricitate[i] = false;
                         lumini_urgenta [i]= true;
@@ -139,7 +140,7 @@ public class controller_hol extends Agent{
                     }
                     else
                     {
-                        environment.alarma_incendiu = false;
+                        environment_hol.alarma_incendiu = false;
                         stropitori[i] = false;
                         electricitate[i] = true;
                         lumini_urgenta[i]= false;
@@ -148,35 +149,71 @@ public class controller_hol extends Agent{
                         ventilatie[i] = 1;
                 }
 
-                //if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<0.1)
-                if (true && !X_Y1_activated)
-                {
-                    //toti ies pe iesirea 2
-                    directionare.culoareA_X = ColorRGBA.Red;
-                    directionare.culoareB_X = ColorRGBA.Red;
-                    directionare.culoareC_X = ColorRGBA.Red;
-                    directionare.culoareX_Y = ColorRGBA.Red;
-                    X_Y1_activated = true;
-                    A_X_activated = true;
-                    B_X_activated = true;
-                    Y2_X_activated = true;
+                if(environment_hol.alarma_incendiu) {
+                    if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=0.1 && !mod1 || fum[6])
+                    {
+                        //toti ies pe iesirea 2
+                        directionare.culoareA_X = ColorRGBA.Red;
+                        directionare.culoareB_X = ColorRGBA.Red;
+                        directionare.culoareC_X = ColorRGBA.Red;
+                        directionare.culoareX_Y = ColorRGBA.Red;
+                        X_Y1_activated = true;
+                        A_X_activated = true;
+                        B_X_activated = true;
+                        Y2_X_activated = true;
+                        mod1 = true;
+                    } else if ((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) > 90 && !mod2 || fum[5]) {
+                        //toti ies pe iesirea 1
+                        directionare.culoareA_X = ColorRGBA.Red;
+                        directionare.culoareB_X = ColorRGBA.Red;
+                        directionare.culoareC_X = ColorRGBA.Red;
+                        directionare.culoareX_Y = ColorRGBA.Black;
+                        X_Y1_activated = true;
+                        A_X_activated = true;
+                        B_X_activated = true;
+                        X_Y2_activated = true;
+                        mod2 = true;
+                    } else if ((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) >= 1 && (environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) <= 90
+                            && !mod3) {
+                        //A-1 B-1 C-2
+                        directionare.culoareA_X = ColorRGBA.Blue;
+                        directionare.culoareB_X = ColorRGBA.Blue;
+                        directionare.culoareC_X = ColorRGBA.Red;
+                        directionare.culoareX_Y = ColorRGBA.Blue;
+                        X_Y1_activated = true;
+                        A_X_activated = true;
+                        B_X_activated = true;
+                        Y2_X_activated = true;
+                        mod3 = true;
+                    } else if((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) < 1 && (environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) >=0.1
+                            && !mod4){
+                        //A-1 B-2 C-2
+                        directionare.culoareA_X = ColorRGBA.Blue;
+                        directionare.culoareB_X = ColorRGBA.Red;
+                        directionare.culoareC_X = ColorRGBA.Red;
+                        directionare.culoareX_Y = ColorRGBA.Blue;
+                        X_Y1_activated = true;
+                        A_X_activated = true;
+                        B_X_activated = true;
+                        Y2_X_activated = true;
+                        mod4 = true;
+                    }
                 }
-
-                else if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)>90)
-                {
-                    //toti ies pe iesirea 1
-                }
-
-                else if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)>=1 && (environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=90)
-                {
-                    //A-1 B-1 C-2
-                }
-
                 else
                 {
-                    //A-1 B-2 C-2
+                    X_Y1_activated = false;
+                    A_X_activated = false;
+                    B_X_activated = false;
+                    Y2_X_activated = false;
+                    X_Y2_activated = false;
+                    mod1=false;
+                    mod2=false;
+                    mod3=false;
+                    mod4=false;
                 }
 
+                //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
+                System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {

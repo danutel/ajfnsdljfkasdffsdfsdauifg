@@ -101,29 +101,66 @@ public class leduri {
     public void on()
     {
         requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
-        try {
-            if(!directionare.locked) {
-                directionare.locked = true;
-                graphicEngine.request.add(z);
-                directionare.locked = false;
-            }
-        }catch (NullPointerException e)
-        {
-            System.out.println("Bang");
-        }
+        graphicEngine.request.add(z);
     }
 
-    public void off(){
-        requestHandler z = new requestHandler("light","led",false,index,intensitate,13f,X-1,Y,Z-1,culoare);
-        try {
-            if(!directionare.locked) {
-                directionare.locked = true;
-                graphicEngine.request.add(z);
-                directionare.locked = false;
-            }
-        }catch (NullPointerException e)
-        {
-            System.out.println("Bang");
-        }
+    public void off() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.request.add(z);
+    }
+
+    public void onA_X()
+    {
+        requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
+        graphicEngine.requestA_X.add(z);
+    }
+
+    public void offA_X() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.requestA_X.add(z);
+    }
+
+    public void onB_X()
+    {
+        requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
+        graphicEngine.requestB_X.add(z);
+    }
+
+    public void offB_X() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.requestB_X.add(z);
+    }
+
+    public void onY2_X()
+    {
+        requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
+        graphicEngine.requestY2_X.add(z);
+    }
+
+    public void offY2_X() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.requestY2_X.add(z);
+    }
+
+    public void onX_Y2()
+    {
+        requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
+        graphicEngine.requestX_Y2.add(z);
+    }
+
+    public void offX_Y2() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.requestX_Y2.add(z);
+    }
+
+    public void onX_Y1()
+    {
+        requestHandler z = new requestHandler("light","led",true,index,intensitate,13f,X-1,Y,Z-1,culoare);
+        graphicEngine.requestX_Y1.add(z);
+    }
+
+    public void offX_Y1() {
+        requestHandler z = new requestHandler("light", "led", false, index, intensitate, 13f, X - 1, Y, Z - 1, culoare);
+        graphicEngine.requestX_Y1.add(z);
     }
 }

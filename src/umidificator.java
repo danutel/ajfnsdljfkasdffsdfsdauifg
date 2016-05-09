@@ -2,7 +2,7 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.lang.acl.ACLMessage;
 
-public class Umidificator extends Agent {
+public class umidificator extends Agent {
     public double umidificator;
     @Override
     public void setup(){
