@@ -2,6 +2,7 @@ import com.jme3.math.ColorRGBA;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
+import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
@@ -21,6 +22,7 @@ public class controller_hol extends Agent{
     public static boolean B_X_activated = false;
     public static boolean Y2_X_activated = false;
     private boolean mod1,mod2,mod3,mod4;
+    private int[] incarcare_iesire1 = new int[6],incarcare_iesire2=new int[6];
 
     public static List<String> lista_celule = new ArrayList<>();
     @Override
@@ -32,7 +34,9 @@ public class controller_hol extends Agent{
         sectoare[4] = new node(0,27);
         sectoare[5] = new node(27,0);
 
-        addBehaviour(new Behaviour() {
+        ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
+
+        Behaviour primire = new Behaviour() {
             @Override
             public void action() {
                 ACLMessage mesaj_receptionat = myAgent.receive();
@@ -40,7 +44,6 @@ public class controller_hol extends Agent{
                 {
                     if(mesaj_receptionat.getConversationId()=="fum[]")
                     {
-                        myAgent.receive();
                         fum[0] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[0]);
                         fum[1] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[1]);
                         fum[2] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[2]);
@@ -48,9 +51,27 @@ public class controller_hol extends Agent{
                         fum[4] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[4]);
                         fum[5] = Boolean.parseBoolean(mesaj_receptionat.getContent().split("~")[5]);
                     }
+                    else if (mesaj_receptionat.getConversationId()=="iesire1")
+                    {
+                        incarcare_iesire1[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
+                        incarcare_iesire1[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
+                        incarcare_iesire1[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
+                        incarcare_iesire1[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
+                        incarcare_iesire1[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
+                        incarcare_iesire1[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                    }
+                    else if (mesaj_receptionat.getConversationId()=="iesire2")
+                    {
+                        incarcare_iesire2[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
+                        incarcare_iesire2[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
+                        incarcare_iesire2[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
+                        incarcare_iesire2[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
+                        incarcare_iesire2[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
+                        incarcare_iesire2[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                    }
                 }
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -60,8 +81,8 @@ public class controller_hol extends Agent{
             public boolean done() {
                 return false;
             }
-        });
-
+        };
+        tbf.wrap(primire);
 
         addBehaviour(new Behaviour() {
             @Override
@@ -129,18 +150,18 @@ public class controller_hol extends Agent{
         addBehaviour(new Behaviour() {
             @Override
             public void action() {
+                int c= 0;
                 for(int i=0; i<6;i++)
                 {
                     if(fum[i]) {
-                        environment_hol.alarma_incendiu = true;
                         ventilatie[i] = 2;
                         electricitate[i] = false;
                         lumini_urgenta [i]= true;
                         stropitori[i] = true;
+                        c++;
                     }
                     else
                     {
-                        environment_hol.alarma_incendiu = false;
                         stropitori[i] = false;
                         electricitate[i] = true;
                         lumini_urgenta[i]= false;
@@ -149,8 +170,11 @@ public class controller_hol extends Agent{
                         ventilatie[i] = 1;
                 }
 
+                if(c!=0)
+                    environment_hol.alarma_incendiu =true;
+
                 if(environment_hol.alarma_incendiu) {
-                    if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=0.1 && !mod1 || fum[6])
+                    if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=0.1 && !mod1 || fum[5])
                     {
                         //toti ies pe iesirea 2
                         directionare.culoareA_X = ColorRGBA.Red;
