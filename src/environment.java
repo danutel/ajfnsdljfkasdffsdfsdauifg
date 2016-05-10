@@ -111,10 +111,10 @@ public class environment extends Agent{
         JFuzzyChart.get().chart(c_ventilator, c_ventilator.getDefuzzifier(), true);
 
         // Print ruleSet
-  */      //System.out.println(fis);
+        //System.out.println(fis);
         //############################## FUZZY TEST ##############################################################################
 
-
+*/
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
 
          Behaviour compute = new Behaviour() {

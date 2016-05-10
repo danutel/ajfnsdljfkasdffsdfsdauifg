@@ -28,7 +28,7 @@
       <file leaf-file-name="nucleu.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/nucleu.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3803">
+            <state relative-caret-position="4301">
               <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -62,26 +62,32 @@
       <file leaf-file-name="environment_hol.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/environment_hol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="574">
+            <state relative-caret-position="5491">
               <caret line="328" column="1" selection-start-line="328" selection-start-column="1" selection-end-line="328" selection-end-column="1" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="iesire.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="iesire.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/iesire.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="336">
               <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#635#636#0" expanded="true" />
-                <element signature="e#679#680#0" expanded="true" />
-                <element signature="e#1175#1176#0" expanded="true" />
-                <element signature="e#1219#1220#0" expanded="true" />
-                <element signature="e#2309#2310#0" expanded="true" />
-                <element signature="e#2353#2354#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="environment.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/environment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-566">
+              <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+              <folding>
+                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -112,7 +118,7 @@
       <file leaf-file-name="leduri.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/leduri.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2193">
+            <state relative-caret-position="2822">
               <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
               <folding />
             </state>
@@ -122,7 +128,7 @@
       <file leaf-file-name="controller_hol.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/controller_hol.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
+            <state relative-caret-position="612">
               <caret line="45" column="21" selection-start-line="41" selection-start-column="16" selection-end-line="45" selection-end-column="21" />
               <folding />
             </state>
@@ -173,7 +179,6 @@
         <option value="$PROJECT_DIR$/src/Ventilator.java" />
         <option value="$PROJECT_DIR$/src/senzorTemperatura.java" />
         <option value="$PROJECT_DIR$/src/nucleu.java" />
-        <option value="$PROJECT_DIR$/src/environment.java" />
         <option value="$PROJECT_DIR$/src/controller.java" />
         <option value="$PROJECT_DIR$/fuzzy.fcl" />
         <option value="$PROJECT_DIR$/src/node.java" />
@@ -184,6 +189,7 @@
         <option value="$PROJECT_DIR$/src/graphicEngine.java" />
         <option value="$PROJECT_DIR$/src/controller_hol.java" />
         <option value="$PROJECT_DIR$/src/iesire.java" />
+        <option value="$PROJECT_DIR$/src/environment.java" />
       </list>
     </option>
   </component>
@@ -218,8 +224,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -254,7 +261,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -509,7 +515,7 @@
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="jade.Boot" />
       <option name="VM_PARAMETERS" value="-Xms6048m" />
-      <option name="PROGRAM_PARAMETERS" value="-agents environment_hol:environment_hol;agent2:unAgent;controller_hol:controller_hol;senzorFum_hol:senzorFum_hol;lumini_urgenta:lumini_urgenta;directionare:directionare;nucleu:nucleu;ventilatie:ventilatie;electricitate:electricitate;stropitori:stropitori;" />
+      <option name="PROGRAM_PARAMETERS" value="-agents agent2:unAgent;god:environment;senzorT:senzorTemperatura;senzorU:senzorUmiditate;senzorF:senzorFum;controller:controller;stropitori:stropitori;Umidificator:Umidificator;electricitate:electricitate;lumini_urgenta:lumini_urgenta;nucleu:nucleu;Ventilator:Ventilator;Racire:Racire;Incalzire:Incalzire;" />
       <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
       <option name="ALTERNATIVE_JRE_PATH" />
@@ -595,7 +601,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="200" />
+      <option name="time" value="201" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -825,23 +831,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/leduri.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2193">
+        <state relative-caret-position="2822">
           <caret line="166" column="0" selection-start-line="166" selection-start-column="0" selection-end-line="166" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_77/jre/lib/rt.jar!/java/lang/Thread.class" />
-    <entry file="file://$PROJECT_DIR$/src/environment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2057">
-          <caret line="182" column="0" selection-start-line="182" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/controller.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1275">
@@ -873,7 +869,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/nucleu.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3803">
+        <state relative-caret-position="4301">
           <caret line="270" column="0" selection-start-line="270" selection-start-column="0" selection-end-line="270" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -891,7 +887,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/environment_hol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="574">
+        <state relative-caret-position="5491">
           <caret line="328" column="1" selection-start-line="328" selection-start-column="1" selection-end-line="328" selection-end-column="1" />
           <folding />
         </state>
@@ -899,7 +895,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/controller_hol.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
+        <state relative-caret-position="612">
           <caret line="45" column="21" selection-start-line="41" selection-start-column="16" selection-end-line="45" selection-end-column="21" />
           <folding />
         </state>
@@ -911,12 +907,16 @@
           <caret line="32" column="0" selection-start-line="32" selection-start-column="0" selection-end-line="32" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#635#636#0" expanded="true" />
-            <element signature="e#679#680#0" expanded="true" />
-            <element signature="e#1175#1176#0" expanded="true" />
-            <element signature="e#1219#1220#0" expanded="true" />
-            <element signature="e#2309#2310#0" expanded="true" />
-            <element signature="e#2353#2354#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/environment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-566">
+          <caret line="32" column="13" selection-start-line="32" selection-start-column="13" selection-end-line="32" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
