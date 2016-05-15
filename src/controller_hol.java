@@ -6,9 +6,6 @@ import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class controller_hol extends Agent{
     public boolean[] fum=new boolean[6];
     public double[] ventilatie=new double[6];
@@ -23,8 +20,8 @@ public class controller_hol extends Agent{
     public static boolean Y2_X_activated = false;
     private boolean mod1,mod2,mod3,mod4;
     private int[] incarcare_iesire1 = new int[6],incarcare_iesire2=new int[6];
+    public static int etaj = 4;
 
-    public static List<String> lista_celule = new ArrayList<>();
     @Override
     public void setup(){
 
@@ -53,12 +50,15 @@ public class controller_hol extends Agent{
                     }
                     else if (mesaj_receptionat.getConversationId()=="iesire1")
                     {
-                        incarcare_iesire1[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
-                        incarcare_iesire1[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
-                        incarcare_iesire1[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
-                        incarcare_iesire1[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
-                        incarcare_iesire1[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
-                        incarcare_iesire1[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                        try {
+                            incarcare_iesire1[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
+                            incarcare_iesire1[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
+                            incarcare_iesire1[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
+                            incarcare_iesire1[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
+                            incarcare_iesire1[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
+                            incarcare_iesire1[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                        }catch(Exception e)
+                        {}
                     }
                     else if (mesaj_receptionat.getConversationId()=="iesire2")
                     {
@@ -82,7 +82,7 @@ public class controller_hol extends Agent{
                 return false;
             }
         };
-        tbf.wrap(primire);
+       addBehaviour(tbf.wrap(primire));
 
         addBehaviour(new Behaviour() {
             @Override
@@ -173,8 +173,12 @@ public class controller_hol extends Agent{
                 if(c!=0)
                     environment_hol.alarma_incendiu =true;
 
+                //double raport  = incarcare_iesire2[etaj]/incarcare_iesire1[etaj];
+                double raport = 15;
+
                 if(environment_hol.alarma_incendiu) {
-                    if((environment_hol.ocupare_scari2/environment_hol.ocupare_scari1)<=0.1 && !mod1 || fum[5])
+
+                    if(raport<=0.1 && !mod1 || fum[5])
                     {
                         //toti ies pe iesirea 2
                         directionare.culoareA_X = ColorRGBA.Red;
@@ -186,7 +190,11 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod1 = true;
-                    } else if ((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) > 90 && !mod2 || fum[5]) {
+                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+6;
+                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
+                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
+                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
+                    } else if (raport > 90 && !mod2 || fum[5]) {
                         //toti ies pe iesirea 1
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -197,8 +205,11 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         X_Y2_activated = true;
                         mod2 = true;
-                    } else if ((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) >= 1 && (environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) <= 90
-                            && !mod3) {
+                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+6;
+                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
+                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
+                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
+                    } else if (raport >= 1 && raport <= 90 && !mod3) {
                         //A-1 B-1 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
                         directionare.culoareB_X = ColorRGBA.Blue;
@@ -209,8 +220,12 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod3 = true;
-                    } else if((environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) < 1 && (environment_hol.ocupare_scari2 / environment_hol.ocupare_scari1) >=0.1
-                            && !mod4){
+                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+2;
+                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+4;
+                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
+                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
+                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
+                    } else if(raport < 1 && raport>=0.1 && !mod4){
                         //A-1 B-2 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -221,6 +236,11 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod4 = true;
+                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+4;
+                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+2;
+                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
+                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
+                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
                     }
                 }
                 else
@@ -237,9 +257,9 @@ public class controller_hol extends Agent{
                 }
 
                 //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
-                System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
+                //System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
                 try {
-                    Thread.sleep(200);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

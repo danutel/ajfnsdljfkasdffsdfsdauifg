@@ -4,6 +4,7 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
+import jade.util.leap.Iterator;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,7 +18,9 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Camera 1";
+    private String locatie= "et.4 Hol";
+    public static String iesire1;
+    public static String iesire2;
 
     @Override
     public void setup() {
@@ -133,7 +136,7 @@ public class nucleu extends Agent{
                         }
                         else
                         {
-                           // System.out.println(mesaj_receptionat.getContent());
+                            System.out.println(mesaj_receptionat.getContent());
                             if(!mesaj_receptionat.getContent().contains("FAILURE")&&!mesaj_receptionat.getContent().contains("internal-error")) {
                                 String[] continut = mesaj_receptionat.getContent().split("~");
                                 if (continut.length >= 10) {
@@ -228,9 +231,11 @@ public class nucleu extends Agent{
                             mesaj_comanda_motor_grafic.addReceiver(rec);
                             mesaj_comanda_motor_grafic.setContent(text);
                             myAgent.send(mesaj_comanda_motor_grafic);
+
                         }
                     }
                 }
+
                 try {
                     Thread.sleep(30);
                 } catch (InterruptedException e) {
@@ -273,6 +278,34 @@ public class nucleu extends Agent{
                         }
                     }
                 }
+
+                iesire1 = "4~"+environment_hol.nr_oameni_iesire1;
+               // System.out.println(iesire1);
+                if(iesire1!="") {
+                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
+                    Iterator it = getAID().getAllAddresses();
+                    AID r = new AID("iesire@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    r.addAddresses((String) it.next());
+                    mesaj_iesire.setConversationId("iesire1");
+                    mesaj_iesire.addReceiver(r);
+                    mesaj_iesire.setContent(iesire1);
+                    myAgent.send(mesaj_iesire);
+                    //environment_hol.nr_oameni_iesire1=0;
+                    //System.out.println(mesaj_iesire);
+                }else
+                {
+                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
+                    Iterator it = getAID().getAllAddresses();
+                    AID r = new AID("iesire@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    r.addAddresses((String) it.next());
+                    mesaj_iesire.setConversationId("iesire2");
+                    mesaj_iesire.addReceiver(r);
+                    mesaj_iesire.setContent(iesire2);
+                    environment_hol.nr_oameni_iesire2=0;
+                    myAgent.send(mesaj_iesire);
+                }
+
+
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {

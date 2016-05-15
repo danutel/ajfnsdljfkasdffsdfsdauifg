@@ -6,17 +6,44 @@ import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
 public class iesire extends Agent{
-    private int[] incarcare_etaj;
+    private double[] incarcare_etaj = new double[6];
+    private double[] nr_oameni_etaj = new double[6];
+    private double nr_oameni_plecati;
+    private double[] nr_oameni_coada = new double[6];
     private String nume = "iesire1";
     @Override
     public void setup(){
-        incarcare_etaj = new int[6];
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
 
         Behaviour simulare = new Behaviour() {
             @Override
             public void action() {
+                for(int i =5;i>=0;i--)
+                {
+                    if(incarcare_etaj[i]<1)
+                    {
+                        incarcare_etaj[i]=1;
+                    }
+                    nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+nr_oameni_plecati-(3/incarcare_etaj[i]);
+                    nr_oameni_plecati = (0.1/incarcare_etaj[i]);
+                    incarcare_etaj[i] = nr_oameni_coada[i]/50;
+                    nr_oameni_etaj[i]=0;
+                    if(incarcare_etaj[i]<1)
+                    {
+                        incarcare_etaj[i]=1;
+                    }
+                    if(nr_oameni_coada[i]<1)
+                    {
+                        nr_oameni_coada[i]=0;
+                    }
 
+                }
+                System.out.println(nr_oameni_coada[4]);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -30,7 +57,9 @@ public class iesire extends Agent{
             public void action() {
                 ACLMessage mesaj_receptionat = myAgent.receive();
                 if(mesaj_receptionat!=null) {
-
+                    String[] nr_oameni = mesaj_receptionat.getContent().toString().split("~");
+                    nr_oameni_etaj[Integer.parseInt(nr_oameni[0])] = Double.parseDouble(nr_oameni[1]);
+                    //System.out.println(nr_oameni_etaj[4]);
                 }
 
                 try {
@@ -49,9 +78,6 @@ public class iesire extends Agent{
         Behaviour expediere = new Behaviour() {
             @Override
             public void action() {
-                Iterator it = getAID().getAllAddresses();
-                String adresa = (String) it.next();
-                String platforma = getAID().getName().split("@")[1];
                 String continut = "";
 
                 for(int i=0; i<incarcare_etaj.length;i++)
@@ -59,13 +85,27 @@ public class iesire extends Agent{
                     continut = continut+incarcare_etaj[i]+"~";
                 }
 
-                ACLMessage mesaj = new ACLMessage(ACLMessage.REQUEST);
-                AID r = new AID("controller_hol@"+platforma, AID.ISGUID);
-                r.addAddresses(adresa);
-                mesaj.setConversationId(nume);
-                mesaj.addReceiver(r);
-                mesaj.setContent(continut);
-                myAgent.send(mesaj);
+                if(nume.equals("iesire1")) {
+                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
+                    Iterator it = getAID().getAllAddresses();
+                    AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    r.addAddresses((String) it.next());
+                    mesaj_iesire.setConversationId("iesire1");
+                    mesaj_iesire.addReceiver(r);
+                    mesaj_iesire.setContent(continut);
+                    myAgent.send(mesaj_iesire);
+                   // System.out.println(mesaj_iesire);
+                }
+                else {
+                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
+                    Iterator it = getAID().getAllAddresses();
+                    AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    r.addAddresses((String) it.next());
+                    mesaj_iesire.setConversationId("iesire2");
+                    mesaj_iesire.addReceiver(r);
+                    mesaj_iesire.setContent(continut);
+                    myAgent.send(mesaj_iesire);
+                }
 
                 try {
                     Thread.sleep(1000);
@@ -80,8 +120,9 @@ public class iesire extends Agent{
             }
         };
 
-        tbf.wrap(simulare);
-        tbf.wrap(receptionare);
-        tbf.wrap(expediere);
+
+        addBehaviour(tbf.wrap(simulare));
+        addBehaviour(tbf.wrap(receptionare));
+        addBehaviour(tbf.wrap(expediere));
     }
 }

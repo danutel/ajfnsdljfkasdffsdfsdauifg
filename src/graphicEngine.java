@@ -100,6 +100,9 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private boolean gui=false;
     private boolean electricitate_activated=true,sprinklers_activated=false,lumini_urgenta_activated=false;
     public static boolean loaded = false;
+    public static int nr_oameni_setor_A;
+    public static int nr_oameni_setor_B;
+    public static int nr_oameni_setor_C;
 
 
 
@@ -676,7 +679,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                         width("90%");
                                         height("25%");
 
-                                        control(new ButtonBuilder("manual180", "Nivel blocare iesire 1") {{
+                                        control(new ButtonBuilder("manual180", "Nr. oameni sector A") {{
                                             alignLeft();
                                             height("40%");
                                             width("90%");
@@ -685,7 +688,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                         }});
 
 
-                                        control(new SliderBuilder("ocupare_iesire1", false) {{
+                                        control(new SliderBuilder("sectorA", false) {{
                                             alignLeft();
                                             this.focusable(false);
                                             width("90%");
@@ -701,7 +704,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                         width("90%");
                                         height("25%");
 
-                                        control(new ButtonBuilder("manual9", "Nivel blocare iesire 2") {{
+                                        control(new ButtonBuilder("manual9", "Nr. oameni sector B") {{
                                             alignLeft();
                                             height("40%");
                                             width("90%");
@@ -710,7 +713,32 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                         }});
 
 
-                                        control(new SliderBuilder("ocupare_iesire2", false) {{
+                                        control(new SliderBuilder("sectorB", false) {{
+                                            alignLeft();
+                                            this.focusable(false);
+                                            width("90%");
+                                            height("30%");
+                                            buttonStepSize(1f);
+                                            min(1);max(99);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("Iesire3") {
+                                    {
+                                        childLayoutVertical();
+                                        width("90%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("manual9", "Nr. oameni sector C") {{
+                                            alignLeft();
+                                            height("40%");
+                                            width("90%");
+                                            this.onActiveEffect(new EffectBuilder("nimic"));
+                                            this.focusable(false);
+                                        }});
+
+
+                                        control(new SliderBuilder("sectorC", false) {{
                                             alignLeft();
                                             this.focusable(false);
                                             width("90%");
@@ -755,8 +783,9 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         nifty.subscribe(nifty.getCurrentScreen(), "electricitate_activated",   CheckBoxStateChangedEvent.class, eventHandler12);
         nifty.subscribe(nifty.getCurrentScreen(), "lumini_urgenta_activated",   CheckBoxStateChangedEvent.class, eventHandler13);
         nifty.subscribe(nifty.getCurrentScreen(), "sprinklers_activated",   CheckBoxStateChangedEvent.class, eventHandler14);
-        nifty.subscribe(nifty.getCurrentScreen(), "ocupare_iesire1", SliderChangedEvent.class, eventHandler15);
-        nifty.subscribe(nifty.getCurrentScreen(), "ocupare_iesire2", SliderChangedEvent.class, eventHandler16);
+        nifty.subscribe(nifty.getCurrentScreen(), "sectorA", SliderChangedEvent.class, eventHandler15);
+        nifty.subscribe(nifty.getCurrentScreen(), "sectorB", SliderChangedEvent.class, eventHandler16);
+        nifty.subscribe(nifty.getCurrentScreen(), "sectorC", SliderChangedEvent.class, eventHandler17);
 
         nifty.gotoScreen("test");
 
@@ -766,14 +795,21 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     EventTopicSubscriber<SliderChangedEvent> eventHandler15 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
         public void onEvent(final String topic, final SliderChangedEvent event) {
-            environment_hol.ocupare_scari1 = (int)nifty.getCurrentScreen().findNiftyControl("ocupare_iesire1", Slider.class).getValue();
+            nr_oameni_setor_A = (int)nifty.getCurrentScreen().findNiftyControl("sectorA", Slider.class).getValue();
         }
     };
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler16 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
         public void onEvent(final String topic, final SliderChangedEvent event) {
-            environment_hol.ocupare_scari2 = (int) nifty.getCurrentScreen().findNiftyControl("ocupare_iesire2", Slider.class).getValue();
+            nr_oameni_setor_B = (int) nifty.getCurrentScreen().findNiftyControl("sectorB", Slider.class).getValue();
+        }
+    };
+
+    EventTopicSubscriber<SliderChangedEvent> eventHandler17 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            nr_oameni_setor_C = (int) nifty.getCurrentScreen().findNiftyControl("sectorC", Slider.class).getValue();
         }
     };
 
@@ -1741,9 +1777,18 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
         hudText.setText("GPS: " + (int)cam.getLocation().getX() +"x"+ " "+(int)cam.getLocation().getY()+"y"+" "+(int)cam.getLocation().getZ()+"z");
         hudText2.setText("Locatie: "+locatie);
-        hudText3.setText("Temperatura: " + String.format("%.3f", temperatura_interior)+" °C");
-        hudText23.setText("Umiditate: " + String.format("%.3f", umiditate)+" U.R.");
-        hudText33.setText("CO2: " + String.format("%.0f", CO2)+" PPM");
+        if(locatie.contains("Camera")) {
+            hudText3.setText("Temperatura: " + String.format("%.3f", temperatura_interior) + " °C");
+            hudText23.setText("Umiditate: " + String.format("%.3f", umiditate) + " U.R.");
+            hudText33.setText("CO2: " + String.format("%.0f", CO2) + " PPM");
+        }
+        else
+        {
+            hudText3.setText("Nr. oameni sector A: "+nr_oameni_setor_A);
+            hudText23.setText("Nr. oameni sector B: " + nr_oameni_setor_B);
+            hudText33.setText("Nr. oameni sector C: " + nr_oameni_setor_C);
+        }
+
         hudText4.setText("Foc: "+ foc);
         hudText5.setText("Fum: "+ fum);
         String blabla = null;
