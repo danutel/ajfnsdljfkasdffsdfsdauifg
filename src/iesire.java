@@ -5,10 +5,11 @@ import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
+import java.util.Random;
+
 public class iesire extends Agent{
     private double[] incarcare_etaj = new double[6];
     private double[] nr_oameni_etaj = new double[6];
-    private double nr_oameni_plecati;
     private double[] nr_oameni_coada = new double[6];
     private String nume = "iesire1";
     @Override
@@ -18,15 +19,21 @@ public class iesire extends Agent{
         Behaviour simulare = new Behaviour() {
             @Override
             public void action() {
+                int nr_oameni_plecati_etaj_superior=0;
+                int nr_oameni_plecati=0;
+                Random rand = new Random();
                 for(int i =5;i>=0;i--)
                 {
                     if(incarcare_etaj[i]<1)
                     {
                         incarcare_etaj[i]=1;
                     }
-                    nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+nr_oameni_plecati-(3/incarcare_etaj[i]);
-                    nr_oameni_plecati = (0.1/incarcare_etaj[i]);
-                    incarcare_etaj[i] = nr_oameni_coada[i]/50;
+                    if(nr_oameni_coada[i]>0) {
+                        nr_oameni_plecati = rand.nextInt(3) + 2;
+                    }
+                    nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+nr_oameni_plecati_etaj_superior-nr_oameni_plecati;
+                    nr_oameni_plecati_etaj_superior = nr_oameni_plecati;
+                    incarcare_etaj[i] = nr_oameni_coada[i]*2;
                     nr_oameni_etaj[i]=0;
                     if(incarcare_etaj[i]<1)
                     {
@@ -38,7 +45,7 @@ public class iesire extends Agent{
                     }
 
                 }
-                System.out.println(nr_oameni_coada[4]);
+                System.out.println(incarcare_etaj[4]);
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

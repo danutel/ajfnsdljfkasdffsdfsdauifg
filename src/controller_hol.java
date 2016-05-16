@@ -190,10 +190,6 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod1 = true;
-                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+6;
-                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
-                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
-                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
                     } else if (raport > 90 && !mod2 || fum[5]) {
                         //toti ies pe iesirea 1
                         directionare.culoareA_X = ColorRGBA.Red;
@@ -205,10 +201,6 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         X_Y2_activated = true;
                         mod2 = true;
-                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+6;
-                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
-                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
-                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
                     } else if (raport >= 1 && raport <= 90 && !mod3) {
                         //A-1 B-1 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
@@ -220,11 +212,6 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod3 = true;
-                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+2;
-                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+4;
-                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
-                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
-                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
                     } else if(raport < 1 && raport>=0.1 && !mod4){
                         //A-1 B-2 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
@@ -236,12 +223,70 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod4 = true;
-                        environment_hol.nr_oameni_iesire2 = environment_hol.nr_oameni_iesire2+4;
-                        environment_hol.nr_oameni_iesire1 = environment_hol.nr_oameni_iesire1+2;
-                        graphicEngine.nr_oameni_setor_A=graphicEngine.nr_oameni_setor_A-2;
-                        graphicEngine.nr_oameni_setor_B=graphicEngine.nr_oameni_setor_B-2;
-                        graphicEngine.nr_oameni_setor_C=graphicEngine.nr_oameni_setor_C-2;
                     }
+
+                    if(mod1){
+                        environment_hol.nr_oameni_iesire2 = 0;
+                        environment_hol.nr_oameni_iesire1 = 0;
+                        if(graphicEngine.nr_oameni_setor_A>2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
+                            environment_hol.nr_oameni_iesire2+=2;
+                        }
+                        if(graphicEngine.nr_oameni_setor_A>2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
+                            environment_hol.nr_oameni_iesire2+=2;
+                        }
+                        if(graphicEngine.nr_oameni_setor_A>2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire2+=2;
+                        }
+                    }else if (mod2) {
+                        environment_hol.nr_oameni_iesire2 = 0;
+                        environment_hol.nr_oameni_iesire1 = 0;
+                        if (graphicEngine.nr_oameni_setor_A > 2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_A > 2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_A > 2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                        else if (mod3) {
+
+                            environment_hol.nr_oameni_iesire2 = 0;
+                            environment_hol.nr_oameni_iesire1 = 0;
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
+                                environment_hol.nr_oameni_iesire1 += 2;
+                            }
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
+                                environment_hol.nr_oameni_iesire1 += 2;
+                            }
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
+                                environment_hol.nr_oameni_iesire2 += 2;
+                            }
+                        }else if (mod4) {
+                            environment_hol.nr_oameni_iesire2 = 0;
+                            environment_hol.nr_oameni_iesire1 = 0;
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
+                                environment_hol.nr_oameni_iesire1 += 2;
+                            }
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
+                                environment_hol.nr_oameni_iesire2 += 2;
+                            }
+                            if (graphicEngine.nr_oameni_setor_A > 2) {
+                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
+                                environment_hol.nr_oameni_iesire2 += 2;
+                            }
+                        }
                 }
                 else
                 {
@@ -256,14 +301,18 @@ public class controller_hol extends Agent{
                     mod4=false;
                 }
 
-                //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
-                //System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+
+
+                            //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
+                            //System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
 
             @Override
             public boolean done() {
