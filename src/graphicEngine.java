@@ -103,6 +103,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public static int nr_oameni_setor_A;
     public static int nr_oameni_setor_B;
     public static int nr_oameni_setor_C;
+    private int counter;
 
 
 
@@ -795,21 +796,24 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     EventTopicSubscriber<SliderChangedEvent> eventHandler15 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
         public void onEvent(final String topic, final SliderChangedEvent event) {
-            nr_oameni_setor_A = (int)nifty.getCurrentScreen().findNiftyControl("sectorA", Slider.class).getValue();
+            if(!environment_hol.alarma_incendiu)
+                nr_oameni_setor_A = (int)nifty.getCurrentScreen().findNiftyControl("sectorA", Slider.class).getValue();
         }
     };
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler16 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
         public void onEvent(final String topic, final SliderChangedEvent event) {
-            nr_oameni_setor_B = (int) nifty.getCurrentScreen().findNiftyControl("sectorB", Slider.class).getValue();
+            if(!environment_hol.alarma_incendiu)
+                nr_oameni_setor_B = (int) nifty.getCurrentScreen().findNiftyControl("sectorB", Slider.class).getValue();
         }
     };
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler17 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
         public void onEvent(final String topic, final SliderChangedEvent event) {
-            nr_oameni_setor_C = (int) nifty.getCurrentScreen().findNiftyControl("sectorC", Slider.class).getValue();
+            if(!environment_hol.alarma_incendiu)
+                nr_oameni_setor_C = (int) nifty.getCurrentScreen().findNiftyControl("sectorC", Slider.class).getValue();
         }
     };
 
@@ -1219,6 +1223,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         inputManager.addMapping("fire6", new KeyTrigger(KeyInput.KEY_6));
         inputManager.addMapping("fire", new KeyTrigger(KeyInput.KEY_H));
         inputManager.addMapping("gui", new KeyTrigger(KeyInput.KEY_F1));
+        inputManager.addMapping("reset", new KeyTrigger(KeyInput.KEY_TAB));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
@@ -1234,6 +1239,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         inputManager.addListener(this, "fire6");
         inputManager.addListener(this, "fire");
         inputManager.addListener(this, "gui");
+        inputManager.addListener(this, "reset");
     }
 
     public void onAction(String binding, boolean isPressed, float tpf) {
@@ -1299,6 +1305,11 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         else if (binding.equals("gui")) {
             if (isPressed) {
                 gui=!gui;
+            }
+        }
+        else if (binding.equals("reset")) {
+            if (isPressed) {
+                environment_hol.alarma_incendiu=false;
             }
         }
     }
@@ -1547,6 +1558,10 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
     @Override
     public void simpleUpdate(float tpf) {
+        if(counter>50000)
+            counter = 0;
+        else
+            counter++;
 
          if (request.isEmpty()==false)
         {
@@ -1584,129 +1599,141 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             }
         }
 
-        if (requestA_X.isEmpty()==false) {
-            requestHandler x = requestA_X.get(0);
-            //nucleu.request_motor_grafic.add(x);
-            switch (x.type) {
-                case "load":
-                    load_object(x);
-                    break;
-                case "light":
-                    load_light(x);
-                    break;
-                case "foc_start":
-                    foc_start(x);
-                    break;
-                case "stropire":
-                    stropire(x);
-                    break;
-                case "smoke":
-                    smoke(x);
-                    break;
-                case "leduri":
-                    load_light(x);
+        if(Integer.parseInt(this.fpsText.getText().split(": ")[1])>0) {
+            if (requestA_X.isEmpty() == false) {
+                requestHandler x = requestA_X.get(0);
+                //nucleu.request_motor_grafic.add(x);
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
+                requestA_X.remove(0);
+                if (requestA_X.size() > 50)
+                    requestA_X.clear();
             }
-            requestA_X.remove(0);
-        }
 
-        if (requestB_X.isEmpty()==false) {
-            requestHandler x = requestB_X.get(0);
-            //nucleu.request_motor_grafic.add(x);
-            switch (x.type) {
-                case "load":
-                    load_object(x);
-                    break;
-                case "light":
-                    load_light(x);
-                    break;
-                case "foc_start":
-                    foc_start(x);
-                    break;
-                case "stropire":
-                    stropire(x);
-                    break;
-                case "smoke":
-                    smoke(x);
-                    break;
-                case "leduri":
-                    load_light(x);
+            if (requestB_X.isEmpty() == false) {
+                requestHandler x = requestB_X.get(0);
+                //nucleu.request_motor_grafic.add(x);
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
+                requestB_X.remove(0);
+                if (requestB_X.size() > 50)
+                    requestB_X.clear();
             }
-            requestB_X.remove(0);
-        }
 
-        if (requestY2_X.isEmpty()==false) {
-            requestHandler x = requestY2_X.get(0);
-            //nucleu.request_motor_grafic.add(x);
-            switch (x.type) {
-                case "load":
-                    load_object(x);
-                    break;
-                case "light":
-                    load_light(x);
-                    break;
-                case "foc_start":
-                    foc_start(x);
-                    break;
-                case "stropire":
-                    stropire(x);
-                    break;
-                case "smoke":
-                    smoke(x);
-                    break;
-                case "leduri":
-                    load_light(x);
+            if (requestY2_X.isEmpty() == false) {
+                requestHandler x = requestY2_X.get(0);
+                //nucleu.request_motor_grafic.add(x);
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
+                requestY2_X.remove(0);
+                if (requestY2_X.size() > 50)
+                    requestY2_X.clear();
             }
-            requestY2_X.remove(0);
-        }
 
-        if (requestX_Y2.isEmpty()==false) {
-            requestHandler x = requestX_Y2.get(0);
-            //nucleu.request_motor_grafic.add(x);
-            switch (x.type) {
-                case "load":
-                    load_object(x);
-                    break;
-                case "light":
-                    load_light(x);
-                    break;
-                case "foc_start":
-                    foc_start(x);
-                    break;
-                case "stropire":
-                    stropire(x);
-                    break;
-                case "smoke":
-                    smoke(x);
-                    break;
-                case "leduri":
-                    load_light(x);
+            if (requestX_Y2.isEmpty() == false) {
+                requestHandler x = requestX_Y2.get(0);
+                //nucleu.request_motor_grafic.add(x);
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
+                requestX_Y2.remove(0);
+                if (requestX_Y2.size() > 50)
+                    requestX_Y2.clear();
             }
-            requestX_Y2.remove(0);
-        }
 
-        if (requestX_Y1.isEmpty()==false) {
-            requestHandler x = requestX_Y1.get(0);
-            //nucleu.request_motor_grafic.add(x);
-            switch (x.type) {
-                case "load":
-                    load_object(x);
-                    break;
-                case "light":
-                    load_light(x);
-                    break;
-                case "foc_start":
-                    foc_start(x);
-                    break;
-                case "stropire":
-                    stropire(x);
-                    break;
-                case "smoke":
-                    smoke(x);
-                    break;
-                case "leduri":
-                    load_light(x);
+            if (requestX_Y1.isEmpty() == false) {
+                requestHandler x = requestX_Y1.get(0);
+                //nucleu.request_motor_grafic.add(x);
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
+                requestX_Y1.remove(0);
+                if (requestX_Y1.size() > 50)
+                    requestX_Y1.clear();
             }
-            requestX_Y1.remove(0);
         }
 
         if(!camera) {

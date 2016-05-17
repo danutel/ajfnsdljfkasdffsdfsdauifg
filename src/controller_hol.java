@@ -150,36 +150,32 @@ public class controller_hol extends Agent{
         addBehaviour(new Behaviour() {
             @Override
             public void action() {
-                int c= 0;
-                for(int i=0; i<6;i++)
-                {
-                    if(fum[i]) {
+                int c = 0;
+                for (int i = 0; i < 6; i++) {
+                    if (fum[i]) {
                         ventilatie[i] = 2;
                         electricitate[i] = false;
-                        lumini_urgenta [i]= true;
+                        lumini_urgenta[i] = true;
                         stropitori[i] = true;
                         c++;
-                    }
-                    else
-                    {
+                    } else {
                         stropitori[i] = false;
                         electricitate[i] = true;
-                        lumini_urgenta[i]= false;
+                        lumini_urgenta[i] = false;
                     }
-                    if(environment_hol.fum[i] <= 0)
+                    if (environment_hol.fum[i] <= 0)
                         ventilatie[i] = 1;
                 }
 
-                if(c!=0)
-                    environment_hol.alarma_incendiu =true;
+                if (c != 0)
+                    environment_hol.alarma_incendiu = true;
 
                 //double raport  = incarcare_iesire2[etaj]/incarcare_iesire1[etaj];
                 double raport = 15;
 
-                if(environment_hol.alarma_incendiu) {
+                if (environment_hol.alarma_incendiu) {
 
-                    if(raport<=0.1 && !mod1 || fum[5])
-                    {
+                    if (raport <= 0.1 && !mod1 || fum[5]) {
                         //toti ies pe iesirea 2
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -210,9 +206,9 @@ public class controller_hol extends Agent{
                         X_Y1_activated = true;
                         A_X_activated = true;
                         B_X_activated = true;
-                        Y2_X_activated = true;
+                        X_Y2_activated = true;
                         mod3 = true;
-                    } else if(raport < 1 && raport>=0.1 && !mod4){
+                    } else if (raport < 1 && raport >= 0.1 && !mod4) {
                         //A-1 B-2 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -225,93 +221,90 @@ public class controller_hol extends Agent{
                         mod4 = true;
                     }
 
-                    if(mod1){
-                        environment_hol.nr_oameni_iesire2 = 0;
-                        environment_hol.nr_oameni_iesire1 = 0;
-                        if(graphicEngine.nr_oameni_setor_A>2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                            environment_hol.nr_oameni_iesire2+=2;
-                        }
-                        if(graphicEngine.nr_oameni_setor_A>2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
-                            environment_hol.nr_oameni_iesire2+=2;
-                        }
-                        if(graphicEngine.nr_oameni_setor_A>2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
-                            environment_hol.nr_oameni_iesire2+=2;
-                        }
-                    }else if (mod2) {
+                    if (mod1) {
                         environment_hol.nr_oameni_iesire2 = 0;
                         environment_hol.nr_oameni_iesire1 = 0;
                         if (graphicEngine.nr_oameni_setor_A > 2) {
                             graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
                         }
+                        if (graphicEngine.nr_oameni_setor_B > 2) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_C > 2) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
+                        }
+                    } else if (mod2) {
+                        environment_hol.nr_oameni_iesire2 = 0;
+                        environment_hol.nr_oameni_iesire1 = 0;
                         if (graphicEngine.nr_oameni_setor_A > 2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
                             environment_hol.nr_oameni_iesire1 += 2;
                         }
-                        if (graphicEngine.nr_oameni_setor_A > 2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
+                        if (graphicEngine.nr_oameni_setor_B > 2) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
                             environment_hol.nr_oameni_iesire1 += 2;
                         }
-                        else if (mod3) {
+                        if (graphicEngine.nr_oameni_setor_C > 2) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                    } else if (mod3) {
 
-                            environment_hol.nr_oameni_iesire2 = 0;
-                            environment_hol.nr_oameni_iesire1 = 0;
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                                environment_hol.nr_oameni_iesire1 += 2;
-                            }
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
-                                environment_hol.nr_oameni_iesire1 += 2;
-                            }
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
-                                environment_hol.nr_oameni_iesire2 += 2;
-                            }
-                        }else if (mod4) {
-                            environment_hol.nr_oameni_iesire2 = 0;
-                            environment_hol.nr_oameni_iesire1 = 0;
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                                environment_hol.nr_oameni_iesire1 += 2;
-                            }
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_B - 2;
-                                environment_hol.nr_oameni_iesire2 += 2;
-                            }
-                            if (graphicEngine.nr_oameni_setor_A > 2) {
-                                graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_C - 2;
-                                environment_hol.nr_oameni_iesire2 += 2;
-                            }
+                        environment_hol.nr_oameni_iesire2 = 0;
+                        environment_hol.nr_oameni_iesire1 = 0;
+                        if (graphicEngine.nr_oameni_setor_A >= 2) {
+                            graphicEngine.nr_oameni_setor_A -= 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
                         }
-                }
-                else
-                {
+                        if (graphicEngine.nr_oameni_setor_B >= 2) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_C >= 2) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
+                        }
+                    } else if (mod4) {
+                        environment_hol.nr_oameni_iesire2 = 0;
+                        environment_hol.nr_oameni_iesire1 = 0;
+                        if (graphicEngine.nr_oameni_setor_A >= 2) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
+                            environment_hol.nr_oameni_iesire1 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_B >= 2) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
+                        }
+                        if (graphicEngine.nr_oameni_setor_C >= 2) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
+                            environment_hol.nr_oameni_iesire2 += 2;
+                        }
+                    }
+                } else {
                     X_Y1_activated = false;
                     A_X_activated = false;
                     B_X_activated = false;
                     Y2_X_activated = false;
                     X_Y2_activated = false;
-                    mod1=false;
-                    mod2=false;
-                    mod3=false;
-                    mod4=false;
+                    mod1 = false;
+                    mod2 = false;
+                    mod3 = false;
+                    mod4 = false;
                 }
 
 
+                //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
+                //System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                            //System.out.println("Iesire 1: "+environment_hol.ocupare_scari1+" Iesire 2: "+environment_hol.ocupare_scari2);
-                            //System.out.println(mod1+" "+mod2+" "+mod3+" "+mod4);
-                            try {
-                                Thread.sleep(500);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
 
 
             @Override

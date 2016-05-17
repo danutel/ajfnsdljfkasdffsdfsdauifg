@@ -41,7 +41,7 @@ public class directionare extends Agent {
                         banda_leduri[(7 + offset) % 8 + 13].onA_X();
 
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(700);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -59,13 +59,12 @@ public class directionare extends Agent {
                     for (int i = 41; i < 45; i++) {
                         banda_leduri[i].offA_X();
                     }
-                }
-
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }else {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
@@ -93,7 +92,7 @@ public class directionare extends Agent {
                         banda_leduri[(8 + offset) % 12 + 54].onB_X();
 
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(700);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -109,11 +108,12 @@ public class directionare extends Agent {
                         if (offset <= 1)
                             offset = 24999;
                     }
-                }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                }else {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -140,7 +140,7 @@ public class directionare extends Agent {
                         banda_leduri[(12 + offset) % 12 + 1].onY2_X();
 
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(700);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -157,12 +157,12 @@ public class directionare extends Agent {
                             offset = 25000;
                     }
                 }
-
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                else {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -189,28 +189,29 @@ public class directionare extends Agent {
                         banda_leduri[(12 + offset) % 12 + 1].onX_Y2();
 
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(700);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
 
-                        banda_leduri[(1 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(2 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(6 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(7 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(11 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(12 + offset) % 12 + 1].offY2_X();
+                        banda_leduri[(1 + offset) % 12 + 1].offX_Y2();
+                        banda_leduri[(2 + offset) % 12 + 1].offX_Y2();
+                        banda_leduri[(6 + offset) % 12 + 1].offX_Y2();
+                        banda_leduri[(7 + offset) % 12 + 1].offX_Y2();
+                        banda_leduri[(11 + offset) % 12 + 1].offX_Y2();
+                        banda_leduri[(12 + offset) % 12 + 1].offX_Y2();
 
                         offset++;
                         if (offset > 25000)
                             offset = 0;
                     }
                 }
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                else {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -233,7 +234,7 @@ public class directionare extends Agent {
                         banda_leduri[(2 + offset) % 5 + 49].onX_Y1();
 
                         try {
-                            Thread.sleep(400);
+                            Thread.sleep(700);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -246,11 +247,12 @@ public class directionare extends Agent {
                             offset = 24999;
                     }
                 }
-
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                else {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
