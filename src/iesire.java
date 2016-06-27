@@ -66,7 +66,7 @@ public class iesire extends Agent{
                 if(mesaj_receptionat!=null) {
                     String[] nr_oameni = mesaj_receptionat.getContent().toString().split("~");
                     nr_oameni_etaj[Integer.parseInt(nr_oameni[0])] = Double.parseDouble(nr_oameni[1]);
-                    //System.out.println(nr_oameni_etaj[4]);
+                    System.out.println(mesaj_receptionat);
                 }
 
                 try {

@@ -140,6 +140,22 @@ public class controller_hol extends Agent{
                 mesaj_electricitate.setContent(ve);
                 myAgent.send(mesaj_electricitate);
 
+                ACLMessage mesaj_iesire1 = new ACLMessage(ACLMessage.REQUEST);
+                AID r5 = new AID("nucleu@"+platforma, AID.ISGUID);
+                r4.addAddresses(adresa);
+                mesaj_iesire1.setConversationId("oameni_iesire1");
+                mesaj_iesire1.addReceiver(r5);
+                mesaj_iesire1.setContent(etaj+"~"+String.valueOf(environment_hol.nr_oameni_iesire1));
+                myAgent.send(mesaj_iesire1);
+
+                ACLMessage mesaj_iesire2 = new ACLMessage(ACLMessage.REQUEST);
+                AID r6 = new AID("nucleu@"+platforma, AID.ISGUID);
+                r4.addAddresses(adresa);
+                mesaj_iesire2.setConversationId("oameni_iesire2");
+                mesaj_iesire2.addReceiver(r6);
+                mesaj_iesire2.setContent(etaj+"~"+String.valueOf(environment_hol.nr_oameni_iesire2));
+                myAgent.send(mesaj_iesire2);
+
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {

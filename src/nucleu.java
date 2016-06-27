@@ -136,7 +136,7 @@ public class nucleu extends Agent{
                         }
                         else
                         {
-                            System.out.println(mesaj_receptionat.getContent());
+                            //System.out.println(mesaj_receptionat.getContent());
                             if(!mesaj_receptionat.getContent().contains("FAILURE")&&!mesaj_receptionat.getContent().contains("internal-error")) {
                                 String[] continut = mesaj_receptionat.getContent().split("~");
                                 if (continut.length >= 10) {
@@ -193,6 +193,53 @@ public class nucleu extends Agent{
                             mesaj_iesire.setContent(mesaj_receptionat.getContent().split("@")[1]);
                             myAgent.send(mesaj_iesire);
                         }
+                    }
+
+                    if (mesaj_receptionat.getConversationId().equals("oameni_iesire1")) {
+                        //System.out.println(mesaj_receptionat.getContent());
+                        for (int i = 0; i < online_cells.size(); i++) {
+                            //System.out.println(online_cells.get(i));
+                            if(online_cells.get(i).toString().contains("iesire1") && !online_cells.get(i).contains(localaddress))
+                            {
+                               // System.out.println(online_cells.get(i));
+                                ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
+                                AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
+                                rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
+                                mesaj_informatii_scara.setConversationId("oameni_scara");
+                                mesaj_informatii_scara.addReceiver(rec);
+                                mesaj_informatii_scara.setContent(mesaj_receptionat.getContent());
+                                myAgent.send(mesaj_informatii_scara);
+                            }
+                        }
+                    }
+
+                    if (mesaj_receptionat.getConversationId().equals("oameni_iesire2")) {
+                        //System.out.println(mesaj_receptionat.getContent());
+                        for (int i = 0; i < online_cells.size(); i++) {
+                            //System.out.println(online_cells.get(i));
+                            if(online_cells.get(i).toString().contains("iesire2") && !online_cells.get(i).contains(localaddress))
+                            {
+                                System.out.println(online_cells.get(i));
+                                ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
+                                AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
+                                rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
+                                mesaj_informatii_scara.setConversationId("oameni_scara");
+                                mesaj_informatii_scara.addReceiver(rec);
+                                mesaj_informatii_scara.setContent(mesaj_receptionat.getContent());
+                                myAgent.send(mesaj_informatii_scara);
+                            }
+                        }
+                    }
+
+                    if (mesaj_receptionat.getConversationId().equals("oameni_scara")) {
+                            ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
+                            Iterator it = getAID().getAllAddresses();
+                            AID r = new AID(locatie+ "@" + getAID().getName().split("@")[1], AID.ISGUID);
+                            r.addAddresses((String) it.next());
+                            mesaj_iesire.setConversationId("iesire1");
+                            mesaj_iesire.addReceiver(r);
+                            mesaj_iesire.setContent(iesire1);
+                            myAgent.send(mesaj_iesire);
                     }
                 }
                 try {
