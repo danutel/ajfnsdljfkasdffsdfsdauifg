@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Hol";
+    private String locatie= "iesire2";
     public static String iesire1;
     public static String iesire2;
 
@@ -170,7 +170,6 @@ public class nucleu extends Agent{
                         }
                         else if (mesaj_receptionat.getSender().toString().contains("iesire2")) {
                             iesire2 = mesaj_receptionat.getContent();
-                            System.out.println("iesire2: ok" + iesire2);
                         }
                         else if(mesaj_receptionat.getContent().contains("iesire1")){
                             ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
@@ -232,13 +231,14 @@ public class nucleu extends Agent{
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("oameni_scara")) {
+                        //System.out.println(mesaj_receptionat.getContent());
                             ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
                             Iterator it = getAID().getAllAddresses();
                             AID r = new AID(locatie+ "@" + getAID().getName().split("@")[1], AID.ISGUID);
                             r.addAddresses((String) it.next());
                             mesaj_iesire.setConversationId("iesire1");
                             mesaj_iesire.addReceiver(r);
-                            mesaj_iesire.setContent(iesire1);
+                            mesaj_iesire.setContent(mesaj_receptionat.getContent());
                             myAgent.send(mesaj_iesire);
                     }
                 }
