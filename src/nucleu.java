@@ -163,6 +163,18 @@ public class nucleu extends Agent{
                             }
                         }
                     }
+
+                    if (mesaj_receptionat.getConversationId().equals("informatii_scara")) {
+                        if (mesaj_receptionat.getSender().toString().contains("iesire1")) {
+                            //System.out.println("iesire1");
+                            iesire1 = mesaj_receptionat.getContent();
+                        }
+                        if (mesaj_receptionat.getSender().toString().contains("iesire2")) {
+                            //System.out.println("iesire2");
+                            iesire2 = mesaj_receptionat.getContent();
+                        }
+                        System.out.println(mesaj_receptionat.getContent());
+                    }
                 }
                 try {
                     Thread.sleep(10);
@@ -231,10 +243,10 @@ public class nucleu extends Agent{
                             mesaj_comanda_motor_grafic.addReceiver(rec);
                             mesaj_comanda_motor_grafic.setContent(text);
                             myAgent.send(mesaj_comanda_motor_grafic);
-
                         }
                     }
                 }
+
 
                 try {
                     Thread.sleep(30);
@@ -279,6 +291,26 @@ public class nucleu extends Agent{
                     }
                 }
 
+                for (int i = 0; i < online_cells.size(); i++) {
+                    //System.out.println(online_cells.get(i));
+                    if(online_cells.get(i).toString().contains("Hol"))
+                    {
+                        ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
+                        AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
+                        rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
+                        mesaj_informatii_scara.setConversationId("informatii_scara");
+                        mesaj_informatii_scara.addReceiver(rec);
+                        if(locatie.contains("iesire1")) {
+                            mesaj_informatii_scara.setContent(iesire1);
+                        }
+                        else
+                        {
+                            mesaj_informatii_scara.setContent(iesire2);
+                        }
+                        myAgent.send(mesaj_informatii_scara);
+                    }
+                }
+
                 iesire1 = "4~"+environment_hol.nr_oameni_iesire1;
                // System.out.println(iesire1);
                 if(iesire1!="") {
@@ -307,7 +339,7 @@ public class nucleu extends Agent{
 
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

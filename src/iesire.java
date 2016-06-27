@@ -45,7 +45,7 @@ public class iesire extends Agent{
                         nr_oameni_coada[i]=0;
                     }
                 }
-                System.out.println(incarcare_etaj[4]);
+
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -95,9 +95,9 @@ public class iesire extends Agent{
                 if(nume.equals("iesire1")) {
                     ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
                     Iterator it = getAID().getAllAddresses();
-                    AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    AID r = new AID("nucleu@" + getAID().getName().split("@")[1], AID.ISGUID);
                     r.addAddresses((String) it.next());
-                    mesaj_iesire.setConversationId("iesire1");
+                    mesaj_iesire.setConversationId("informatii_scara");
                     mesaj_iesire.addReceiver(r);
                     mesaj_iesire.setContent(continut);
                     myAgent.send(mesaj_iesire);
@@ -106,9 +106,9 @@ public class iesire extends Agent{
                 else {
                     ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
                     Iterator it = getAID().getAllAddresses();
-                    AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                    AID r = new AID("nucleu@" + getAID().getName().split("@")[1], AID.ISGUID);
                     r.addAddresses((String) it.next());
-                    mesaj_iesire.setConversationId("iesire2");
+                    mesaj_iesire.setConversationId("informatii_scara");
                     mesaj_iesire.addReceiver(r);
                     mesaj_iesire.setContent(continut);
                     myAgent.send(mesaj_iesire);

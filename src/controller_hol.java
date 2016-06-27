@@ -171,12 +171,18 @@ public class controller_hol extends Agent{
                 if (c != 0)
                     environment_hol.alarma_incendiu = true;
 
-                double raport  = incarcare_iesire2[etaj]/incarcare_iesire1[etaj];
+                double raport =1;
+                try {
+                    raport = incarcare_iesire2[etaj] / incarcare_iesire1[etaj];
+                }catch (Exception e)
+                {
+
+                }
 
 
                 if (environment_hol.alarma_incendiu) {
 
-                    if (raport <= 0.1 && !mod1 || fum[5]) {
+                    if (raport <= 0.2 && !mod1 || fum[5]) {
                         //toti ies pe iesirea 2
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -187,7 +193,7 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod1 = true;
-                    } else if (raport > 90 && !mod2 || fum[5]) {
+                    } else if (raport > 5 && !mod2 || fum[5]) {
                         //toti ies pe iesirea 1
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -198,7 +204,7 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         X_Y2_activated = true;
                         mod2 = true;
-                    } else if (raport >= 1 && raport <= 90 && !mod3) {
+                    } else if (raport >= 1 && raport <= 5 && !mod3) {
                         //A-1 B-1 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
                         directionare.culoareB_X = ColorRGBA.Blue;
@@ -209,7 +215,7 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         X_Y2_activated = true;
                         mod3 = true;
-                    } else if (raport < 1 && raport >= 0.1 && !mod4) {
+                    } else if (raport < 1 && raport >= 0.2 && !mod4) {
                         //A-1 B-2 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
                         directionare.culoareB_X = ColorRGBA.Red;
