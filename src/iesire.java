@@ -85,11 +85,11 @@ public class iesire extends Agent{
         Behaviour expediere = new Behaviour() {
             @Override
             public void action() {
-                String continut = "";
+                String continut = nume + "@";
 
                 for(int i=0; i<incarcare_etaj.length;i++)
                 {
-                    continut = continut+incarcare_etaj[i]+"~";
+                    continut = continut+(int) incarcare_etaj[i]+"~";
                 }
 
                 if(nume.equals("iesire1")) {
@@ -103,7 +103,7 @@ public class iesire extends Agent{
                     myAgent.send(mesaj_iesire);
                    // System.out.println(mesaj_iesire);
                 }
-                else {
+                else if(nume.equals("iesire2")){
                     ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
                     Iterator it = getAID().getAllAddresses();
                     AID r = new AID("nucleu@" + getAID().getName().split("@")[1], AID.ISGUID);

@@ -50,6 +50,7 @@ public class controller_hol extends Agent{
                     }
                     else if (mesaj_receptionat.getConversationId()=="iesire1")
                     {
+                        System.out.println("iesire1:online " + mesaj_receptionat.getContent());
                         try {
                             incarcare_iesire1[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
                             incarcare_iesire1[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
@@ -62,13 +63,17 @@ public class controller_hol extends Agent{
                     }
                     else if (mesaj_receptionat.getConversationId()=="iesire2")
                     {
-                        incarcare_iesire2[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
-                        incarcare_iesire2[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
-                        incarcare_iesire2[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
-                        incarcare_iesire2[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
-                        incarcare_iesire2[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
-                        incarcare_iesire2[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
-                        System.out.println(incarcare_iesire2[4]);
+                        try {
+                            System.out.println("iesire2:online " + mesaj_receptionat.getContent());
+                            incarcare_iesire2[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
+                            incarcare_iesire2[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
+                            incarcare_iesire2[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
+                            incarcare_iesire2[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
+                            incarcare_iesire2[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
+                            incarcare_iesire2[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                        }catch(Exception e){
+
+                        }
                     }
                 }
                 try {

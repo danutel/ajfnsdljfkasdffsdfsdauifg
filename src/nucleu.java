@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Camera 1";
+    private String locatie= "Hol";
     public static String iesire1;
     public static String iesire2;
 
@@ -166,14 +166,33 @@ public class nucleu extends Agent{
 
                     if (mesaj_receptionat.getConversationId().equals("informatii_scara")) {
                         if (mesaj_receptionat.getSender().toString().contains("iesire1")) {
-                            //System.out.println("iesire1");
                             iesire1 = mesaj_receptionat.getContent();
                         }
-                        if (mesaj_receptionat.getSender().toString().contains("iesire2")) {
-                            //System.out.println("iesire2");
+                        else if (mesaj_receptionat.getSender().toString().contains("iesire2")) {
                             iesire2 = mesaj_receptionat.getContent();
+                            System.out.println("iesire2: ok" + iesire2);
                         }
-                        System.out.println(mesaj_receptionat.getContent());
+                        else if(mesaj_receptionat.getContent().contains("iesire1")){
+                            ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
+                            Iterator it = getAID().getAllAddresses();
+                            AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                            r.addAddresses((String) it.next());
+                            mesaj_iesire.setConversationId("iesire1");
+                            mesaj_iesire.addReceiver(r);
+                            mesaj_iesire.setContent(mesaj_receptionat.getContent().split("@")[1]);
+                            myAgent.send(mesaj_iesire);
+                        }
+                        else if(mesaj_receptionat.getContent().contains("iesire2"))
+                        {
+                            ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
+                            Iterator it = getAID().getAllAddresses();
+                            AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
+                            r.addAddresses((String) it.next());
+                            mesaj_iesire.setConversationId("iesire2");
+                            mesaj_iesire.addReceiver(r);
+                            mesaj_iesire.setContent(mesaj_receptionat.getContent().split("@")[1]);
+                            myAgent.send(mesaj_iesire);
+                        }
                     }
                 }
                 try {
@@ -293,7 +312,7 @@ public class nucleu extends Agent{
 
                 for (int i = 0; i < online_cells.size(); i++) {
                     //System.out.println(online_cells.get(i));
-                    if(online_cells.get(i).toString().contains("Hol"))
+                    if(online_cells.get(i).toString().contains("Hol") && !online_cells.get(i).contains(localaddress))
                     {
                         ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
                         AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
@@ -309,32 +328,6 @@ public class nucleu extends Agent{
                         }
                         myAgent.send(mesaj_informatii_scara);
                     }
-                }
-
-                iesire1 = "4~"+environment_hol.nr_oameni_iesire1;
-               // System.out.println(iesire1);
-                if(iesire1!="") {
-                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
-                    Iterator it = getAID().getAllAddresses();
-                    AID r = new AID("iesire@" + getAID().getName().split("@")[1], AID.ISGUID);
-                    r.addAddresses((String) it.next());
-                    mesaj_iesire.setConversationId("iesire1");
-                    mesaj_iesire.addReceiver(r);
-                    mesaj_iesire.setContent(iesire1);
-                    myAgent.send(mesaj_iesire);
-                    //environment_hol.nr_oameni_iesire1=0;
-                    //System.out.println(mesaj_iesire);
-                }else
-                {
-                    ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
-                    Iterator it = getAID().getAllAddresses();
-                    AID r = new AID("iesire@" + getAID().getName().split("@")[1], AID.ISGUID);
-                    r.addAddresses((String) it.next());
-                    mesaj_iesire.setConversationId("iesire2");
-                    mesaj_iesire.addReceiver(r);
-                    mesaj_iesire.setContent(iesire2);
-                    environment_hol.nr_oameni_iesire2=0;
-                    myAgent.send(mesaj_iesire);
                 }
 
 
