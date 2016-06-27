@@ -68,6 +68,7 @@ public class controller_hol extends Agent{
                         incarcare_iesire2[3] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[3]);
                         incarcare_iesire2[4] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[4]);
                         incarcare_iesire2[5] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[5]);
+                        System.out.println(incarcare_iesire2[4]);
                     }
                 }
                 try {
@@ -170,8 +171,8 @@ public class controller_hol extends Agent{
                 if (c != 0)
                     environment_hol.alarma_incendiu = true;
 
-                //double raport  = incarcare_iesire2[etaj]/incarcare_iesire1[etaj];
-                double raport = 15;
+                double raport  = incarcare_iesire2[etaj]/incarcare_iesire1[etaj];
+
 
                 if (environment_hol.alarma_incendiu) {
 

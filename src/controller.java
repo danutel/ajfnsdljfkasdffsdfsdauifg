@@ -6,6 +6,10 @@ import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 import net.sourceforge.jFuzzyLogic.FIS;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +17,7 @@ public class controller extends Agent {
     public double temperatura;
     public boolean fum;
     public double umiditate;
+    public double CO2,surplus_comanda_ventilator;
     public double ventilatie;
     public boolean stropitori;
     public boolean lumini_urgenta;
@@ -20,7 +25,7 @@ public class controller extends Agent {
     public double umidificator,ventilator,incalzire,racire;
     public static List<String> lista_celule = new ArrayList<>();
     public static boolean disabled = false;
-    private double referinta_temperatura,referinta_umiditate;
+    private double referinta_temperatura,referinta_umiditate,referinta_CO2;
     private FIS fis;
 
     @Override
@@ -55,6 +60,11 @@ public class controller extends Agent {
                     if(mesaj_receptionat.getConversationId()=="fum")
                     {
                         fum = Boolean.parseBoolean(mesaj_receptionat.getContent());
+                    }
+
+                    if(mesaj_receptionat.getConversationId()=="CO2")
+                    {
+                        CO2 = Double.parseDouble(mesaj_receptionat.getContent());
                     }
 
                     if(mesaj_receptionat.getConversationId().equals("lista_celule"))
@@ -205,6 +215,15 @@ public class controller extends Agent {
                 if(!disabled) {
                     referinta_temperatura = environment.referinta_temperatura;
                     referinta_umiditate = environment.referinta_umiditate;
+                    referinta_CO2 = environment.referinta_CO2;
+                    double eroare_CO2 = referinta_CO2 - CO2;
+
+                    if(eroare_CO2 < -100){
+                        surplus_comanda_ventilator = 0.2;
+                    }
+                    else if(eroare_CO2 > 100){
+                        surplus_comanda_ventilator = 0;
+                    }
 
                     // Set inputs
                     fis.setVariable("eroare_temperatura", referinta_temperatura - temperatura);
@@ -216,7 +235,7 @@ public class controller extends Agent {
                     racire = fis.getVariable("racire").getValue();
                     incalzire = fis.getVariable("incalzire").getValue();
                     umidificator = fis.getVariable("umidificator").getValue();
-                    ventilator = fis.getVariable("ventilator").getValue();
+                    ventilator = fis.getVariable("ventilator").getValue()+surplus_comanda_ventilator;
 
                     if(racire<0.24 && racire>0)
                     {
@@ -237,6 +256,26 @@ public class controller extends Agent {
                     System.out.println("Intrare eroare temp. "+fis.getVariable("eroare_temperatura").getValue()+ " eroare H. "+
                             fis.getVariable("eroare_umiditate").getValue()+" Iesire comanda incalzire "
                             +incalzire+" racire "+racire+" umidificator "+umidificator+" ventilator "+ventilator);
+
+         /*           File log = new File("log.txt");
+
+                    try{
+                        if(!log.exists()){
+                            System.out.println("We had to make a new file.");
+                            log.createNewFile();
+                        }
+
+                        FileWriter fileWriter = new FileWriter(log, true);
+
+                        BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                        bufferedWriter.write(referinta_temperatura+" "+referinta_umiditate+" "+
+                                referinta_CO2+" "+incalzire+" "+racire+" "+umidificator+" "+ventilator+
+                                " "+temperatura+" "+umiditate+" "+CO2+"\n");
+                        bufferedWriter.close();
+
+                    } catch(IOException e) {
+                        System.out.println("COULD NOT LOG!!");
+                    }*/
                 }
                 else
                 {

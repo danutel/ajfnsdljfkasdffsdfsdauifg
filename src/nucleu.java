@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "et.4 Hol";
+    private String locatie= "Camera 1";
     public static String iesire1;
     public static String iesire2;
 

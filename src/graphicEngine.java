@@ -104,6 +104,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public static int nr_oameni_setor_B;
     public static int nr_oameni_setor_C;
     private int counter;
+    private int test = 1288;
 
 
 
@@ -126,6 +127,28 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         load_player();
         setUpKeys();
         hud();
+
+        //****************************************************************************************************************
+
+        lumina_leduri[0] = new SpotLight();
+        dlsr_led[0]=new SpotLightShadowRenderer(assetManager, 128);
+        dlsf_led[0]=new SpotLightShadowFilter(assetManager, 128);
+
+
+        lumina_leduri[0].setColor(ColorRGBA.Red.mult(50f));
+
+        lumina_leduri[0].setSpotRange(13f);
+        lumina_leduri[0].setPosition(new Vector3f(1288,153,-1907));
+        lumina_leduri[0].setDirection(new Vector3f(0, -1, 0));
+        lumina_leduri[0].setSpotInnerAngle(10f * FastMath.DEG_TO_RAD);
+        lumina_leduri[0].setSpotOuterAngle(85f * FastMath.DEG_TO_RAD);
+        dlsr_led[0].setLight(lumina_leduri[0]);
+        dlsr_led[0].setShadowIntensity(0.8f);
+        dlsf_led[0].setLight(lumina_leduri[0]);
+
+        rootNode.addLight(lumina_leduri[0]);
+        viewPort.addProcessor(dlsr_led[0]);
+        dlsf_led[0].setEnabled(true);
     }
 
     private void load_interfata() {
@@ -1433,6 +1456,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
         if(x.nume_obiect!=null)
         {
+            //System.out.println(x.index);
             if(x.pornit==false && lumina_leduri[x.index]!=null)
             {
                     rootNode.removeLight(lumina_leduri[x.index]);
@@ -1867,6 +1891,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         if(gui)
         {
             flyCam.setDragToRotate(true);
+            test--;
+            lumina_leduri[0].setPosition(new Vector3f(test,153,-1907));
         }
         else
         {

@@ -16,13 +16,13 @@ END_VAR
 
 // Fuzzify input variable 'eroare_temperatura': {'n_mare', 'n_mica' , 'zero','p_mica','p_mare'} negativa - racire, pozitiva - incalzire
 FUZZIFY eroare_temperatura			
-	TERM n_mare := (-10,1) (-0.6,1) (-0.2,0);
+	TERM n_mare := (-10,1) (-1.6,1) (-0.8,0);
 	TERM n_mediu := (-2,0) (-0.4,1) (-0.1,0);
 	TERM n_mica := (-0.3,0) (-0.1,1) (0,0);
 	TERM zero := (-1, 0) (0, 1) (1,0);
 	TERM p_mica := (0,0) (0.1,1) (0.3,0);
 	TERM p_mediu := (0.1,0) (0.4,1) (2,0);
-	TERM p_mare := (0.2,0) (0.6,1) (10,1);
+	TERM p_mare := (0.8,0) (1.6,1) (10,1);
 END_FUZZIFY
 
 // Fuzzify input variable 'eroare_umiditate': { 'negativa', 'zero', 'pozitiva' }

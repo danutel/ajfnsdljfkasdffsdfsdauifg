@@ -31,7 +31,8 @@ public class iesire extends Agent{
                     if(nr_oameni_coada[i]>0) {
                         nr_oameni_plecati = rand.nextInt(3) + 2;
                     }
-                    nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+nr_oameni_plecati_etaj_superior-nr_oameni_plecati;
+                    nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+
+                            nr_oameni_plecati_etaj_superior-nr_oameni_plecati;
                     nr_oameni_plecati_etaj_superior = nr_oameni_plecati;
                     incarcare_etaj[i] = nr_oameni_coada[i]*2;
                     nr_oameni_etaj[i]=0;
@@ -43,7 +44,6 @@ public class iesire extends Agent{
                     {
                         nr_oameni_coada[i]=0;
                     }
-
                 }
                 System.out.println(incarcare_etaj[4]);
                 try {

@@ -2,6 +2,15 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.ThreadedBehaviourFactory;
 import net.sourceforge.jFuzzyLogic.FIS;
+import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
+import net.sourceforge.jFuzzyLogic.rule.Variable;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class environment extends Agent{
     public static double temperatura_interior;
@@ -42,7 +51,7 @@ public class environment extends Agent{
     private double tp_umiditate_respiratie=0.9917d;
     private double kp_CO2_respiratie=0.1247d;
     private double tp_CO2_respiratie=0.995d;
-    private double gain_ventilator = 6 , gain_incalzire=30, gain_racire=25, gain_umidificator=30, gain_racire_umiditate=30, gain_ventilator_CO2 = 800;
+    private double gain_ventilator = 6 , gain_incalzire=30, gain_racire=25, gain_umidificator=30, gain_racire_umiditate=110, gain_ventilator_CO2 = 800;
     private FIS functionBlock;
 
     @Override
@@ -65,7 +74,7 @@ public class environment extends Agent{
         graphicEngine.request.add(x);
         requestHandler y = new requestHandler("load","Modele/Obiecte/bec.zip","bec.j3o","bec",X,Y-1,Z,1,1,1,0,0,0,0);
         graphicEngine.request.add(y);
-        requestHandler z = new requestHandler("light",index,true,false,3f,200f,X,Y-10,Z);
+        requestHandler z = new requestHandler("light",index,true,false,1.6f,200f,X,Y-10,Z);
         graphicEngine.request.add(z);
         requestHandler w  = new requestHandler("load","Modele/Obiecte/stropitoare.zip","stropitoare.j3o","stropitoare",X-25,Y-1,Z-25,0.04f,0.04f,0.04f,0,0,0,0);
         graphicEngine.request.add(w);
@@ -79,8 +88,8 @@ public class environment extends Agent{
         graphicEngine.request.add(vent);
 
         //############################## FUZZY TEST ##############################################################################
-
 /*
+
         String fileName = "fuzzy.fcl";
         FIS fis = FIS.load(fileName,true);
 
@@ -109,12 +118,12 @@ public class environment extends Agent{
         JFuzzyChart.get().chart(c_incalzire, c_incalzire.getDefuzzifier(), true);
         JFuzzyChart.get().chart(c_umidificator, c_umidificator.getDefuzzifier(), true);
         JFuzzyChart.get().chart(c_ventilator, c_ventilator.getDefuzzifier(), true);
-
+*/
         // Print ruleSet
         //System.out.println(fis);
         //############################## FUZZY TEST ##############################################################################
 
-*/
+
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
 
          Behaviour compute = new Behaviour() {
@@ -134,6 +143,7 @@ public class environment extends Agent{
                  umiditate_respiratie=kp_umiditate_respiratie*numar_oameni+tp_umiditate_respiratie*umiditate_respiratie_anterior;
                  umiditate_respiratie_anterior=umiditate_respiratie;
                  umiditate=umiditate_exterior+umidificator*gain_umidificator+umiditate_respiratie-racire*gain_racire_umiditate*ventilator;
+
 
                  if(CO2>CO2_ext+20)
                     CO2_respiratie=kp_CO2_respiratie*numar_oameni+CO2_respiratie_anterior*tp_CO2_respiratie-comanda_ventilatie*20;
@@ -210,6 +220,37 @@ public class environment extends Agent{
                         foc=foc-2;
                     else
                         foc=0;
+                }
+
+
+                File log = new File("log.txt");
+
+                try{
+                    if(!log.exists()){
+                        System.out.println("We had to make a new file.");
+                        log.createNewFile();
+                    }
+                    String isFum,isVent;
+                    if(fum>20)
+                    {
+                        isFum ="declansat";
+                        isVent = "mod urgenta";
+                    }
+                    else{
+                        isVent = "auto";
+                        isFum="armat";
+                    }
+
+                    FileWriter fileWriter = new FileWriter(log, true);
+
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    bufferedWriter.write(ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)+" Senzor fum "+
+                            isFum+", alarma: "+alarma_incendiu+", alimentare energie electrica: "+curent_electric+", lumini urgenta: "+lumini_urgenta+
+                            ", aspersoare: "+ sprinkler+ ", ventilatie: "+ventilatie+"\n");
+                    bufferedWriter.close();
+
+                } catch(IOException e) {
+                    System.out.println("COULD NOT LOG!!");
                 }
 
 
