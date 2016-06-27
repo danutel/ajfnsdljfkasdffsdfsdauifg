@@ -192,7 +192,7 @@ public class controller_hol extends Agent{
                 if (c != 0)
                     environment_hol.alarma_incendiu = true;
 
-                double raport =1;
+                double raport = 1;
                 try {
                     raport = incarcare_iesire2[etaj] / incarcare_iesire1[etaj];
                 }catch (Exception e)

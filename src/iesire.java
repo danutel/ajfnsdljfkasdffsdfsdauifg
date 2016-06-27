@@ -11,7 +11,7 @@ public class iesire extends Agent{
     private double[] incarcare_etaj = new double[6];
     private double[] nr_oameni_etaj = new double[6];
     private double[] nr_oameni_coada = new double[6];
-    private String nume = "iesire2";
+    private String nume = "Hol";
     @Override
     public void setup(){
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();

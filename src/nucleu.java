@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "iesire2";
+    private String locatie= "Hol";
     public static String iesire1;
     public static String iesire2;
 
@@ -218,7 +218,7 @@ public class nucleu extends Agent{
                             //System.out.println(online_cells.get(i));
                             if(online_cells.get(i).toString().contains("iesire2") && !online_cells.get(i).contains(localaddress))
                             {
-                                System.out.println(online_cells.get(i));
+                                //System.out.println(online_cells.get(i));
                                 ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
                                 AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
                                 rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");

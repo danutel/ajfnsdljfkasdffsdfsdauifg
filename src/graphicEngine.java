@@ -103,8 +103,19 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public static int nr_oameni_setor_A;
     public static int nr_oameni_setor_B;
     public static int nr_oameni_setor_C;
+    public static boolean A_X_activated = false;
+    public static boolean X_Y2_activated = false;
+    public static boolean X_Y1_activated = false;
+    public static boolean B_X_activated = false;
+    public static boolean Y2_X_activated = false;
     private int counter;
-    private int test = 1288;
+    private float test = 1288;
+    private int tick1 = 0;
+    private int tick2 = 0;
+    private int tick3 = 0;
+    private int tick4 = 0;
+    private int tick5 = 0;
+    private int led_speed = 1;
 
 
 
@@ -127,28 +138,27 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         load_player();
         setUpKeys();
         hud();
+        load_leds();
+    }
 
-        //****************************************************************************************************************
+    public void load_leds(){
+        for(int i = 0; i<20;i++){
+            lumina_leduri[i] = new SpotLight();
+            dlsr_led[i]=new SpotLightShadowRenderer(assetManager, 128);
+            dlsf_led[i]=new SpotLightShadowFilter(assetManager, 128);
+            lumina_leduri[i].setColor(ColorRGBA.Red.mult(0f));
+            lumina_leduri[i].setSpotRange(13f);
+            lumina_leduri[i].setPosition(new Vector3f(1288,153,-1907));
+            lumina_leduri[i].setDirection(new Vector3f(0, -1, 0));
+            lumina_leduri[i].setSpotInnerAngle(10f * FastMath.DEG_TO_RAD);
+            lumina_leduri[i].setSpotOuterAngle(85f * FastMath.DEG_TO_RAD);
+            dlsr_led[i].setLight(lumina_leduri[i]);
+            dlsr_led[i].setShadowIntensity(0.8f);
+            rootNode.addLight(lumina_leduri[i]);
+            viewPort.addProcessor(dlsr_led[i]);
+            dlsf_led[i].setEnabled(true);
+        }
 
-        lumina_leduri[0] = new SpotLight();
-        dlsr_led[0]=new SpotLightShadowRenderer(assetManager, 128);
-        dlsf_led[0]=new SpotLightShadowFilter(assetManager, 128);
-
-
-        lumina_leduri[0].setColor(ColorRGBA.Red.mult(50f));
-
-        lumina_leduri[0].setSpotRange(13f);
-        lumina_leduri[0].setPosition(new Vector3f(1288,153,-1907));
-        lumina_leduri[0].setDirection(new Vector3f(0, -1, 0));
-        lumina_leduri[0].setSpotInnerAngle(10f * FastMath.DEG_TO_RAD);
-        lumina_leduri[0].setSpotOuterAngle(85f * FastMath.DEG_TO_RAD);
-        dlsr_led[0].setLight(lumina_leduri[0]);
-        dlsr_led[0].setShadowIntensity(0.8f);
-        dlsf_led[0].setLight(lumina_leduri[0]);
-
-        rootNode.addLight(lumina_leduri[0]);
-        viewPort.addProcessor(dlsr_led[0]);
-        dlsf_led[0].setEnabled(true);
     }
 
     private void load_interfata() {
@@ -432,7 +442,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
                                 control(new SliderBuilder("luminozitate",true){{
                                     height("75%");
-                                    stepSize(5f);
+                                    buttonStepSize(1f);
                                     focusable(false);
                                 }});
                             }});
@@ -810,11 +820,24 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         nifty.subscribe(nifty.getCurrentScreen(), "sectorA", SliderChangedEvent.class, eventHandler15);
         nifty.subscribe(nifty.getCurrentScreen(), "sectorB", SliderChangedEvent.class, eventHandler16);
         nifty.subscribe(nifty.getCurrentScreen(), "sectorC", SliderChangedEvent.class, eventHandler17);
+        nifty.subscribe(nifty.getCurrentScreen(), "luminozitate", SliderChangedEvent.class, eventHandler18);
 
         nifty.gotoScreen("test");
 
     }
 
+    EventTopicSubscriber<SliderChangedEvent> eventHandler18 = new EventTopicSubscriber<SliderChangedEvent>() {
+        @Override
+        public void onEvent(final String topic, final SliderChangedEvent event) {
+            for(int i=0;i<20;i++)
+            {
+                if(light[i]!=null)
+                {
+                    light[i].setColor(ColorRGBA.White.mult(nifty.getCurrentScreen().findNiftyControl("luminozitate", Slider.class).getValue()/50));
+                }
+            }
+        }
+    };
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler15 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
@@ -1341,12 +1364,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
     }
 
-    public void load_leds()
-    {
-        load_object(new requestHandler("load","Modele\\Harta\\spot.zip","bec2.j3o", "map",1050,149.8f,-2078,1f,1f,1f,0,0,0,0));
-
-
-    }
 
     public void stropire(requestHandler x)
     {
@@ -1578,7 +1595,82 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
     }
 
+    public void A_X(){
+        ColorRGBA culoare = directionare.culoareA_X;
+        lumina_leduri[14].setColor(culoare.mult(50f));
+        lumina_leduri[15].setColor(culoare.mult(50f));
+        lumina_leduri[16].setColor(culoare.mult(50f));
+        lumina_leduri[17].setColor(culoare.mult(50f));
+        lumina_leduri[18].setColor(culoare.mult(50f));
+        lumina_leduri[19].setColor(culoare.mult(50f));
+        lumina_leduri[14].setPosition(new Vector3f(867,153,-1980+ (tick2 % 75)));
+        lumina_leduri[15].setPosition(new Vector3f(867,153,-1980+ ((8+tick2) % 75)));
+        lumina_leduri[16].setPosition(new Vector3f(860 + (tick4 % 130),153,-1907));
+        lumina_leduri[17].setPosition(new Vector3f(860 + ((35+tick4) % 130) -10,153,-1907));
+        lumina_leduri[18].setPosition(new Vector3f(860 + ((65+tick4) % 130),153,-1907));
+        lumina_leduri[19].setPosition(new Vector3f(860 + ((73+tick4) % 130) -10,153,-1907));
+        tick4+=led_speed;
+    }
 
+    public void B_X(){
+        ColorRGBA culoare = directionare.culoareB_X;
+        lumina_leduri[6].setColor(culoare.mult(50f));
+        lumina_leduri[7].setColor(culoare.mult(50f));
+        lumina_leduri[8].setColor(culoare.mult(50f));
+        lumina_leduri[9].setColor(culoare.mult(50f));
+        lumina_leduri[10].setColor(culoare.mult(50f));
+        lumina_leduri[11].setColor(culoare.mult(50f));
+        lumina_leduri[6].setPosition(new Vector3f(1010,153,-2158+ (tick2 % 240)));
+        lumina_leduri[7].setPosition(new Vector3f(1010,153,-2158+ ((8+tick2) % 240)));
+        lumina_leduri[8].setPosition(new Vector3f(1010,153,-2158+ ((80+tick2) % 240)));
+        lumina_leduri[9].setPosition(new Vector3f(1010,153,-2158+ ((88+tick2) % 240)));
+        lumina_leduri[10].setPosition(new Vector3f(1010,153,-2158+ ((160+tick2) % 240)));
+        lumina_leduri[11].setPosition(new Vector3f(1010,153,-2158+ ((168+tick2) % 240)));
+        tick2+=led_speed;
+    }
+
+    public void Y2_X(){
+        ColorRGBA culoare = directionare.culoareC_X;
+        lumina_leduri[0].setColor(culoare.mult(50f));
+        lumina_leduri[1].setColor(culoare.mult(50f));
+        lumina_leduri[2].setColor(culoare.mult(50f));
+        lumina_leduri[3].setColor(culoare.mult(50f));
+        lumina_leduri[4].setColor(culoare.mult(50f));
+        lumina_leduri[5].setColor(culoare.mult(50f));
+        lumina_leduri[0].setPosition(new Vector3f(1288 - (tick1 % 240),153,-1907));
+        lumina_leduri[1].setPosition(new Vector3f(1288 - ((8+tick1) % 240) -10,153,-1907));
+        lumina_leduri[2].setPosition(new Vector3f(1288 - ((80+tick1) % 240),153,-1907));
+        lumina_leduri[3].setPosition(new Vector3f(1288 - ((88+tick1) % 240) -10,153,-1907));
+        lumina_leduri[4].setPosition(new Vector3f(1288 - ((160+tick1) % 240),153,-1907));
+        lumina_leduri[5].setPosition(new Vector3f(1288 - ((168+tick1) % 240) -10,153,-1907));
+        tick1+=led_speed;
+    }
+
+    public void X_Y1(){
+        ColorRGBA culoare = directionare.culoareX_Y;
+        lumina_leduri[12].setColor(culoare.mult(50f));
+        lumina_leduri[13].setColor(culoare.mult(50f));
+        lumina_leduri[12].setPosition(new Vector3f(1010,153,-1895+ (tick3 % 110)));
+        lumina_leduri[13].setPosition(new Vector3f(1010,153,-1895+ ((12+tick3) % 110)));
+        tick3+=led_speed;
+    }
+
+    public void X_Y2(){
+        ColorRGBA culoare = directionare.culoareC_X;
+        lumina_leduri[0].setColor(culoare.mult(50f));
+        lumina_leduri[1].setColor(culoare.mult(50f));
+        lumina_leduri[2].setColor(culoare.mult(50f));
+        lumina_leduri[3].setColor(culoare.mult(50f));
+        lumina_leduri[4].setColor(culoare.mult(50f));
+        lumina_leduri[5].setColor(culoare.mult(50f));
+        lumina_leduri[0].setPosition(new Vector3f(1038 + (tick1 % 250),153,-1907));
+        lumina_leduri[1].setPosition(new Vector3f(1038 + ((8+tick1) % 250) -10,153,-1907));
+        lumina_leduri[2].setPosition(new Vector3f(1038 + ((80+tick1) % 250),153,-1907));
+        lumina_leduri[3].setPosition(new Vector3f(1038 + ((88+tick1) % 250) -10,153,-1907));
+        lumina_leduri[4].setPosition(new Vector3f(1038 + ((160+tick1) % 250),153,-1907));
+        lumina_leduri[5].setPosition(new Vector3f(1038 + ((168+tick1) % 250) -10,153,-1907));
+        tick1+=led_speed;
+    }
 
     @Override
     public void simpleUpdate(float tpf) {
@@ -1623,141 +1715,29 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             }
         }
 
-        if(Integer.parseInt(this.fpsText.getText().split(": ")[1])>0) {
-            if (requestA_X.isEmpty() == false) {
-                requestHandler x = requestA_X.get(0);
-                //nucleu.request_motor_grafic.add(x);
-                switch (x.type) {
-                    case "load":
-                        load_object(x);
-                        break;
-                    case "light":
-                        load_light(x);
-                        break;
-                    case "foc_start":
-                        foc_start(x);
-                        break;
-                    case "stropire":
-                        stropire(x);
-                        break;
-                    case "smoke":
-                        smoke(x);
-                        break;
-                    case "leduri":
-                        load_light(x);
-                }
-                requestA_X.remove(0);
-                if (requestA_X.size() > 50)
-                    requestA_X.clear();
-            }
+        if(A_X_activated)
+        {
+            A_X();
+        }
 
-            if (requestB_X.isEmpty() == false) {
-                requestHandler x = requestB_X.get(0);
-                //nucleu.request_motor_grafic.add(x);
-                switch (x.type) {
-                    case "load":
-                        load_object(x);
-                        break;
-                    case "light":
-                        load_light(x);
-                        break;
-                    case "foc_start":
-                        foc_start(x);
-                        break;
-                    case "stropire":
-                        stropire(x);
-                        break;
-                    case "smoke":
-                        smoke(x);
-                        break;
-                    case "leduri":
-                        load_light(x);
-                }
-                requestB_X.remove(0);
-                if (requestB_X.size() > 50)
-                    requestB_X.clear();
-            }
+        if(B_X_activated)
+        {
+            B_X();
+        }
 
-            if (requestY2_X.isEmpty() == false) {
-                requestHandler x = requestY2_X.get(0);
-                //nucleu.request_motor_grafic.add(x);
-                switch (x.type) {
-                    case "load":
-                        load_object(x);
-                        break;
-                    case "light":
-                        load_light(x);
-                        break;
-                    case "foc_start":
-                        foc_start(x);
-                        break;
-                    case "stropire":
-                        stropire(x);
-                        break;
-                    case "smoke":
-                        smoke(x);
-                        break;
-                    case "leduri":
-                        load_light(x);
-                }
-                requestY2_X.remove(0);
-                if (requestY2_X.size() > 50)
-                    requestY2_X.clear();
-            }
+        if(X_Y1_activated)
+        {
+            X_Y1();
+        }
 
-            if (requestX_Y2.isEmpty() == false) {
-                requestHandler x = requestX_Y2.get(0);
-                //nucleu.request_motor_grafic.add(x);
-                switch (x.type) {
-                    case "load":
-                        load_object(x);
-                        break;
-                    case "light":
-                        load_light(x);
-                        break;
-                    case "foc_start":
-                        foc_start(x);
-                        break;
-                    case "stropire":
-                        stropire(x);
-                        break;
-                    case "smoke":
-                        smoke(x);
-                        break;
-                    case "leduri":
-                        load_light(x);
-                }
-                requestX_Y2.remove(0);
-                if (requestX_Y2.size() > 50)
-                    requestX_Y2.clear();
-            }
+        if(X_Y2_activated)
+        {
+            X_Y2();
+        }
 
-            if (requestX_Y1.isEmpty() == false) {
-                requestHandler x = requestX_Y1.get(0);
-                //nucleu.request_motor_grafic.add(x);
-                switch (x.type) {
-                    case "load":
-                        load_object(x);
-                        break;
-                    case "light":
-                        load_light(x);
-                        break;
-                    case "foc_start":
-                        foc_start(x);
-                        break;
-                    case "stropire":
-                        stropire(x);
-                        break;
-                    case "smoke":
-                        smoke(x);
-                        break;
-                    case "leduri":
-                        load_light(x);
-                }
-                requestX_Y1.remove(0);
-                if (requestX_Y1.size() > 50)
-                    requestX_Y1.clear();
-            }
+        if(Y2_X_activated)
+        {
+            Y2_X();
         }
 
         if(!camera) {

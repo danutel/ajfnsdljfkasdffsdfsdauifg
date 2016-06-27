@@ -24,49 +24,19 @@ public class directionare extends Agent {
             @Override
             public void action() {
                 if(environment_hol.alarma_incendiu) {
-                    int offset = 25000;
-                    for (int i = 13; i <= 20; i++) {
-                        banda_leduri[i].culoare = culoareA_X;
+                    if (controller_hol.A_X_activated) {
+                        graphicEngine.A_X_activated = true;
                     }
-
-                    for (int i = 41; i < 45; i++) {
-                        banda_leduri[i].culoare = culoareA_X;
-                        banda_leduri[i].onA_X();
-                    }
-
-                    while (controller_hol.A_X_activated) {
-                        banda_leduri[(2 + offset) % 8 + 13].onA_X();
-                        banda_leduri[(3 + offset) % 8 + 13].onA_X();
-                        banda_leduri[(6 + offset) % 8 + 13].onA_X();
-                        banda_leduri[(7 + offset) % 8 + 13].onA_X();
-
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        banda_leduri[(2 + offset) % 8 + 13].offA_X();
-                        banda_leduri[(3 + offset) % 8 + 13].offA_X();
-                        banda_leduri[(6 + offset) % 8 + 13].offA_X();
-                        banda_leduri[(7 + offset) % 8 + 13].offA_X();
-
-                        offset--;
-                        if (offset < 2)
-                            offset = 25000;
-                    }
-
-                    for (int i = 41; i < 45; i++) {
-                        banda_leduri[i].offA_X();
-                    }
-                }else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                    else
+                    {
+                        graphicEngine.A_X_activated = false;
                     }
                 }
-
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -79,41 +49,19 @@ public class directionare extends Agent {
             @Override
             public void action() {
                 if(environment_hol.alarma_incendiu) {
-                    int offset = 25000;
-                    for (int i = 54; i <= 65; i++) {
-                        banda_leduri[i].culoare = culoareB_X;
+                    if (controller_hol.B_X_activated) {
+                        graphicEngine.B_X_activated = true;
                     }
-                    while (controller_hol.B_X_activated) {
-                        banda_leduri[(1 + offset) % 12 + 54].onB_X();
-                        banda_leduri[(2 + offset) % 12 + 54].onB_X();
-                        banda_leduri[(3 + offset) % 12 + 54].onB_X();
-                        banda_leduri[(6 + offset) % 12 + 54].onB_X();
-                        banda_leduri[(7 + offset) % 12 + 54].onB_X();
-                        banda_leduri[(8 + offset) % 12 + 54].onB_X();
-
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        banda_leduri[(1 + offset) % 12 + 54].offB_X();
-                        banda_leduri[(2 + offset) % 12 + 54].offB_X();
-                        banda_leduri[(3 + offset) % 12 + 54].offB_X();
-                        banda_leduri[(6 + offset) % 12 + 54].offB_X();
-                        banda_leduri[(7 + offset) % 12 + 54].offB_X();
-                        banda_leduri[(8 + offset) % 12 + 54].offB_X();
-
-                        offset--;
-                        if (offset <= 1)
-                            offset = 24999;
+                    else
+                    {
+                        graphicEngine.B_X_activated = false;
                     }
-                }else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -127,42 +75,19 @@ public class directionare extends Agent {
             @Override
             public void action() {
                 if(environment_hol.alarma_incendiu) {
-                    int offset = 25000;
-                    for (int i = 1; i <= 12; i++) {
-                        banda_leduri[i].culoare = culoareC_X;
+                    if (controller_hol.Y2_X_activated) {
+                        graphicEngine.Y2_X_activated = true;
                     }
-                    while (controller_hol.Y2_X_activated) {
-                        banda_leduri[(1 + offset) % 12 + 1].onY2_X();
-                        banda_leduri[(2 + offset) % 12 + 1].onY2_X();
-                        banda_leduri[(6 + offset) % 12 + 1].onY2_X();
-                        banda_leduri[(7 + offset) % 12 + 1].onY2_X();
-                        banda_leduri[(11 + offset) % 12 + 1].onY2_X();
-                        banda_leduri[(12 + offset) % 12 + 1].onY2_X();
-
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-
-                        banda_leduri[(1 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(2 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(6 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(7 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(11 + offset) % 12 + 1].offY2_X();
-                        banda_leduri[(12 + offset) % 12 + 1].offY2_X();
-                        offset--;
-                        if (offset <= 2)
-                            offset = 25000;
+                    else
+                    {
+                        graphicEngine.Y2_X_activated = false;
                     }
                 }
-                else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -176,42 +101,19 @@ public class directionare extends Agent {
             @Override
             public void action() {
                 if(environment_hol.alarma_incendiu) {
-                    int offset = 0;
-                    for (int i = 1; i <= 12; i++) {
-                        banda_leduri[i].culoare = culoareC_X;
+                    if (controller_hol.X_Y2_activated) {
+                        graphicEngine.X_Y2_activated = true;
                     }
-                    while (controller_hol.X_Y2_activated) {
-                        banda_leduri[(1 + offset) % 12 + 1].onX_Y2();
-                        banda_leduri[(2 + offset) % 12 + 1].onX_Y2();
-                        banda_leduri[(6 + offset) % 12 + 1].onX_Y2();
-                        banda_leduri[(7 + offset) % 12 + 1].onX_Y2();
-                        banda_leduri[(11 + offset) % 12 + 1].onX_Y2();
-                        banda_leduri[(12 + offset) % 12 + 1].onX_Y2();
-
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        banda_leduri[(1 + offset) % 12 + 1].offX_Y2();
-                        banda_leduri[(2 + offset) % 12 + 1].offX_Y2();
-                        banda_leduri[(6 + offset) % 12 + 1].offX_Y2();
-                        banda_leduri[(7 + offset) % 12 + 1].offX_Y2();
-                        banda_leduri[(11 + offset) % 12 + 1].offX_Y2();
-                        banda_leduri[(12 + offset) % 12 + 1].offX_Y2();
-
-                        offset++;
-                        if (offset > 25000)
-                            offset = 0;
+                    else
+                    {
+                        graphicEngine.X_Y2_activated = false;
                     }
                 }
-                else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -225,34 +127,19 @@ public class directionare extends Agent {
             @Override
             public void action() {
                 if (environment_hol.alarma_incendiu) {
-                    int offset = 25000;
-                    for (int i = 49; i <= 53; i++) {
-                        banda_leduri[i].culoare = culoareX_Y;
+                    if (controller_hol.X_Y1_activated) {
+                        graphicEngine.X_Y1_activated = true;
                     }
-                    while (controller_hol.X_Y1_activated) {
-                        banda_leduri[(1 + offset) % 5 + 49].onX_Y1();
-                        banda_leduri[(2 + offset) % 5 + 49].onX_Y1();
-
-                        try {
-                            Thread.sleep(700);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        banda_leduri[(1 + offset) % 5 + 49].onX_Y1();
-                        banda_leduri[(2 + offset) % 5 + 49].onX_Y1();
-
-                        offset--;
-                        if (offset <= 1)
-                            offset = 24999;
+                    else
+                    {
+                        graphicEngine.X_Y1_activated = false;
                     }
                 }
-                else {
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
 
