@@ -41,6 +41,7 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.controls.checkbox.builder.CheckboxBuilder;
 import de.lessvoid.nifty.controls.slider.builder.SliderBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
+import jme3tools.optimize.GeometryBatchFactory;
 import org.bushe.swing.event.EventTopicSubscriber;
 
 import java.util.ArrayList;
@@ -116,6 +117,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private int tick4 = 0;
     private int tick5 = 0;
     private int led_speed = 1;
+    private static boolean leds_loaded = false;
 
 
 
@@ -126,9 +128,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         stateManager.attach(bulletAppState);
 
         Spatial sky = SkyFactory.createSky(assetManager, "Textures/Sky/Bright/FullskiesBlueClear03.dds", false);
-        sky.setLocalScale(1000);
-        rootNode.attachChild(sky);
-        rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
 
         load_interfata();
         loadmap();
@@ -138,7 +137,11 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         load_player();
         setUpKeys();
         hud();
-        load_leds();
+        GeometryBatchFactory.optimize(rootNode);
+
+        sky.setLocalScale(1000);
+        rootNode.attachChild(sky);
+        rootNode.setShadowMode(RenderQueue.ShadowMode.Off);
     }
 
     public void load_leds(){
@@ -155,8 +158,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             dlsr_led[i].setLight(lumina_leduri[i]);
             dlsr_led[i].setShadowIntensity(0.8f);
             rootNode.addLight(lumina_leduri[i]);
-            viewPort.addProcessor(dlsr_led[i]);
-            dlsf_led[i].setEnabled(true);
+            //viewPort.addProcessor(dlsr_led[i]);
+            //dlsf_led[i].setEnabled(true);
         }
 
     }
@@ -1225,7 +1228,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         lamp_light.setRadius(100000);
         lamp_light.setPosition(new Vector3f(5000,5000,-5000));
 
-        final int SHADOWMAP_SIZE=1024;
+        final int SHADOWMAP_SIZE=256;
         PointLightShadowRenderer dlsr = new PointLightShadowRenderer(assetManager, SHADOWMAP_SIZE);
         dlsr.setLight(lamp_light);
         dlsr.setShadowIntensity(0.4f);
@@ -1469,7 +1472,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     }
 
     public void load_light(requestHandler x) {
-        final int SHADOWMAP_SIZE = 1024;
+        final int SHADOWMAP_SIZE = 256;
 
         if(x.nume_obiect!=null)
         {
@@ -1559,7 +1562,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
         else
         {
-            numeObiect.setShadowMode(RenderQueue.ShadowMode.Cast);
+            numeObiect.setShadowMode(RenderQueue.ShadowMode.Off);
         }
         RigidBodyControl numeObiect_PhysX = new RigidBodyControl(x.masa);
         numeObiect.addControl(numeObiect_PhysX);
@@ -1717,6 +1720,10 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
 
         if(A_X_activated)
         {
+            if(!leds_loaded) {
+                leds_loaded = true;
+                load_leds();
+            }
             A_X();
         }
 
