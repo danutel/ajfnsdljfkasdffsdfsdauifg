@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Hol";
+    private String locatie= "iesire1";
     public static String iesire1;
     public static String iesire2;
 
@@ -41,11 +41,11 @@ public class nucleu extends Agent{
                 String base = localaddress.split("\\.")[0] + "." + localaddress.split("\\.")[1] + "." + localaddress.split("\\.")[2];
 
                 int timeout = 50;
-                for (int i = 2; i < 10; i++) {
+                for (int i = 220; i < 250; i++) {
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {
-                            // System.out.println(host + " is reachable");
+                            //System.out.println(host + " is reachable");
                             //if (i != Integer.parseInt(localaddress.split("\\.")[3]))
                             {
                                 ACLMessage discovery = new ACLMessage(ACLMessage.REQUEST);
@@ -358,7 +358,7 @@ public class nucleu extends Agent{
                 }
 
                 for (int i = 0; i < online_cells.size(); i++) {
-                    //System.out.println(online_cells.get(i));
+                    System.out.println(online_cells.get(i));
                     if(online_cells.get(i).toString().contains("Hol") && !online_cells.get(i).contains(localaddress))
                     {
                         ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);

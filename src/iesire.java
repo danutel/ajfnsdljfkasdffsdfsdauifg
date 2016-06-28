@@ -11,7 +11,7 @@ public class iesire extends Agent{
     private double[] incarcare_etaj = new double[6];
     private double[] nr_oameni_etaj = new double[6];
     private double[] nr_oameni_coada = new double[6];
-    private String nume = "Hol";
+    private String nume = "iesire1";
     @Override
     public void setup(){
         ThreadedBehaviourFactory tbf = new ThreadedBehaviourFactory();
@@ -33,8 +33,12 @@ public class iesire extends Agent{
                     }
                     nr_oameni_coada[i] = nr_oameni_coada[i]+nr_oameni_etaj[i]+
                             nr_oameni_plecati_etaj_superior-nr_oameni_plecati;
+                    System.out.println(nr_oameni_coada[i]+" "+nr_oameni_etaj[i]+" "+nr_oameni_plecati_etaj_superior+" "+nr_oameni_plecati);
                     nr_oameni_plecati_etaj_superior = nr_oameni_plecati;
-                    incarcare_etaj[i] = nr_oameni_coada[i]*2;
+                    incarcare_etaj[i] = nr_oameni_coada[i]*3;
+                    if( incarcare_etaj[i]>100){
+                        incarcare_etaj[i]=100;
+                    }
                     nr_oameni_etaj[i]=0;
                     if(incarcare_etaj[i]<1)
                     {

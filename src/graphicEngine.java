@@ -115,7 +115,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private int tick3 = 0;
     private int tick4 = 0;
     private int tick5 = 0;
-    private int led_speed = 1;
+    private int led_speed = 5;
 
 
 
