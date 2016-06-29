@@ -17,7 +17,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_motor_grafic = new ArrayList<requestHandler>();
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
-    public List<String> online_cells = new ArrayList<>();
+    public static List<String> online_cells = new ArrayList<>();
     private String locatie= "Camera 1";
     public static String iesire1;
     public static String iesire2;

@@ -1189,56 +1189,56 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hudText12.setSize(15);
         hudText12.setColor(ColorRGBA.Green);           // the text
         hudText12.setLocalTranslation(settings.getWidth()-90, offset, 300); // position
-        hudText12.setText("Camera 1");
+        //hudText12.setText("Camera 1");
         guiNode.attachChild(hudText12);
 
         hudText13 = new BitmapText(myFont, false);
         hudText13.setSize(15);
         hudText13.setColor(ColorRGBA.Green);           // the text
         hudText13.setLocalTranslation(settings.getWidth()-90, offset-20, 300); // position
-        hudText13.setText("Camera 2");
+        //hudText13.setText("Camera 2");
         guiNode.attachChild(hudText13);
 
         hudText14 = new BitmapText(myFont, false);
         hudText14.setSize(15);
         hudText14.setColor(ColorRGBA.Green);           // the text
         hudText14.setLocalTranslation(settings.getWidth()-90, offset-40, 300); // position
-        hudText14.setText("Camera 3");
+        //hudText14.setText("Camera 3");
         guiNode.attachChild(hudText14);
 
         hudText15 = new BitmapText(myFont, false);
         hudText15.setSize(15);
         hudText15.setColor(ColorRGBA.Green);           // the text
         hudText15.setLocalTranslation(settings.getWidth()-90, offset-60, 300); // position
-        hudText15.setText("Camera 4");
+        //hudText15.setText("Camera 4");
         guiNode.attachChild(hudText15);
 
         hudText16 = new BitmapText(myFont, false);
         hudText16.setSize(15);
         hudText16.setColor(ColorRGBA.Green);           // the text
         hudText16.setLocalTranslation(settings.getWidth()-90, offset-80, 300); // position
-        hudText16.setText("Camera 5");
+       // hudText16.setText("Camera 5");
         guiNode.attachChild(hudText16);
 
         hudText17 = new BitmapText(myFont, false);
         hudText17.setSize(15);
         hudText17.setColor(ColorRGBA.Green);           // the text
         hudText17.setLocalTranslation(settings.getWidth()-90, offset-100, 300); // position
-        hudText17.setText("Camera 6");
+        //hudText17.setText("Camera 6");
         guiNode.attachChild(hudText17);
 
         hudText18 = new BitmapText(myFont, false);
         hudText18.setSize(15);
         hudText18.setColor(ColorRGBA.Green);           // the text
         hudText18.setLocalTranslation(settings.getWidth()-90, offset-120, 300); // position
-        hudText18.setText("Camera 7");
+        //hudText18.setText("Camera 7");
         guiNode.attachChild(hudText18);
 
         hudText19 = new BitmapText(myFont, false);
         hudText19.setSize(15);
         hudText19.setColor(ColorRGBA.Green);           // the text
         hudText19.setLocalTranslation(settings.getWidth()-90, offset-140, 300); // position
-        hudText19.setText("Server");
+       // hudText19.setText("Server");
         guiNode.attachChild(hudText19);
     }
 
@@ -1894,39 +1894,20 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hudText8.setText("Electricitate: "+ curent_electric);
         hudText9.setText("L. urgenta: "+ lumini_urgenta);
 
-        /*
-        if(controller.lista_celule.get(0).contains("Camera1"))
-            hudText12.setColor(ColorRGBA.Green);
-        else
-            hudText12.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera2"))
-            hudText13.setColor(ColorRGBA.Green);
-        else
-            hudText13.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera3"))
-            hudText14.setColor(ColorRGBA.Green);
-        else
-            hudText14.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera4"))
-            hudText15.setColor(ColorRGBA.Green);
-        else
-            hudText15.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera5"))
-            hudText16.setColor(ColorRGBA.Green);
-        else
-            hudText16.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera6"))
-            hudText17.setColor(ColorRGBA.Green);
-        else
-            hudText17.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera7"))
-            hudText18.setColor(ColorRGBA.Green);
-        else
-            hudText18.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("server"))
-            hudText19.setColor(ColorRGBA.Green);
-        else
-            hudText19.setColor(ColorRGBA.Gray);*/
+
+        try{
+            hudText12.setText(nucleu.online_cells.get(0).split("~")[2]);
+            hudText13.setText(nucleu.online_cells.get(1).split("~")[2]);
+            hudText14.setText(nucleu.online_cells.get(2).split("~")[2]);
+            hudText15.setText(nucleu.online_cells.get(3).split("~")[2]);
+            hudText16.setText(nucleu.online_cells.get(4).split("~")[2]);
+            hudText17.setText(nucleu.online_cells.get(5).split("~")[2]);
+            hudText18.setText(nucleu.online_cells.get(6).split("~")[2]);
+            hudText19.setText(nucleu.online_cells.get(7).split("~")[2]);
+        }
+        catch (Exception e){
+
+        }
 
         if(gui)
         {

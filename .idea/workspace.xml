@@ -25,11 +25,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="nucleu.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="nucleu.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/nucleu.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-662">
-              <caret line="112" column="93" selection-start-line="112" selection-start-column="93" selection-end-line="112" selection-end-column="93" />
+            <state relative-caret-position="146">
+              <caret line="19" column="17" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -52,7 +52,11 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
               <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#1325#1326#0" expanded="false" />
+                <element signature="e#1369#1370#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -62,7 +66,11 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="255">
               <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#1381#1382#0" expanded="false" />
+                <element signature="e#1425#1426#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -77,11 +85,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="graphicEngine.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="graphicEngine.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/graphicEngine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="32283">
-              <caret line="1947" column="96" selection-start-line="1947" selection-start-column="96" selection-end-line="1947" selection-end-column="96" />
+            <state relative-caret-position="434">
+              <caret line="1905" column="55" selection-start-line="1905" selection-start-column="55" selection-end-line="1905" selection-end-column="55" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -142,9 +150,9 @@
         <option value="$PROJECT_DIR$/src/directionare.java" />
         <option value="$PROJECT_DIR$/src/controller_hol.java" />
         <option value="$PROJECT_DIR$/src/environment.java" />
-        <option value="$PROJECT_DIR$/src/graphicEngine.java" />
         <option value="$PROJECT_DIR$/src/controller.java" />
         <option value="$PROJECT_DIR$/src/nucleu.java" />
+        <option value="$PROJECT_DIR$/src/graphicEngine.java" />
       </list>
     </option>
   </component>
@@ -510,7 +518,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="-8" y="-8" width="1696" height="1026" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -556,7 +564,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="265" />
+      <option name="time" value="267" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -779,6 +787,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="952">
           <caret line="56" column="55" selection-start-line="56" selection-start-column="55" selection-end-line="56" selection-end-column="55" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -786,6 +795,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="583">
           <caret line="134" column="52" selection-start-line="134" selection-start-column="52" selection-end-line="134" selection-end-column="52" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -824,7 +834,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1381#1382#0" expanded="false" />
+            <element signature="e#1425#1426#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -840,7 +854,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
           <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#1325#1326#0" expanded="false" />
+            <element signature="e#1369#1370#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -859,16 +877,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/graphicEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="32283">
-          <caret line="1947" column="96" selection-start-line="1947" selection-start-column="96" selection-end-line="1947" selection-end-column="96" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/controller.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="403">
@@ -879,8 +887,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/nucleu.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-662">
-          <caret line="112" column="93" selection-start-line="112" selection-start-column="93" selection-end-line="112" selection-end-column="93" />
+        <state relative-caret-position="146">
+          <caret line="19" column="17" selection-start-line="19" selection-start-column="17" selection-end-line="19" selection-end-column="17" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/graphicEngine.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="434">
+          <caret line="1905" column="55" selection-start-line="1905" selection-start-column="55" selection-end-line="1905" selection-end-column="55" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
