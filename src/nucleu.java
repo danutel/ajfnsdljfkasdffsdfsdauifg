@@ -17,8 +17,8 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_motor_grafic = new ArrayList<requestHandler>();
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
-    public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Hol";
+    public static List<String> online_cells = new ArrayList<>();
+    private String locatie= "Hol Etaj4";
     public static String iesire1;
     public static String iesire2;
 
@@ -41,7 +41,7 @@ public class nucleu extends Agent{
                 String base = localaddress.split("\\.")[0] + "." + localaddress.split("\\.")[1] + "." + localaddress.split("\\.")[2];
 
                 int timeout = 50;
-                for (int i = 2; i < 250; i++) {
+                for (int i = 2; i < 10; i++) {
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {
@@ -114,7 +114,7 @@ public class nucleu extends Agent{
                         if (online_cells.contains(mesaj_receptionat.getContent()) == false && !mesaj_receptionat.getContent().contains("MTS-error")) {
                             online_cells.add(mesaj_receptionat.getContent());
                         }
-                         System.out.println(mesaj_receptionat.getContent());
+                         //System.out.println(mesaj_receptionat.getContent());
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("request_informatii_environment")) {
@@ -346,7 +346,7 @@ public class nucleu extends Agent{
                             mesaj_request_informatii_environment.setContent("sup");
                             myAgent.send(mesaj_request_informatii_environment);
                         }
-                        else if (online_cells.get(i).contains(graphicEngine.locatie.split(" ")[1])) {
+                        else if (graphicEngine.locatie.contains("Hol") && online_cells.get(i).contains(graphicEngine.locatie.split(" ")[1])) {
                             ACLMessage mesaj_request_informatii_environment = new ACLMessage(ACLMessage.REQUEST);
                             AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
                             rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
