@@ -305,6 +305,7 @@ public class environment extends Agent{
                 if(lumini_urgenta==true && lumini_urgenta_activated==false)
                 {
                     lumini_urgenta_activated=true;
+
                     requestHandler z1 = new requestHandler("light",index,false,false,1.5f,200f,X,Y-10,Z);
                     graphicEngine.request.add(z1);
                     try {
@@ -323,8 +324,10 @@ public class environment extends Agent{
                 else if (lumini_urgenta==false && lumini_urgenta_activated==true)
                 {
                     lumini_urgenta_activated=false;
-                    requestHandler z = new requestHandler("light",index,false,false,1.5f,200f,X,Y-10,Z);
-                    graphicEngine.request.add(z);
+                    if(!curent_electric) {
+                        requestHandler z = new requestHandler("light", index, false, false, 1.5f, 200f, X, Y - 10, Z);
+                        graphicEngine.request.add(z);
+                    }
                 }
 
                 if(alarma_incendiu==true && alarma_incendiu_activated==false)

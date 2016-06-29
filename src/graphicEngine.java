@@ -26,7 +26,10 @@ import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.*;
+import com.jme3.shadow.PointLightShadowFilter;
+import com.jme3.shadow.PointLightShadowRenderer;
+import com.jme3.shadow.SpotLightShadowFilter;
+import com.jme3.shadow.SpotLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.EffectBuilder;
@@ -38,6 +41,7 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.controls.checkbox.builder.CheckboxBuilder;
 import de.lessvoid.nifty.controls.slider.builder.SliderBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
+import de.lessvoid.nifty.tools.Color;
 import jme3tools.optimize.GeometryBatchFactory;
 import org.bushe.swing.event.EventTopicSubscriber;
 
@@ -116,6 +120,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private int led_speed = 1;
     private static boolean leds_loaded = false;
     private int bugfix = 0;
+    public static int alarmTicker = 0;
 
 
 
@@ -514,6 +519,37 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             buttonStepSize(5f);
                                         }});
                                     }});
+
+                                panel(new PanelBuilder("alarma") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("alarma2", "Alarma") {{
+                                            alignCenter();
+                                            height("60%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic1"));
+                                            this.focusable(false);
+
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("alarma1") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("alarma11", "Resetare alarma") {{
+                                            alignCenter();
+                                            height("60%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic11"));
+                                            this.focusable(false);
+                                        }});
+                                    }});
                             }});
                     }});
 
@@ -825,10 +861,15 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         nifty.subscribe(nifty.getCurrentScreen(), "sectorB", SliderChangedEvent.class, eventHandler16);
         nifty.subscribe(nifty.getCurrentScreen(), "sectorC", SliderChangedEvent.class, eventHandler17);
         nifty.subscribe(nifty.getCurrentScreen(), "luminozitate", SliderChangedEvent.class, eventHandler18);
+        nifty.subscribe(nifty.getCurrentScreen(), "alarma11", ButtonClickedEvent.class, eventHandler19);
 
         nifty.gotoScreen("test");
 
     }
+
+    EventTopicSubscriber<ButtonClickedEvent> eventHandler19 = (topic, event) -> {
+        controller.trigger=0;
+    } ;
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler18 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
@@ -1896,5 +1937,15 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             flyCam.setDragToRotate(false);
         }
         loaded = true;
+
+        if(alarmTicker%2==0)
+        {
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setTextColor(Color.WHITE);
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setText("Alarma");
+        }
+        else{
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setTextColor(de.lessvoid.nifty.tools.Color.randomColor());
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setText("Incendiu");
+        }
     }
 }

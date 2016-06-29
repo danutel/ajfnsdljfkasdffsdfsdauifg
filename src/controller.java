@@ -6,10 +6,6 @@ import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 import net.sourceforge.jFuzzyLogic.FIS;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +23,7 @@ public class controller extends Agent {
     public static boolean disabled = false;
     private double referinta_temperatura,referinta_umiditate,referinta_CO2;
     private FIS fis;
+    public static int trigger = 0;
 
     @Override
     public void setup(){
@@ -184,16 +181,25 @@ public class controller extends Agent {
                     electricitate = false;
                     lumini_urgenta = true;
                     stropitori = true;
+                    trigger++;
+                    graphicEngine.alarmTicker++;
                 }
-                else
+                else if(trigger==0)
                 {
                     environment.alarma_incendiu = false;
                     stropitori = false;
                     electricitate = true;
                     lumini_urgenta = false;
-                }
-                if(environment.fum <= 0)
                     ventilatie = 1;
+                    graphicEngine.alarmTicker = 0;
+                }
+                else{
+                    stropitori = false;
+                    electricitate = false;
+                    lumini_urgenta = true;
+                    ventilatie = 2;
+                    graphicEngine.alarmTicker++;
+                }
 
 
                 try {
@@ -253,9 +259,9 @@ public class controller extends Agent {
                     {
                         incalzire=1;
                     }
-                    System.out.println("Intrare eroare temp. "+fis.getVariable("eroare_temperatura").getValue()+ " eroare H. "+
-                            fis.getVariable("eroare_umiditate").getValue()+" Iesire comanda incalzire "
-                            +incalzire+" racire "+racire+" umidificator "+umidificator+" ventilator "+ventilator);
+                    //System.out.println("Intrare eroare temp. "+fis.getVariable("eroare_temperatura").getValue()+ " eroare H. "+
+                     //      fis.getVariable("eroare_umiditate").getValue()+" Iesire comanda incalzire "
+                      //      +incalzire+" racire "+racire+" umidificator "+umidificator+" ventilator "+ventilator);
 
          /*           File log = new File("log.txt");
 
