@@ -2,15 +2,6 @@ import jade.core.Agent;
 import jade.core.behaviours.Behaviour;
 import jade.core.behaviours.ThreadedBehaviourFactory;
 import net.sourceforge.jFuzzyLogic.FIS;
-import net.sourceforge.jFuzzyLogic.plot.JFuzzyChart;
-import net.sourceforge.jFuzzyLogic.rule.Variable;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class environment extends Agent{
     public static double temperatura_interior;
@@ -190,8 +181,6 @@ public class environment extends Agent{
             }
         };
 
-
-
         addBehaviour(tbf.wrap(compute));
         addBehaviour(tbf.wrap(update_values));
 
@@ -221,38 +210,6 @@ public class environment extends Agent{
                     else
                         foc=0;
                 }
-
-
-                File log = new File("log.txt");
-
-                try{
-                    if(!log.exists()){
-                        System.out.println("We had to make a new file.");
-                        log.createNewFile();
-                    }
-                    String isFum,isVent;
-                    if(fum>20)
-                    {
-                        isFum ="declansat";
-                        isVent = "mod urgenta";
-                    }
-                    else{
-                        isVent = "auto";
-                        isFum="armat";
-                    }
-
-                    FileWriter fileWriter = new FileWriter(log, true);
-
-                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-                    bufferedWriter.write(ZonedDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME)+" Senzor fum "+
-                            isFum+", alarma: "+alarma_incendiu+", alimentare energie electrica: "+curent_electric+", lumini urgenta: "+lumini_urgenta+
-                            ", aspersoare: "+ sprinkler+ ", ventilatie: "+ventilatie+"\n");
-                    bufferedWriter.close();
-
-                } catch(IOException e) {
-                    System.out.println("COULD NOT LOG!!");
-                }
-
 
                 try {
                     Thread.sleep(1000);

@@ -18,7 +18,7 @@ public class nucleu extends Agent{
     public static List<requestHandler> request_date_environment = new ArrayList<requestHandler>();
     public String localaddress="";
     public List<String> online_cells = new ArrayList<>();
-    private String locatie= "Hol";
+    private String locatie= "Camera 1";
     public static String iesire1;
     public static String iesire2;
 
@@ -41,7 +41,7 @@ public class nucleu extends Agent{
                 String base = localaddress.split("\\.")[0] + "." + localaddress.split("\\.")[1] + "." + localaddress.split("\\.")[2];
 
                 int timeout = 50;
-                for (int i = 2; i < 10; i++) {
+                for (int i = 2; i < 250; i++) {
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {

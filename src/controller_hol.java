@@ -6,8 +6,6 @@ import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
-import java.io.*;
-
 public class controller_hol extends Agent{
     public boolean[] fum=new boolean[6];
     public double[] ventilatie=new double[6];
@@ -202,7 +200,7 @@ public class controller_hol extends Agent{
 
                 }
 
-                File log = new File("log.txt");
+               /* File log = new File("log.txt");
 
                 try{
                     if(!log.exists()){
@@ -219,7 +217,7 @@ public class controller_hol extends Agent{
 
                 } catch(IOException e) {
                     System.out.println("COULD NOT LOG!!");
-                }
+                }*/
 
                 System.out.println("Iesire 1: "+incarcare_iesire1[etaj]+"; Iesire 2: "+
                         incarcare_iesire2[etaj]+"; Mod 1: "+ mod1+"; Mod 2: "+mod2+"; Mod 3: "+mod3+"; Mod 4: "+mod4);

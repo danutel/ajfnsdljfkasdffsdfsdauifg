@@ -72,7 +72,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    public static String locatie = "";
+    public static String locatie = "Camera";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
     public static List<requestHandler> requestA_X = new ArrayList<requestHandler>();
     public static List<requestHandler> requestB_X = new ArrayList<requestHandler>();
@@ -115,6 +115,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private int tick5 = 0;
     private int led_speed = 1;
     private static boolean leds_loaded = false;
+    private int bugfix = 0;
 
 
 
@@ -247,6 +248,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(false);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -322,6 +324,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(true);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -359,6 +362,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(true);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -863,78 +867,80 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
     };
 
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(sprinklers_activated)
-            {
-                environment.sprinkler=false;
-                sprinklers_activated=false;
-            }
-            else
-            {
-                environment.sprinkler=true;
-                sprinklers_activated=true;
-            }
-        }
-    };
-
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler13 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(lumini_urgenta_activated)
-            {
-                environment.lumini_urgenta=false;
-                lumini_urgenta_activated=false;
-            }
-            else
-            {
-                environment.lumini_urgenta=true;
-                lumini_urgenta_activated=true;
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = (s, checkBoxStateChangedEvent) -> {
+        if(bugfix>1) {
+            if (sprinklers_activated) {
+                environment.sprinkler = false;
+                sprinklers_activated = false;
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+            } else {
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                if(nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).isChecked()) {
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(false);
+                }
+                environment.curent_electric = false;
+                electricitate_activated = true;
+                environment.sprinkler = true;
+                sprinklers_activated = true;
             }
         }
     };
 
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler12 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(electricitate_activated)
-            {
-                environment.curent_electric=true;
-                electricitate_activated=false;
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler13 = (s, checkBoxStateChangedEvent) -> {
+        if(bugfix>1) {
+            if (lumini_urgenta_activated) {
+                environment.lumini_urgenta = false;
+                lumini_urgenta_activated = false;
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+            } else {
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(false);
+                environment.lumini_urgenta = true;
+                lumini_urgenta_activated = true;
             }
-            else
-            {
-                environment.curent_electric=false;
-                electricitate_activated=true;
-            }
+        }
+    };
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler12 = (s, checkBoxStateChangedEvent) -> {
+        if(electricitate_activated)
+        {
+            environment.curent_electric=true;
+            electricitate_activated=false;
+        }
+        else
+        {
+            environment.curent_electric=false;
+            electricitate_activated=true;
         }
     };
 
     EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler11 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
         @Override
         public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(!controller.disabled){
-                controller.disabled = true;
-                System.out.println("Controller disabled");
-                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).enable();
-            }else
-            {
-                controller.disabled = false;
-                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).disable();
-                System.out.println("Controller enabled");
+            bugfix++;
+            if(bugfix>1) {
+                if (!controller.disabled) {
+                    controller.disabled = true;
+                    System.out.println("Controller disabled");
+                    nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(true);
+                } else {
+                    controller.disabled = false;
+                    nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(true);
+                    System.out.println("Controller enabled");
+                }
             }
         }
     };
@@ -1361,7 +1367,16 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     }
 
     public void hud(){
-
+        controller.disabled = false;
+        nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setChecked(false);
+        nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setChecked(false);
     }
 
 
