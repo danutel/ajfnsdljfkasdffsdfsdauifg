@@ -26,7 +26,10 @@ import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.*;
+import com.jme3.shadow.PointLightShadowFilter;
+import com.jme3.shadow.PointLightShadowRenderer;
+import com.jme3.shadow.SpotLightShadowFilter;
+import com.jme3.shadow.SpotLightShadowRenderer;
 import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.EffectBuilder;
@@ -38,6 +41,7 @@ import de.lessvoid.nifty.controls.button.builder.ButtonBuilder;
 import de.lessvoid.nifty.controls.checkbox.builder.CheckboxBuilder;
 import de.lessvoid.nifty.controls.slider.builder.SliderBuilder;
 import de.lessvoid.nifty.screen.DefaultScreenController;
+import de.lessvoid.nifty.tools.Color;
 import jme3tools.optimize.GeometryBatchFactory;
 import org.bushe.swing.event.EventTopicSubscriber;
 
@@ -72,7 +76,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    public static String locatie = "et.4 Hol 1";
+    public static String locatie = "et.4 Hol 3";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
     public static List<requestHandler> requestA_X = new ArrayList<requestHandler>();
     public static List<requestHandler> requestB_X = new ArrayList<requestHandler>();
@@ -115,6 +119,8 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private int tick5 = 0;
     private int led_speed = 1;
     private static boolean leds_loaded = false;
+    private int bugfix = 0;
+    public static int alarmTicker = 0;
 
 
 
@@ -134,6 +140,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         load_player();
         setUpKeys();
         hud();
+        load_leds();
         GeometryBatchFactory.optimize(rootNode);
 
         sky.setLocalScale(1000);
@@ -247,6 +254,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(false);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -322,6 +330,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(true);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -359,6 +368,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             this.focusable(false);
                                             width("20px");
                                             height("20px");
+                                            this.checked(true);
                                         }});
 
                                         panel(new PanelBuilder("goll"){{
@@ -508,6 +518,37 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
                                             width("90%");
                                             height("30%");
                                             buttonStepSize(5f);
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("alarma") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("alarma2", "Alarma") {{
+                                            alignCenter();
+                                            height("60%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic1"));
+                                            this.focusable(false);
+
+                                        }});
+                                    }});
+
+                                panel(new PanelBuilder("alarma1") {
+                                    {
+                                        childLayoutVertical();
+                                        width("100%");
+                                        height("25%");
+
+                                        control(new ButtonBuilder("alarma11", "Resetare alarma") {{
+                                            alignCenter();
+                                            height("60%");
+                                            width("60%");
+                                            this.onActiveEffect(new EffectBuilder("nimic11"));
+                                            this.focusable(false);
                                         }});
                                     }});
                             }});
@@ -821,10 +862,15 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         nifty.subscribe(nifty.getCurrentScreen(), "sectorB", SliderChangedEvent.class, eventHandler16);
         nifty.subscribe(nifty.getCurrentScreen(), "sectorC", SliderChangedEvent.class, eventHandler17);
         nifty.subscribe(nifty.getCurrentScreen(), "luminozitate", SliderChangedEvent.class, eventHandler18);
+        nifty.subscribe(nifty.getCurrentScreen(), "alarma11", ButtonClickedEvent.class, eventHandler19);
 
         nifty.gotoScreen("test");
 
     }
+
+    EventTopicSubscriber<ButtonClickedEvent> eventHandler19 = (topic, event) -> {
+       // controller.trigger=0;
+    } ;
 
     EventTopicSubscriber<SliderChangedEvent> eventHandler18 = new EventTopicSubscriber<SliderChangedEvent>() {
         @Override
@@ -863,78 +909,80 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
     };
 
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(sprinklers_activated)
-            {
-                environment.sprinkler=false;
-                sprinklers_activated=false;
-            }
-            else
-            {
-                environment.sprinkler=true;
-                sprinklers_activated=true;
-            }
-        }
-    };
-
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler13 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(lumini_urgenta_activated)
-            {
-                environment.lumini_urgenta=false;
-                lumini_urgenta_activated=false;
-            }
-            else
-            {
-                environment.lumini_urgenta=true;
-                lumini_urgenta_activated=true;
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler14 = (s, checkBoxStateChangedEvent) -> {
+        if(bugfix>1) {
+            if (sprinklers_activated) {
+                environment.sprinkler = false;
+                sprinklers_activated = false;
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+            } else {
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                if(nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).isChecked()) {
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(false);
+                }
+                environment.curent_electric = false;
+                electricitate_activated = true;
+                environment.sprinkler = true;
+                sprinklers_activated = true;
             }
         }
     };
 
-    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler12 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
-        @Override
-        public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(electricitate_activated)
-            {
-                environment.curent_electric=true;
-                electricitate_activated=false;
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler13 = (s, checkBoxStateChangedEvent) -> {
+        if(bugfix>1) {
+            if (lumini_urgenta_activated) {
+                environment.lumini_urgenta = false;
+                lumini_urgenta_activated = false;
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+            } else {
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(false);
+                environment.lumini_urgenta = true;
+                lumini_urgenta_activated = true;
             }
-            else
-            {
-                environment.curent_electric=false;
-                electricitate_activated=true;
-            }
+        }
+    };
+
+    EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler12 = (s, checkBoxStateChangedEvent) -> {
+        if(electricitate_activated)
+        {
+            environment.curent_electric=true;
+            electricitate_activated=false;
+        }
+        else
+        {
+            environment.curent_electric=false;
+            electricitate_activated=true;
         }
     };
 
     EventTopicSubscriber<CheckBoxStateChangedEvent> eventHandler11 = new EventTopicSubscriber<CheckBoxStateChangedEvent>() {
         @Override
         public void onEvent(String s, CheckBoxStateChangedEvent checkBoxStateChangedEvent) {
-            if(!controller.disabled){
-                controller.disabled = true;
-                System.out.println("Controller disabled");
-                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).enable();
-                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).enable();
-            }else
-            {
-                controller.disabled = false;
-                nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).disable();
-                nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).disable();
-                System.out.println("Controller enabled");
+            bugfix++;
+            if(bugfix>1) {
+                if (!controller.disabled) {
+                    controller.disabled = true;
+                    System.out.println("Controller disabled");
+                    nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(true);
+                    nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(true);
+                } else {
+                    controller.disabled = false;
+                    nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(false);
+                    nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setChecked(true);
+                    System.out.println("Controller enabled");
+                }
             }
         }
     };
@@ -1142,56 +1190,56 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hudText12.setSize(15);
         hudText12.setColor(ColorRGBA.Green);           // the text
         hudText12.setLocalTranslation(settings.getWidth()-90, offset, 300); // position
-        hudText12.setText("Camera 1");
+        //hudText12.setText("Camera 1");
         guiNode.attachChild(hudText12);
 
         hudText13 = new BitmapText(myFont, false);
         hudText13.setSize(15);
         hudText13.setColor(ColorRGBA.Green);           // the text
         hudText13.setLocalTranslation(settings.getWidth()-90, offset-20, 300); // position
-        hudText13.setText("Camera 2");
+        //hudText13.setText("Camera 2");
         guiNode.attachChild(hudText13);
 
         hudText14 = new BitmapText(myFont, false);
         hudText14.setSize(15);
         hudText14.setColor(ColorRGBA.Green);           // the text
         hudText14.setLocalTranslation(settings.getWidth()-90, offset-40, 300); // position
-        hudText14.setText("Camera 3");
+        //hudText14.setText("Camera 3");
         guiNode.attachChild(hudText14);
 
         hudText15 = new BitmapText(myFont, false);
         hudText15.setSize(15);
         hudText15.setColor(ColorRGBA.Green);           // the text
         hudText15.setLocalTranslation(settings.getWidth()-90, offset-60, 300); // position
-        hudText15.setText("Camera 4");
+        //hudText15.setText("Camera 4");
         guiNode.attachChild(hudText15);
 
         hudText16 = new BitmapText(myFont, false);
         hudText16.setSize(15);
         hudText16.setColor(ColorRGBA.Green);           // the text
         hudText16.setLocalTranslation(settings.getWidth()-90, offset-80, 300); // position
-        hudText16.setText("Camera 5");
+        // hudText16.setText("Camera 5");
         guiNode.attachChild(hudText16);
 
         hudText17 = new BitmapText(myFont, false);
         hudText17.setSize(15);
         hudText17.setColor(ColorRGBA.Green);           // the text
         hudText17.setLocalTranslation(settings.getWidth()-90, offset-100, 300); // position
-        hudText17.setText("Camera 6");
+        //hudText17.setText("Camera 6");
         guiNode.attachChild(hudText17);
 
         hudText18 = new BitmapText(myFont, false);
         hudText18.setSize(15);
         hudText18.setColor(ColorRGBA.Green);           // the text
         hudText18.setLocalTranslation(settings.getWidth()-90, offset-120, 300); // position
-        hudText18.setText("Camera 7");
+        //hudText18.setText("Camera 7");
         guiNode.attachChild(hudText18);
 
         hudText19 = new BitmapText(myFont, false);
         hudText19.setSize(15);
         hudText19.setColor(ColorRGBA.Green);           // the text
         hudText19.setLocalTranslation(settings.getWidth()-90, offset-140, 300); // position
-        hudText19.setText("Server");
+        // hudText19.setText("Server");
         guiNode.attachChild(hudText19);
     }
 
@@ -1236,7 +1284,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         dlsf.setLight(lamp_light);
         dlsf.setEnabled(true);
 
-      //  BloomFilter bloom=new BloomFilter();
+        //  BloomFilter bloom=new BloomFilter();
 
         DepthOfFieldFilter dofFilter = new DepthOfFieldFilter();
         dofFilter.setFocusDistance(0);
@@ -1361,7 +1409,16 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     }
 
     public void hud(){
-
+        controller.disabled = false;
+        nifty.getCurrentScreen().findNiftyControl("comanda_racire", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_incalzire", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_ventilatie", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("comanda_umidificator", Slider.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("electricitate_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setEnabled(false);
+        nifty.getCurrentScreen().findNiftyControl("lumini_urgenta_activated", CheckBox.class).setChecked(false);
+        nifty.getCurrentScreen().findNiftyControl("sprinklers_activated", CheckBox.class).setChecked(false);
     }
 
 
@@ -1411,7 +1468,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         numeObiect.setLowLife((x.intensitate_foc/(float)10)*2.5f);
         numeObiect.setHighLife((x.intensitate_foc/(float)10)*3.5f);
         numeObiect.setVelocityVariation((x.intensitate_foc/(float)10)*0.35f);
-       // numeObiect.setQueueBucket(RenderQueue.Bucket.Translucent);
+        // numeObiect.setQueueBucket(RenderQueue.Bucket.Translucent);
         numeObiect.setLocalTranslation((x.translatie_x-(10f*x.intensitate_foc)/2),x.translatie_y,(x.translatie_z-(15f*x.intensitate_foc)/2));
         numeObiect.setShape(new EmitterBoxShape(new Vector3f(0, 0, 0), new Vector3f(10f*x.intensitate_foc, 0.8f*x.intensitate_foc, 15f*x.intensitate_foc)));
         numeObiect.setNumParticles(1000*(int)x.intensitate_foc);
@@ -1427,7 +1484,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
         else
         {
-           rootNode.detachChild(fire[x.index]);
+            rootNode.detachChild(fire[x.index]);
         }
     }
 
@@ -1476,9 +1533,9 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             //System.out.println(x.index);
             if(x.pornit==false && lumina_leduri[x.index]!=null)
             {
-                    rootNode.removeLight(lumina_leduri[x.index]);
-                    viewPort.removeProcessor(dlsr_led[x.index]);
-                    dlsf_led[x.index].setEnabled(false);
+                rootNode.removeLight(lumina_leduri[x.index]);
+                viewPort.removeProcessor(dlsr_led[x.index]);
+                dlsf_led[x.index].setEnabled(false);
             }
             else
             {
@@ -1679,39 +1736,39 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         else
             counter++;
 
-         if (request.isEmpty()==false)
+        if (request.isEmpty()==false)
         {
             try {
                 requestHandler x = request.get(0);
-                    nucleu.request_motor_grafic.add(x);
+                nucleu.request_motor_grafic.add(x);
 
-                    switch (x.type) {
-                        case "load":
-                            load_object(x);
-                            break;
-                        case "light":
-                            load_light(x);
-                            break;
-                        case "foc_start":
-                            foc_start(x);
-                            break;
-                        case "stropire":
-                            stropire(x);
-                            break;
-                        case "smoke":
-                            smoke(x);
-                            break;
-                        case "leduri":
-                            load_light(x);
-                    }
+                switch (x.type) {
+                    case "load":
+                        load_object(x);
+                        break;
+                    case "light":
+                        load_light(x);
+                        break;
+                    case "foc_start":
+                        foc_start(x);
+                        break;
+                    case "stropire":
+                        stropire(x);
+                        break;
+                    case "smoke":
+                        smoke(x);
+                        break;
+                    case "leduri":
+                        load_light(x);
+                }
 
 
-                    request.remove(0);
+                request.remove(0);
 
             }catch (NullPointerException e){
                 System.out.println("eroare ");
                 request.remove(0);
-               request.toString();
+                request.toString();
             }
         }
 
@@ -1838,39 +1895,20 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         hudText8.setText("Electricitate: "+ curent_electric);
         hudText9.setText("L. urgenta: "+ lumini_urgenta);
 
-        /*
-        if(controller.lista_celule.get(0).contains("Camera1"))
-            hudText12.setColor(ColorRGBA.Green);
-        else
-            hudText12.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera2"))
-            hudText13.setColor(ColorRGBA.Green);
-        else
-            hudText13.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera3"))
-            hudText14.setColor(ColorRGBA.Green);
-        else
-            hudText14.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera4"))
-            hudText15.setColor(ColorRGBA.Green);
-        else
-            hudText15.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera5"))
-            hudText16.setColor(ColorRGBA.Green);
-        else
-            hudText16.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera6"))
-            hudText17.setColor(ColorRGBA.Green);
-        else
-            hudText17.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("Camera7"))
-            hudText18.setColor(ColorRGBA.Green);
-        else
-            hudText18.setColor(ColorRGBA.Gray);
-        if(controller.lista_celule.get(0).contains("server"))
-            hudText19.setColor(ColorRGBA.Green);
-        else
-            hudText19.setColor(ColorRGBA.Gray);*/
+
+        try{
+            hudText12.setText(nucleu.online_cells.get(0).split("~")[2]);
+            hudText13.setText(nucleu.online_cells.get(1).split("~")[2]);
+            hudText14.setText(nucleu.online_cells.get(2).split("~")[2]);
+            hudText15.setText(nucleu.online_cells.get(3).split("~")[2]);
+            hudText16.setText(nucleu.online_cells.get(4).split("~")[2]);
+            hudText17.setText(nucleu.online_cells.get(5).split("~")[2]);
+            hudText18.setText(nucleu.online_cells.get(6).split("~")[2]);
+            hudText19.setText(nucleu.online_cells.get(7).split("~")[2]);
+        }
+        catch (Exception e){
+
+        }
 
         if(gui)
         {
@@ -1881,5 +1919,15 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
             flyCam.setDragToRotate(false);
         }
         loaded = true;
+
+        if(alarmTicker%2==0)
+        {
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setTextColor(Color.WHITE);
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setText("Alarma");
+        }
+        else{
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setTextColor(de.lessvoid.nifty.tools.Color.randomColor());
+            nifty.getCurrentScreen().findNiftyControl("alarma2", Button.class).setText("Incendiu");
+        }
     }
 }
