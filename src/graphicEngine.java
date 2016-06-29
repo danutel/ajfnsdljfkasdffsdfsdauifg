@@ -26,10 +26,7 @@ import com.jme3.post.filters.DepthOfFieldFilter;
 import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.Spatial;
-import com.jme3.shadow.PointLightShadowFilter;
-import com.jme3.shadow.PointLightShadowRenderer;
-import com.jme3.shadow.SpotLightShadowFilter;
-import com.jme3.shadow.SpotLightShadowRenderer;
+import com.jme3.shadow.*;
 import com.jme3.util.SkyFactory;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.builder.EffectBuilder;
@@ -1035,7 +1032,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     public void loadmap()
     {
         //load_object(new requestHandler("load","Modele\\Harta\\fac.zip","6.mesh.j3o", "map",-420,0,-109,7f,7f,7f,0,0,0,0));//harta
-        load_object(new requestHandler("load","Modele\\Harta\\fac.zip","1.mesh.j3o", "map",-144,14,-1637,7f,7f,7f,0,0,0,0));//facultate
+        load_object(new requestHandler("load","Modele\\Harta\\fac.zip","1.mesh.j3o", "bloc",-144,14,-1637,7f,7f,7f,0,0,0,0));//facultate
         /*load_object(new requestHandler("load","Modele\\Harta\\9.zip","9.mesh.j3o", "bloc",81,-12,-2603,7f,7f,7f,0,0,0,0));//parcare+terenuri
         load_object(new requestHandler("load","Modele\\Harta\\7.zip","7.mesh.j3o", "bloc",2029,10,-415,7f,7f,7f,0,0,0,0));//cladiri cercetare
         load_object(new requestHandler("load","Modele\\Harta\\8.zip","8.mesh.j3o", "bloc",1750,10,-2600,7f,7f,7f,0,0,0,0));//cladiri cercetare
@@ -1562,7 +1559,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         }
         else
         {
-            numeObiect.setShadowMode(RenderQueue.ShadowMode.Off);
+            numeObiect.setShadowMode(RenderQueue.ShadowMode.Inherit);
         }
         RigidBodyControl numeObiect_PhysX = new RigidBodyControl(x.masa);
         numeObiect.addControl(numeObiect_PhysX);
@@ -1878,8 +1875,6 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
         if(gui)
         {
             flyCam.setDragToRotate(true);
-            test--;
-            lumina_leduri[0].setPosition(new Vector3f(test,153,-1907));
         }
         else
         {

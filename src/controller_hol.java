@@ -6,6 +6,8 @@ import jade.core.behaviours.ThreadedBehaviourFactory;
 import jade.lang.acl.ACLMessage;
 import jade.util.leap.Iterator;
 
+import java.io.*;
+
 public class controller_hol extends Agent{
     public boolean[] fum=new boolean[6];
     public double[] ventilatie=new double[6];
@@ -50,7 +52,7 @@ public class controller_hol extends Agent{
                     }
                     else if (mesaj_receptionat.getConversationId()=="iesire1")
                     {
-                        System.out.println("iesire1:online " + mesaj_receptionat.getContent());
+                        //System.out.println("iesire1:online ");
                         try {
                             incarcare_iesire1[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
                             incarcare_iesire1[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
@@ -64,7 +66,7 @@ public class controller_hol extends Agent{
                     else if (mesaj_receptionat.getConversationId()=="iesire2")
                     {
                         try {
-                            System.out.println("iesire2:online " + mesaj_receptionat.getContent());
+                            //System.out.println("iesire2:online ");
                             incarcare_iesire2[0] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[0]);
                             incarcare_iesire2[1] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[1]);
                             incarcare_iesire2[2] = Integer.parseInt(mesaj_receptionat.getContent().split("~")[2]);
@@ -200,10 +202,31 @@ public class controller_hol extends Agent{
 
                 }
 
+                File log = new File("log.txt");
+
+                try{
+                    if(!log.exists()){
+                        System.out.println("We had to make a new file.");
+                        log.createNewFile();
+                    }
+
+                    FileWriter fileWriter = new FileWriter(log, true);
+
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    bufferedWriter.write("Iesire 1: "+incarcare_iesire1[etaj]+"; Iesire 2: "+
+                            incarcare_iesire2[etaj]+"; Mod 1: "+ mod1+"; Mod 2: "+mod2+"; Mod 3: "+mod3+"; Mod 4: "+mod4+"\n");
+                    bufferedWriter.close();
+
+                } catch(IOException e) {
+                    System.out.println("COULD NOT LOG!!");
+                }
+
+                System.out.println("Iesire 1: "+incarcare_iesire1[etaj]+"; Iesire 2: "+
+                        incarcare_iesire2[etaj]+"; Mod 1: "+ mod1+"; Mod 2: "+mod2+"; Mod 3: "+mod3+"; Mod 4: "+mod4);
 
                 if (environment_hol.alarma_incendiu) {
 
-                    if (raport <= 0.2 && !mod1 || fum[5]) {
+                    if (raport <= 0.2 && !mod1 || incarcare_iesire1[etaj]>90) {
                         //toti ies pe iesirea 2
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -214,7 +237,10 @@ public class controller_hol extends Agent{
                         B_X_activated = true;
                         Y2_X_activated = true;
                         mod1 = true;
-                    } else if (raport > 5 && !mod2 || fum[5]) {
+                        mod2 = false;
+                        mod3 = false;
+                        mod4 = false;
+                    } else if (raport > 5 && !mod2 || incarcare_iesire2[etaj]>90) {
                         //toti ies pe iesirea 1
                         directionare.culoareA_X = ColorRGBA.Red;
                         directionare.culoareB_X = ColorRGBA.Red;
@@ -224,7 +250,10 @@ public class controller_hol extends Agent{
                         A_X_activated = true;
                         B_X_activated = true;
                         X_Y2_activated = true;
+                        mod1 = false;
                         mod2 = true;
+                        mod3 = false;
+                        mod4 = false;
                     } else if (raport >= 1 && raport <= 5 && !mod3) {
                         //A-1 B-1 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
@@ -235,7 +264,10 @@ public class controller_hol extends Agent{
                         A_X_activated = true;
                         B_X_activated = true;
                         X_Y2_activated = true;
+                        mod1 = false;
+                        mod2 = false;
                         mod3 = true;
+                        mod4 = false;
                     } else if (raport < 1 && raport >= 0.2 && !mod4) {
                         //A-1 B-2 C-2
                         directionare.culoareA_X = ColorRGBA.Blue;
@@ -246,69 +278,72 @@ public class controller_hol extends Agent{
                         A_X_activated = true;
                         B_X_activated = true;
                         Y2_X_activated = true;
+                        mod1 = false;
+                        mod2 = false;
+                        mod3 = false;
                         mod4 = true;
                     }
 
                     if (mod1) {
                         environment_hol.nr_oameni_iesire2 = 0;
                         environment_hol.nr_oameni_iesire1 = 0;
-                        if (graphicEngine.nr_oameni_setor_A > 2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_A > 4) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_B > 2) {
-                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_B > 4) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_C > 2) {
-                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_C > 4) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
                     } else if (mod2) {
                         environment_hol.nr_oameni_iesire2 = 0;
                         environment_hol.nr_oameni_iesire1 = 0;
-                        if (graphicEngine.nr_oameni_setor_A > 2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_A > 4) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_B > 2) {
-                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_B > 4) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_C > 2) {
-                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_C > 4) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
                     } else if (mod3) {
 
                         environment_hol.nr_oameni_iesire2 = 0;
                         environment_hol.nr_oameni_iesire1 = 0;
-                        if (graphicEngine.nr_oameni_setor_A >= 2) {
-                            graphicEngine.nr_oameni_setor_A -= 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_A >= 4) {
+                            graphicEngine.nr_oameni_setor_A -= 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_B >= 2) {
-                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_B >= 4) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_C >= 2) {
-                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_C >= 4) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
                     } else if (mod4) {
                         environment_hol.nr_oameni_iesire2 = 0;
                         environment_hol.nr_oameni_iesire1 = 0;
-                        if (graphicEngine.nr_oameni_setor_A >= 2) {
-                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 2;
-                            environment_hol.nr_oameni_iesire1 += 2;
+                        if (graphicEngine.nr_oameni_setor_A >= 4) {
+                            graphicEngine.nr_oameni_setor_A = graphicEngine.nr_oameni_setor_A - 4;
+                            environment_hol.nr_oameni_iesire1 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_B >= 2) {
-                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_B >= 4) {
+                            graphicEngine.nr_oameni_setor_B = graphicEngine.nr_oameni_setor_B - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
-                        if (graphicEngine.nr_oameni_setor_C >= 2) {
-                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 2;
-                            environment_hol.nr_oameni_iesire2 += 2;
+                        if (graphicEngine.nr_oameni_setor_C >= 4) {
+                            graphicEngine.nr_oameni_setor_C = graphicEngine.nr_oameni_setor_C - 4;
+                            environment_hol.nr_oameni_iesire2 += 4;
                         }
                     }
                 } else {
