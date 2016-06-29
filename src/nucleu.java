@@ -110,10 +110,10 @@ public class nucleu extends Agent{
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("ping")) {
-                        if (online_cells.contains(mesaj_receptionat.getContent()) == false) {
+                        if (online_cells.contains(mesaj_receptionat.getContent()) == false && !mesaj_receptionat.getContent().contains("MTS-error")) {
                             online_cells.add(mesaj_receptionat.getContent());
                         }
-                        //System.out.println(mesaj_receptionat.getContent());
+                       // System.out.println(mesaj_receptionat.getContent());
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("request_informatii_environment")) {
@@ -358,7 +358,7 @@ public class nucleu extends Agent{
                 }
 
                 for (int i = 0; i < online_cells.size(); i++) {
-                    //System.out.println(online_cells.get(i));
+                    System.out.println(online_cells.get(i));
                     if(online_cells.get(i).toString().contains("Hol") && !online_cells.get(i).contains(localaddress))
                     {
                         ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
