@@ -201,7 +201,7 @@ public class controller_hol extends Agent{
                 {
 
                 }
-
+/*
                 File log = new File("log.txt");
 
                 try{
@@ -222,7 +222,7 @@ public class controller_hol extends Agent{
                 }
 
                 System.out.println("Iesire 1: "+incarcare_iesire1[etaj]+"; Iesire 2: "+
-                        incarcare_iesire2[etaj]+"; Mod 1: "+ mod1+"; Mod 2: "+mod2+"; Mod 3: "+mod3+"; Mod 4: "+mod4);
+                        incarcare_iesire2[etaj]+"; Mod 1: "+ mod1+"; Mod 2: "+mod2+"; Mod 3: "+mod3+"; Mod 4: "+mod4);*/
 
                 if (environment_hol.alarma_incendiu) {
 

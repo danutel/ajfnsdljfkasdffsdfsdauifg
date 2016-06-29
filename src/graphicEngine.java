@@ -72,7 +72,7 @@ public class graphicEngine extends SimpleApplication implements ActionListener{
     private Vector3f camDir = new Vector3f();
     private Vector3f camLeft = new Vector3f();
     private Vector3f walkDirection = new Vector3f();
-    public static String locatie = "";
+    public static String locatie = "et.4 Hol 1";
     public static List<requestHandler> request = new ArrayList<requestHandler>();
     public static List<requestHandler> requestA_X = new ArrayList<requestHandler>();
     public static List<requestHandler> requestB_X = new ArrayList<requestHandler>();

@@ -41,7 +41,7 @@ public class nucleu extends Agent{
                 String base = localaddress.split("\\.")[0] + "." + localaddress.split("\\.")[1] + "." + localaddress.split("\\.")[2];
 
                 int timeout = 50;
-                for (int i = 2; i < 10; i++) {
+                for (int i = 2; i < 250; i++) {
                     String host = base + "." + i;
                     try {
                         if (InetAddress.getByName(host).isReachable(timeout)) {
@@ -55,6 +55,7 @@ public class nucleu extends Agent{
                                 discovery.addReceiver(rec);
                                 discovery.setContent(myAgent.getAID().getName() + "~" + localaddress+ "~" +locatie);
                                 myAgent.send(discovery);
+                                //System.out.println(discovery);
                             }
                         }
                     } catch (IOException e) {
@@ -110,10 +111,10 @@ public class nucleu extends Agent{
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("ping")) {
-                        if (online_cells.contains(mesaj_receptionat.getContent()) == false) {
+                        if (online_cells.contains(mesaj_receptionat.getContent()) == false && !mesaj_receptionat.getContent().contains("MTS-error")) {
                             online_cells.add(mesaj_receptionat.getContent());
                         }
-                        //System.out.println(mesaj_receptionat.getContent());
+                         System.out.println(mesaj_receptionat.getContent());
                     }
 
                     if (mesaj_receptionat.getConversationId().equals("request_informatii_environment")) {
@@ -171,7 +172,7 @@ public class nucleu extends Agent{
                         else if (mesaj_receptionat.getSender().toString().contains("iesire2")) {
                             iesire2 = mesaj_receptionat.getContent();
                         }
-                        else if(mesaj_receptionat.getContent().contains("iesire1")){
+                        else if(mesaj_receptionat.getContent()!=null && mesaj_receptionat.getContent().contains("iesire1")){
                             ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
                             Iterator it = getAID().getAllAddresses();
                             AID r = new AID("controller_hol@" + getAID().getName().split("@")[1], AID.ISGUID);
@@ -181,7 +182,7 @@ public class nucleu extends Agent{
                             mesaj_iesire.setContent(mesaj_receptionat.getContent().split("@")[1]);
                             myAgent.send(mesaj_iesire);
                         }
-                        else if(mesaj_receptionat.getContent().contains("iesire2"))
+                        else if(mesaj_receptionat.getContent()!=null && mesaj_receptionat.getContent().contains("iesire2"))
                         {
                             ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.INFORM);
                             Iterator it = getAID().getAllAddresses();
@@ -200,7 +201,7 @@ public class nucleu extends Agent{
                             //System.out.println(online_cells.get(i));
                             if(online_cells.get(i).toString().contains("iesire1") && !online_cells.get(i).contains(localaddress))
                             {
-                               // System.out.println(online_cells.get(i));
+                                // System.out.println(online_cells.get(i));
                                 ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
                                 AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
                                 rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
@@ -232,14 +233,14 @@ public class nucleu extends Agent{
 
                     if (mesaj_receptionat.getConversationId().equals("oameni_scara")) {
                         //System.out.println(mesaj_receptionat.getContent());
-                            ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
-                            Iterator it = getAID().getAllAddresses();
-                            AID r = new AID(locatie+ "@" + getAID().getName().split("@")[1], AID.ISGUID);
-                            r.addAddresses((String) it.next());
-                            mesaj_iesire.setConversationId("iesire1");
-                            mesaj_iesire.addReceiver(r);
-                            mesaj_iesire.setContent(mesaj_receptionat.getContent());
-                            myAgent.send(mesaj_iesire);
+                        ACLMessage mesaj_iesire = new ACLMessage(ACLMessage.REQUEST);
+                        Iterator it = getAID().getAllAddresses();
+                        AID r = new AID(locatie+ "@" + getAID().getName().split("@")[1], AID.ISGUID);
+                        r.addAddresses((String) it.next());
+                        mesaj_iesire.setConversationId("iesire1");
+                        mesaj_iesire.addReceiver(r);
+                        mesaj_iesire.setContent(mesaj_receptionat.getContent());
+                        myAgent.send(mesaj_iesire);
                     }
                 }
                 try {
@@ -345,7 +346,7 @@ public class nucleu extends Agent{
                             mesaj_request_informatii_environment.setContent("sup");
                             myAgent.send(mesaj_request_informatii_environment);
                         }
-                        else if (online_cells.get(i).contains(graphicEngine.locatie.split(" ")[0])) {
+                        else if (online_cells.get(i).contains(graphicEngine.locatie.split(" ")[1])) {
                             ACLMessage mesaj_request_informatii_environment = new ACLMessage(ACLMessage.REQUEST);
                             AID rec = new AID(online_cells.get(i).split("~")[0], AID.ISGUID);
                             rec.addAddresses("http://" + online_cells.get(i).split("~")[1] + ":7778/acc");
@@ -358,7 +359,7 @@ public class nucleu extends Agent{
                 }
 
                 for (int i = 0; i < online_cells.size(); i++) {
-                    //System.out.println(online_cells.get(i));
+                    System.out.println(online_cells.get(i));
                     if(online_cells.get(i).toString().contains("Hol") && !online_cells.get(i).contains(localaddress))
                     {
                         ACLMessage mesaj_informatii_scara = new ACLMessage(ACLMessage.REQUEST);
